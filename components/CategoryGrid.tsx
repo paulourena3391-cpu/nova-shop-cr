@@ -1,68 +1,64 @@
 'use client';
 
 import Link from 'next/link';
+import {
+  Shirt, Laptop, Footprints, Dumbbell, Baby,
+  Waves, Bike, TreePine, Sofa, UtensilsCrossed,
+  Bath, FlowerIcon, Headphones, Tablet, Cpu, Watch
+} from 'lucide-react';
 import { useLang } from '@/context/LanguageContext';
 
 type Category = {
   handle: string;
   labelEs: string;
   labelEn: string;
-  emoji: string;
-  gradient: string;
+  Icon: React.ElementType;
 };
 
 const CATEGORIES: Category[] = [
-  { handle: 'womens-clothing',      labelEs: 'Ropa Mujer',    labelEn: "Women's",      emoji: '👗', gradient: 'from-pink-500 to-rose-400' },
-  { handle: 'consumer-electronics', labelEs: 'Electrónica',   labelEn: 'Electronics',  emoji: '💻', gradient: 'from-blue-600 to-blue-400' },
-  { handle: 'hombre',               labelEs: 'Hombre',        labelEn: 'Men',          emoji: '👔', gradient: 'from-slate-600 to-slate-400' },
-  { handle: 'calzado',              labelEs: 'Calzado',       labelEn: 'Footwear',     emoji: '👟', gradient: 'from-amber-600 to-amber-400' },
-  { handle: 'ninos',                labelEs: 'Niños',         labelEn: 'Kids',         emoji: '🧸', gradient: 'from-purple-500 to-violet-400' },
-  { handle: 'fitness',              labelEs: 'Fitness',       labelEn: 'Fitness',      emoji: '💪', gradient: 'from-green-600 to-emerald-400' },
-  { handle: 'natacion',             labelEs: 'Natación',      labelEn: 'Swimming',     emoji: '🏊', gradient: 'from-cyan-500 to-blue-400' },
-  { handle: 'ciclismo',             labelEs: 'Ciclismo',      labelEn: 'Cycling',      emoji: '🚴', gradient: 'from-lime-500 to-green-400' },
-  { handle: 'outdoor',              labelEs: 'Outdoor',       labelEn: 'Outdoor',      emoji: '⛺', gradient: 'from-teal-600 to-teal-400' },
-  { handle: 'decoracion',           labelEs: 'Decoración',    labelEn: 'Decor',        emoji: '🛋️', gradient: 'from-orange-400 to-amber-300' },
-  { handle: 'cocina',               labelEs: 'Cocina',        labelEn: 'Kitchen',      emoji: '🍳', gradient: 'from-red-500 to-orange-400' },
-  { handle: 'bano',                 labelEs: 'Baño',          labelEn: 'Bathroom',     emoji: '🛁', gradient: 'from-sky-500 to-cyan-400' },
-  { handle: 'jardin',               labelEs: 'Jardín',        labelEn: 'Garden',       emoji: '🌿', gradient: 'from-green-500 to-lime-400' },
-  { handle: 'laptops',              labelEs: 'Laptops',       labelEn: 'Laptops',      emoji: '💻', gradient: 'from-indigo-600 to-blue-500' },
-  { handle: 'tablets',              labelEs: 'Tablets',       labelEn: 'Tablets',      emoji: '📱', gradient: 'from-violet-600 to-purple-400' },
-  { handle: 'audio',                labelEs: 'Audio',         labelEn: 'Audio',        emoji: '🎧', gradient: 'from-gray-700 to-gray-500' },
-  { handle: 'woman-hats-caps',      labelEs: 'Gorras',        labelEn: 'Hats & Caps',  emoji: '🧢', gradient: 'from-rose-500 to-pink-400' },
-  { handle: 'accesorios-electronica', labelEs: 'Accesorios',  labelEn: 'Accessories',  emoji: '🔌', gradient: 'from-blue-500 to-indigo-400' },
+  { handle: 'womens-clothing',        labelEs: 'Ropa Mujer',     labelEn: "Women's",       Icon: Shirt },
+  { handle: 'consumer-electronics',   labelEs: 'Electrónica',    labelEn: 'Electronics',   Icon: Laptop },
+  { handle: 'hombre',                 labelEs: 'Hombre',         labelEn: 'Men',            Icon: Watch },
+  { handle: 'calzado',                labelEs: 'Calzado',        labelEn: 'Footwear',       Icon: Footprints },
+  { handle: 'ninos',                  labelEs: 'Niños',          labelEn: 'Kids',           Icon: Baby },
+  { handle: 'fitness',                labelEs: 'Fitness',        labelEn: 'Fitness',        Icon: Dumbbell },
+  { handle: 'natacion',               labelEs: 'Natación',       labelEn: 'Swimming',       Icon: Waves },
+  { handle: 'ciclismo',               labelEs: 'Ciclismo',       labelEn: 'Cycling',        Icon: Bike },
+  { handle: 'outdoor',                labelEs: 'Outdoor',        labelEn: 'Outdoor',        Icon: TreePine },
+  { handle: 'decoracion',             labelEs: 'Decoración',     labelEn: 'Decor',          Icon: Sofa },
+  { handle: 'cocina',                 labelEs: 'Cocina',         labelEn: 'Kitchen',        Icon: UtensilsCrossed },
+  { handle: 'bano',                   labelEs: 'Baño',           labelEn: 'Bathroom',       Icon: Bath },
+  { handle: 'jardin',                 labelEs: 'Jardín',         labelEn: 'Garden',         Icon: FlowerIcon },
+  { handle: 'audio',                  labelEs: 'Audio',          labelEn: 'Audio',          Icon: Headphones },
+  { handle: 'tablets',                labelEs: 'Tablets',        labelEn: 'Tablets',        Icon: Tablet },
+  { handle: 'laptops',                labelEs: 'Laptops',        labelEn: 'Laptops',        Icon: Cpu },
+  { handle: 'woman-hats-caps',        labelEs: 'Gorras',         labelEn: 'Hats & Caps',    Icon: Shirt },
+  { handle: 'accesorios-electronica', labelEs: 'Accesorios',     labelEn: 'Accessories',    Icon: Cpu },
 ];
 
 export default function CategoryGrid() {
   const { lang, t } = useLang();
 
   return (
-    <section className="py-12">
+    <section className="py-10 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <h2 className="section-title">{t.shopByCategory}</h2>
-          <p className="section-subtitle mt-2">
-            {lang === 'es' ? 'Explorá todas nuestras categorías' : 'Explore all our categories'}
-          </p>
-        </div>
+        <h2 className="text-2xl font-bold text-navy mb-6 border-b-2 border-brand-orange pb-2 inline-block">
+          {t.shopByCategory}
+        </h2>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          {CATEGORIES.map((cat) => (
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+          {CATEGORIES.map(({ handle, labelEs, labelEn, Icon }) => (
             <Link
-              key={cat.handle}
-              href={`/collections/${cat.handle}`}
-              className="group relative rounded-xl overflow-hidden aspect-square flex flex-col items-center justify-center text-white shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              key={handle}
+              href={`/collections/${handle}`}
+              className="group flex flex-col items-center gap-2 p-3 bg-white border border-gray-200 rounded-lg hover:border-brand-orange hover:shadow-md transition-all duration-200"
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${cat.gradient} opacity-90 group-hover:opacity-100 transition-opacity`} />
-              <div
-                className="absolute inset-0 opacity-10"
-                style={{ backgroundImage: `radial-gradient(circle at 20% 80%, white 1px, transparent 1px)`, backgroundSize: '20px 20px' }}
-              />
-              <div className="relative z-10 flex flex-col items-center gap-1.5 p-3 text-center">
-                <span className="text-3xl">{cat.emoji}</span>
-                <span className="font-semibold text-xs leading-tight">
-                  {lang === 'es' ? cat.labelEs : cat.labelEn}
-                </span>
+              <div className="w-12 h-12 rounded-full bg-gray-50 group-hover:bg-brand-orange-light flex items-center justify-center transition-colors">
+                <Icon size={22} className="text-gray-500 group-hover:text-brand-orange transition-colors" />
               </div>
+              <span className="text-xs font-medium text-gray-700 group-hover:text-brand-orange text-center leading-tight transition-colors">
+                {lang === 'es' ? labelEs : labelEn}
+              </span>
             </Link>
           ))}
         </div>

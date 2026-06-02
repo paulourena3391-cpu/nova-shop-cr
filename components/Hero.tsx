@@ -1,35 +1,20 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, Zap, ShieldCheck } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Truck, RotateCcw, Headphones } from 'lucide-react';
 import { useLang } from '@/context/LanguageContext';
 
 export default function Hero() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
 
   return (
-    <section className="relative bg-navy overflow-hidden min-h-[480px] md:min-h-[560px] flex items-center">
-      {/* Background gradient decorations */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-20 -right-20 w-96 h-96 bg-brand-orange/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 -left-10 w-72 h-72 bg-brand-orange/10 rounded-full blur-3xl" />
-        {/* Grid pattern overlay */}
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
-            backgroundSize: '40px 40px',
-          }}
-        />
-      </div>
+    <section className="bg-navy">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-20">
+        <div className="grid md:grid-cols-2 gap-10 items-center">
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Left: content */}
-          <div className="text-center md:text-left">
-            {/* Badge */}
-            <span className="inline-flex items-center gap-2 bg-brand-orange/20 text-brand-orange border border-brand-orange/30 text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
-              <Zap size={14} fill="currentColor" />
+          {/* Left — copy */}
+          <div>
+            <span className="inline-block bg-brand-orange text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded mb-5">
               {t.heroBadge}
             </span>
 
@@ -37,68 +22,45 @@ export default function Hero() {
               {t.heroTitle}
             </h1>
 
-            <p className="text-white/70 text-lg md:text-xl mb-8 max-w-lg">
+            <p className="text-white/70 text-lg mb-8 max-w-md leading-relaxed">
               {t.heroSubtitle}
             </p>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-center md:items-start gap-3">
-              <Link href="/collections/all" className="btn-primary text-base px-8 py-4 shadow-lg shadow-brand-orange/30">
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/collections/womens-clothing"
+                className="inline-flex items-center gap-2 bg-brand-orange hover:bg-brand-orange-hover text-white font-semibold px-7 py-3.5 rounded-lg transition-colors"
+              >
                 {t.shopNow}
                 <ArrowRight size={18} />
               </Link>
-              <Link href="/collections/trending" className="btn-outline text-base px-8 py-4 text-white border-white hover:bg-white hover:text-navy">
-                {t.trending}
+              <Link
+                href="/collections/consumer-electronics"
+                className="inline-flex items-center gap-2 border-2 border-white/30 hover:border-white text-white font-semibold px-7 py-3.5 rounded-lg transition-colors"
+              >
+                {lang === 'es' ? 'Ver Electrónica' : 'View Electronics'}
               </Link>
-            </div>
-
-            {/* Trust badges */}
-            <div className="flex flex-wrap justify-center md:justify-start gap-4 mt-8">
-              <div className="flex items-center gap-2 text-white/60 text-sm">
-                <ShieldCheck size={16} className="text-green-400" />
-                {t.securePay}
-              </div>
-              <div className="flex items-center gap-2 text-white/60 text-sm">
-                <Zap size={16} className="text-brand-orange" />
-                {t.fastShipping}
-              </div>
             </div>
           </div>
 
-          {/* Right: decorative product cards */}
-          <div className="hidden md:flex items-center justify-center relative">
-            <div className="relative w-full max-w-sm">
-              {/* Main card */}
-              <div className="bg-white/10 backdrop-blur border border-white/20 rounded-2xl p-6 shadow-2xl">
-                <div className="bg-white/5 rounded-xl h-52 flex items-center justify-center mb-4 text-white/20 text-6xl">
-                  🛍️
+          {/* Right — trust stats */}
+          <div className="hidden md:grid grid-cols-2 gap-4">
+            {[
+              { Icon: Truck,        title: lang === 'es' ? 'Envío Rápido'     : 'Fast Shipping',    desc: lang === 'es' ? 'Entrega en 2-3 días' : '2-3 day delivery' },
+              { Icon: ShieldCheck,  title: lang === 'es' ? 'Pago Seguro'      : 'Secure Payment',   desc: lang === 'es' ? 'SSL 256 bits'        : '256-bit SSL' },
+              { Icon: RotateCcw,    title: lang === 'es' ? 'Devoluciones'     : 'Easy Returns',     desc: lang === 'es' ? '30 días sin problema' : '30-day hassle-free' },
+              { Icon: Headphones,   title: lang === 'es' ? 'Soporte 24/7'     : '24/7 Support',     desc: lang === 'es' ? 'Siempre disponibles' : 'Always available' },
+            ].map(({ Icon, title, desc }) => (
+              <div key={title} className="bg-white/5 border border-white/10 rounded-xl p-5 flex items-start gap-4">
+                <div className="w-10 h-10 rounded-lg bg-brand-orange/20 flex items-center justify-center flex-shrink-0">
+                  <Icon size={20} className="text-brand-orange" />
                 </div>
-                <div className="space-y-2">
-                  <div className="h-4 bg-white/10 rounded w-3/4" />
-                  <div className="h-4 bg-white/10 rounded w-1/2" />
-                  <div className="flex items-center justify-between mt-3">
-                    <div className="h-6 bg-brand-orange/60 rounded w-1/3" />
-                    <div className="h-9 bg-brand-orange rounded-lg w-2/5" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Floating stat cards */}
-              <div className="absolute -top-5 -left-8 bg-white rounded-xl px-4 py-3 shadow-lg flex items-center gap-2">
-                <span className="text-2xl">📦</span>
                 <div>
-                  <p className="text-xs text-gray-500">Orders</p>
-                  <p className="text-sm font-bold text-navy">50K+</p>
+                  <p className="text-white font-semibold text-sm">{title}</p>
+                  <p className="text-white/50 text-xs mt-0.5">{desc}</p>
                 </div>
               </div>
-              <div className="absolute -bottom-5 -right-6 bg-white rounded-xl px-4 py-3 shadow-lg flex items-center gap-2">
-                <span className="text-2xl">⭐</span>
-                <div>
-                  <p className="text-xs text-gray-500">Rating</p>
-                  <p className="text-sm font-bold text-navy">4.9 / 5</p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
