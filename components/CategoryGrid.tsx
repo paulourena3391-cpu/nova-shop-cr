@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {
   Shirt, Laptop, Footprints, Dumbbell, Baby,
   Waves, Bike, TreePine, Sofa, UtensilsCrossed,
-  Bath, FlowerIcon, Headphones, Tablet, Cpu, Watch
+  Bath, FlowerIcon, Headphones, Tablet, Cpu, Watch, Sparkles
 } from 'lucide-react';
 import { useLang } from '@/context/LanguageContext';
 
@@ -20,7 +20,9 @@ const CATEGORIES: Category[] = [
   { handle: 'consumer-electronics',   labelEs: 'Electrónica',    labelEn: 'Electronics',   Icon: Laptop },
   { handle: 'hombre',                 labelEs: 'Hombre',         labelEn: 'Men',            Icon: Watch },
   { handle: 'calzado',                labelEs: 'Calzado',        labelEn: 'Footwear',       Icon: Footprints },
-  { handle: 'ninos',                  labelEs: 'Niños',          labelEn: 'Kids',           Icon: Baby },
+  { handle: 'calzado-de-mujer',       labelEs: 'Calzado Mujer',  labelEn: "Women's Shoes",  Icon: Footprints },
+  { handle: 'ninos',                  labelEs: 'Niños',          labelEn: 'Boys',           Icon: Baby },
+  { handle: 'ninas',                  labelEs: 'Niñas',          labelEn: 'Girls',          Icon: Sparkles },
   { handle: 'fitness',                labelEs: 'Fitness',        labelEn: 'Fitness',        Icon: Dumbbell },
   { handle: 'natacion',               labelEs: 'Natación',       labelEn: 'Swimming',       Icon: Waves },
   { handle: 'ciclismo',               labelEs: 'Ciclismo',       labelEn: 'Cycling',        Icon: Bike },

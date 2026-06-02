@@ -19,11 +19,11 @@ const FEATURED_CATEGORIES = [
   { handle: 'womens-clothing',      titleEs: 'Ropa de Mujer',     titleEn: "Women's Clothing"  },
   { handle: 'consumer-electronics', titleEs: 'Electrónica',       titleEn: 'Electronics'       },
   { handle: 'hombre',               titleEs: 'Ropa de Hombre',    titleEn: "Men's Clothing"    },
-  { handle: 'calzado',              titleEs: 'Calzado',           titleEn: 'Footwear'          },
+  { handle: 'calzado-de-mujer',     titleEs: 'Calzado de Mujer',  titleEn: "Women's Footwear"  },
   { handle: 'fitness',              titleEs: 'Fitness y Deporte', titleEn: 'Fitness & Sports'  },
   { handle: 'decoracion',           titleEs: 'Hogar y Deco',      titleEn: 'Home & Decor'      },
-  { handle: 'ninos',                titleEs: 'Niños',             titleEn: 'Kids'              },
-  { handle: 'audio',                titleEs: 'Audio',             titleEn: 'Audio'             },
+  { handle: 'ninos',                titleEs: 'Niños',             titleEn: 'Boys'              },
+  { handle: 'ninas',                titleEs: 'Niñas',             titleEn: 'Girls'             },
 ];
 
 function ProductsSkeleton({ count = 4 }: { count?: number }) {
