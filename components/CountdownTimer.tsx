@@ -27,22 +27,18 @@ type Props = {
 export default function CountdownTimer({ targetDate }: Props) {
   const { t } = useLang();
 
-  // Default: end of today midnight
-  const target = targetDate ?? (() => {
-    const d = new Date();
-    d.setHours(23, 59, 59, 999);
-    return d;
-  })();
-
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ d: 0, h: 0, m: 0, s: 0 });
 
   useEffect(() => {
+    const target = targetDate ?? (() => {
+      const d = new Date();
+      d.setHours(23, 59, 59, 999);
+      return d;
+    })();
     setTimeLeft(getTimeLeft(target));
-    const interval = setInterval(() => {
-      setTimeLeft(getTimeLeft(target));
-    }, 1000);
+    const interval = setInterval(() => setTimeLeft(getTimeLeft(target)), 1000);
     return () => clearInterval(interval);
-  }, [target]);
+  }, [targetDate]);
 
   const units = [
     { value: timeLeft.d, label: t.days },

@@ -118,7 +118,7 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-white/40 text-sm">
+          <p className="text-white/40 text-sm" suppressHydrationWarning>
             © {new Date().getFullYear()} Nova Shop CR.{' '}
             {lang === 'es' ? 'Todos los derechos reservados.' : 'All rights reserved.'}
           </p>
