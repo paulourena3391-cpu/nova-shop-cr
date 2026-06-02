@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ShieldCheck, Truck, RefreshCw, Star, ChevronLeft } from 'lucide-react';
 import {
   ShopifyProduct,
@@ -23,6 +24,7 @@ type Props = {
 export default function ProductDetail({ product, relatedProducts }: Props) {
   const { t } = useLang();
   const { addItem, isLoading } = useCart();
+  const router = useRouter();
 
   const images   = product.images.edges.map((e) => e.node);
   const variants = product.variants.edges.map((e) => e.node);
@@ -54,6 +56,13 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
   async function handleAddToCart() {
     if (!selectedVariant) return;
     await addItem(selectedVariant.id, 1);
+  }
+
+  // Buy Now: add item first, THEN go to cart (fixes empty-cart bug)
+  async function handleBuyNow() {
+    if (!selectedVariant || !isAvailable) return;
+    await addItem(selectedVariant.id, 1);
+    router.push('/cart');
   }
 
   const currentImage = images[selectedImageIdx] ?? null;
@@ -258,19 +267,25 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
             );
           })}
 
-          {/* ── Add to cart — desktop only ── */}
-          <div className="hidden md:flex gap-3 pt-2">
+          {/* ── Add to cart + Buy Now — visible on ALL screens ──
+               Mobile: stacked full-width (Amazon style)
+               Desktop: side by side                          */}
+          <div className="flex flex-col gap-2 pt-1 md:flex-row md:gap-3">
             <button
               onClick={handleAddToCart}
               disabled={!isAvailable || isLoading}
-              className="btn-primary flex-1 py-4 text-base shadow-lg shadow-brand-orange/25"
+              className="btn-primary w-full py-4 text-base shadow-lg shadow-brand-orange/25"
             >
               {isAvailable ? t.addToCart : t.outOfStock}
             </button>
             {isAvailable && (
-              <Link href="/cart" className="btn-secondary py-4 px-6 text-base">
+              <button
+                onClick={handleBuyNow}
+                disabled={isLoading}
+                className="btn-secondary w-full py-4 md:px-6 md:w-auto text-base"
+              >
                 {t.buyNow}
-              </Link>
+              </button>
             )}
           </div>
 
@@ -382,9 +397,13 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
           </button>
 
           {isAvailable && (
-            <Link href="/cart" className="btn-secondary px-4 py-3 text-sm shrink-0">
+            <button
+              onClick={handleBuyNow}
+              disabled={isLoading}
+              className="btn-secondary px-4 py-3 text-sm shrink-0"
+            >
               {t.buyNow}
-            </Link>
+            </button>
           )}
         </div>
       </div>
