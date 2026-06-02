@@ -2,9 +2,12 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import { LanguageProvider } from '@/context/LanguageContext';
+import { ToastProvider } from '@/context/ToastContext';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import ScrollToTop from '@/components/ScrollToTop';
+import PageProgressWrapper from '@/components/PageProgressWrapper';
 
 export const metadata: Metadata = {
   title: {
@@ -12,9 +15,9 @@ export const metadata: Metadata = {
     template: '%s | Nova Shop CR',
   },
   description:
-    'Nova Shop CR — Tu tienda online de productos premium en Costa Rica. Electrónica, belleza, hogar, deportes y más.',
+    'Nova Shop CR — Tu tienda online de productos premium en Costa Rica. Electrónica, moda, hogar, deportes y más.',
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? 'https://novashop.cr'
+    process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nova-shop-cr.vercel.app'
   ),
   openGraph: {
     type: 'website',
@@ -22,29 +25,33 @@ export const metadata: Metadata = {
     alternateLocale: 'en_US',
     siteName: 'Nova Shop CR',
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
       <head>
-        {/* Preconnect to Shopify CDN for faster image loading */}
         <link rel="preconnect" href="https://cdn.shopify.com" />
         <link rel="dns-prefetch" href="https://cdn.shopify.com" />
       </head>
       <body>
         <LanguageProvider>
           <CartProvider>
-            <div className="flex flex-col min-h-screen">
-              <AnnouncementBar />
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </div>
+            <ToastProvider>
+              {/* Navigation progress bar */}
+              <PageProgressWrapper />
+
+              <div className="flex flex-col min-h-screen">
+                <AnnouncementBar />
+                <Header />
+                <main className="flex-1">{children}</main>
+                <Footer />
+              </div>
+
+              {/* Floating back-to-top */}
+              <ScrollToTop />
+            </ToastProvider>
           </CartProvider>
         </LanguageProvider>
       </body>
