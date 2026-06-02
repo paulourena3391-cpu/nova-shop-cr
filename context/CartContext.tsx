@@ -167,8 +167,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const cartLines: CartLine[] = state.cart?.lines.edges.map((e) => e.node) ?? [];
-  const itemCount = state.cart?.totalQuantity ?? 0;
+  // Filter out zero-quantity lines (stale data guard)
+  const cartLines: CartLine[] = (state.cart?.lines.edges.map((e) => e.node) ?? []).filter(
+    (line) => line.quantity > 0
+  );
+  const itemCount = cartLines.reduce((sum, line) => sum + line.quantity, 0);
 
   return (
     <CartContext.Provider
