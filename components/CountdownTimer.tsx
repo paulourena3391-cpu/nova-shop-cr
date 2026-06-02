@@ -34,9 +34,10 @@ export default function CountdownTimer({ targetDate }: Props) {
     return d;
   })();
 
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>(getTimeLeft(target));
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>({ d: 0, h: 0, m: 0, s: 0 });
 
   useEffect(() => {
+    setTimeLeft(getTimeLeft(target));
     const interval = setInterval(() => {
       setTimeLeft(getTimeLeft(target));
     }, 1000);
