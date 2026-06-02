@@ -100,3 +100,8 @@ main {
 
 /* ── Number counter animation ── */
 .tabular-nums { font-variant-numeric: tabular-nums; }
+
+/* ── Mobile safe area (iPhone notch / home bar) ── */
+.sticky-safe-bottom {
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
