@@ -1,5 +1,3 @@
-// Server Component — data fetching, metadata, static params.
-// CollectionFilters is a client component wrapped in Suspense (useSearchParams requirement).
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -8,18 +6,24 @@ import { getCollection, getCollections, CollectionSortKey, ShopifyProduct } from
 import ProductCard from '@/components/ProductCard';
 import CollectionFilters from '@/components/CollectionFilters';
 
+// Next.js 15+ requires params/searchParams to be awaited
 type PageProps = {
-  params: { handle: string };
-  searchParams: { sort?: string; min?: string; max?: string };
+  params: Promise<{ handle: string }>;
+  searchParams: Promise<{ sort?: string; min?: string; max?: string }>;
 };
 
 export async function generateStaticParams() {
-  const collections = await getCollections(20);
-  return collections.map((c) => ({ handle: c.handle }));
+  try {
+    const collections = await getCollections(20);
+    return collections.map((c) => ({ handle: c.handle }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const col = await getCollection({ handle: params.handle, first: 1 });
+  const { handle } = await params;
+  const col = await getCollection({ handle, first: 1 });
   if (!col) return {};
   return {
     title: col.title,
@@ -39,11 +43,7 @@ function getSortParams(sort?: string) {
   return SORT_OPTIONS.find((o) => o.value === sort) ?? SORT_OPTIONS[0];
 }
 
-function filterByPrice(
-  products: ShopifyProduct[],
-  min?: string,
-  max?: string
-): ShopifyProduct[] {
+function filterByPrice(products: ShopifyProduct[], min?: string, max?: string): ShopifyProduct[] {
   const minPrice = min ? parseFloat(min) : null;
   const maxPrice = max ? parseFloat(max) : null;
   return products.filter((p) => {
@@ -55,32 +55,25 @@ function filterByPrice(
 }
 
 export default async function CollectionPage({ params, searchParams }: PageProps) {
-  const { sortKey, reverse } = getSortParams(searchParams.sort);
+  const { handle } = await params;
+  const { sort, min, max } = await searchParams;
 
-  const collection = await getCollection({
-    handle: params.handle,
-    first: 24,
-    sortKey,
-    reverse,
-  });
+  const { sortKey, reverse } = getSortParams(sort);
 
+  const collection = await getCollection({ handle, first: 24, sortKey, reverse });
   if (!collection) notFound();
 
   const allProducts = collection.products.edges.map((e) => e.node);
-  const filtered = filterByPrice(allProducts, searchParams.min, searchParams.max);
+  const filtered = filterByPrice(allProducts, min, max);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Breadcrumb */}
       <nav className="text-sm text-gray-500 mb-6 flex items-center gap-2">
-        <Link href="/" className="hover:text-brand-orange transition-colors">
-          Home
-        </Link>
+        <Link href="/" className="hover:text-brand-orange transition-colors">Home</Link>
         <span>/</span>
         <span className="text-navy font-medium">{collection.title}</span>
       </nav>
 
-      {/* Collection header */}
       <div className="mb-8">
         <h1 className="section-title">{collection.title}</h1>
         {collection.description && (
@@ -89,25 +82,20 @@ export default async function CollectionPage({ params, searchParams }: PageProps
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Sidebar — Suspense required because CollectionFilters uses useSearchParams */}
         <aside className="lg:w-64 flex-shrink-0">
           <Suspense fallback={<div className="h-80 bg-gray-50 rounded-xl animate-pulse" />}>
             <CollectionFilters
-              currentSort={searchParams.sort ?? 'best_selling'}
-              minPrice={searchParams.min}
-              maxPrice={searchParams.max}
+              currentSort={sort ?? 'best_selling'}
+              minPrice={min}
+              maxPrice={max}
               productCount={filtered.length}
             />
           </Suspense>
         </aside>
 
-        {/* Products grid */}
         <div className="flex-1">
           <p className="text-sm text-gray-500 mb-4">
             {filtered.length} producto{filtered.length !== 1 ? 's' : ''}
-            {(searchParams.min || searchParams.max) && (
-              <span className="ml-2 text-brand-orange">(filtrado por precio)</span>
-            )}
           </p>
 
           {filtered.length === 0 ? (
@@ -120,14 +108,6 @@ export default async function CollectionPage({ params, searchParams }: PageProps
               {filtered.map((product, i) => (
                 <ProductCard key={product.id} product={product} priority={i < 6} />
               ))}
-            </div>
-          )}
-
-          {collection.products.pageInfo.hasNextPage && (
-            <div className="text-center mt-10">
-              <p className="text-gray-400 text-sm">
-                Mostrando {filtered.length} de más productos disponibles
-              </p>
             </div>
           )}
         </div>

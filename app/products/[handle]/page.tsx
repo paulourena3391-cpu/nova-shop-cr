@@ -1,21 +1,25 @@
-// Server Component — handles metadata, static params, and data fetching.
-// Interactive UI is delegated to the ProductDetail client component.
+// Next.js 15+ — params must be awaited
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getProduct, getProducts } from '@/lib/shopify';
 import ProductDetail from '@/components/ProductDetail';
 
 type Props = {
-  params: { handle: string };
+  params: Promise<{ handle: string }>;
 };
 
 export async function generateStaticParams() {
-  const { products } = await getProducts({ first: 50 });
-  return products.map((p) => ({ handle: p.handle }));
+  try {
+    const { products } = await getProducts({ first: 50 });
+    return products.map((p) => ({ handle: p.handle }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const product = await getProduct(params.handle);
+  const { handle } = await params;
+  const product = await getProduct(handle);
   if (!product) return {};
   return {
     title: product.seo.title || product.title,
@@ -29,17 +33,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ProductPage({ params }: Props) {
-  const product = await getProduct(params.handle);
+  const { handle } = await params;
+  const product = await getProduct(handle);
   if (!product) notFound();
 
-  // Fetch related products by type — filter current product out client-side
   const { products: related } = await getProducts({
     first: 5,
     sortKey: 'BEST_SELLING',
     query: product.productType ? `product_type:${product.productType}` : undefined,
   });
   const relatedProducts = related
-    .filter((p) => p.handle !== params.handle)
+    .filter((p) => p.handle !== handle)
     .slice(0, 4);
 
   return (
