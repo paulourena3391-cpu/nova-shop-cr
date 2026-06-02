@@ -20,12 +20,14 @@ export default function Header() {
   const searchRef = useRef<HTMLInputElement>(null);
 
   const navLinks = [
-    { label: t.home, href: '/' },
-    { label: t.electronics, href: '/collections/electronics' },
-    { label: t.beauty, href: '/collections/beauty' },
-    { label: t.homeLiving, href: '/collections/home' },
-    { label: t.sports, href: '/collections/sports' },
-    { label: t.trending, href: '/collections/trending' },
+    { label: t.home,                                          href: '/' },
+    { label: lang === 'es' ? 'Ropa Mujer'  : "Women's",      href: '/collections/womens-clothing' },
+    { label: lang === 'es' ? 'Hombre'      : 'Men',          href: '/collections/hombre' },
+    { label: lang === 'es' ? 'Electrónica' : 'Electronics',  href: '/collections/consumer-electronics' },
+    { label: lang === 'es' ? 'Calzado'     : 'Footwear',     href: '/collections/calzado' },
+    { label: lang === 'es' ? 'Hogar'       : 'Home',         href: '/collections/decoracion' },
+    { label: lang === 'es' ? 'Deportes'    : 'Sports',       href: '/collections/fitness' },
+    { label: lang === 'es' ? 'Niños'       : 'Kids',         href: '/collections/ninos' },
   ];
 
   function handleSearch(e: FormEvent) {
