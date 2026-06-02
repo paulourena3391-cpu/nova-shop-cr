@@ -87,8 +87,7 @@ export default async function HomePage() {
                   <div className="bg-white border border-gray-200 rounded-lg p-4 animate-pulse h-64" />
                 }
               >
-                {/* @ts-expect-error Server Component */}
-                <CategoryCard
+                  <CategoryCard
                   handle={cat.handle}
                   title={cat.titleEs}
                   shopNow="Comprar ahora"
