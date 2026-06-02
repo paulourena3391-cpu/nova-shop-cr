@@ -121,6 +121,7 @@ export type CartLine = {
   merchandise: {
     id: string;
     title: string;
+    availableForSale: boolean;
     product: { title: string; handle: string };
     image: ShopifyImage | null;
     price: Money;
@@ -188,6 +189,7 @@ const CART_FRAGMENT = `
             ... on ProductVariant {
               id
               title
+              availableForSale
               product { title handle }
               image { url altText width height }
               price { amount currencyCode }

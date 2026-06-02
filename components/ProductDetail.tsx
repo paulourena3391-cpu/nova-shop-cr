@@ -240,12 +240,12 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
           <div className="flex gap-3">
             <button
               onClick={handleAddToCart}
-              disabled={!product.availableForSale || isLoading || !selectedVariant}
+              disabled={!selectedVariant?.availableForSale || isLoading || !selectedVariant}
               className="btn-primary flex-1 py-4 text-base shadow-lg shadow-brand-orange/30 disabled:opacity-50"
             >
-              {product.availableForSale ? t.addToCart : t.outOfStock}
+              {selectedVariant?.availableForSale ? t.addToCart : t.outOfStock}
             </button>
-            {product.availableForSale && (
+            {selectedVariant?.availableForSale && (
               <Link href="/cart" className="btn-secondary py-4 px-6 text-base">
                 {t.buyNow}
               </Link>

@@ -108,7 +108,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       let updatedCart: ShopifyCart;
 
       if (currentCartId) {
-        updatedCart = await addToCart(currentCartId, [{ merchandiseId, quantity }]);
+        try {
+          updatedCart = await addToCart(currentCartId, [{ merchandiseId, quantity }]);
+        } catch {
+          // Cart expired or not found — clear stale ID and create a fresh cart
+          localStorage.removeItem(CART_ID_KEY);
+          updatedCart = await createCart([{ merchandiseId, quantity }]);
+          localStorage.setItem(CART_ID_KEY, updatedCart.id);
+        }
       } else {
         updatedCart = await createCart([{ merchandiseId, quantity }]);
         localStorage.setItem(CART_ID_KEY, updatedCart.id);
