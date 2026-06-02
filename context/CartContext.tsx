@@ -86,7 +86,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         dispatch({ type: 'SET_LOADING', payload: true });
         const cart = await getCart(savedCartId);
         if (cart) {
-          dispatch({ type: 'SET_CART', payload: cart });
+          // Remove lines Shopify added with qty=0 (unavailable variants)
+          const staleLineIds = cart.lines.edges
+            .filter((e) => e.node.quantity === 0)
+            .map((e) => e.node.id);
+          if (staleLineIds.length > 0) {
+            const cleaned = await removeFromCart(savedCartId, staleLineIds);
+            dispatch({ type: 'SET_CART', payload: cleaned });
+          } else {
+            dispatch({ type: 'SET_CART', payload: cart });
+          }
         } else {
           // Cart expired — clear stale ID
           localStorage.removeItem(CART_ID_KEY);

@@ -11,6 +11,17 @@ export default function CartDrawer() {
   const { isOpen, closeCart, cartLines, cart, updateItem, removeItem, isLoading } = useCart();
   const { t } = useLang();
 
+  async function handleCheckout() {
+    if (!cart) return;
+    const unavailableIds = cart.lines.edges
+      .filter((e) => !e.node.merchandise.availableForSale || e.node.quantity === 0)
+      .map((e) => e.node.id);
+    for (const id of unavailableIds) {
+      await removeItem(id);
+    }
+    window.location.href = cart.checkoutUrl;
+  }
+
   return (
     <>
       {/* Backdrop */}
@@ -157,12 +168,13 @@ export default function CartDrawer() {
               </div>
             </div>
 
-            <a
-              href={cart.checkoutUrl}
-              className="btn-primary w-full text-center text-base py-4"
+            <button
+              onClick={handleCheckout}
+              disabled={isLoading}
+              className="btn-primary w-full text-center text-base py-4 disabled:opacity-50"
             >
               {t.checkout}
-            </a>
+            </button>
 
             <Link
               href="/cart"

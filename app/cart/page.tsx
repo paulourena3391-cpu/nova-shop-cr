@@ -8,7 +8,19 @@ import { useLang } from '@/context/LanguageContext';
 import { formatPrice } from '@/lib/shopify';
 
 export default function CartPage() {
-  const { cart, cartLines, updateItem, removeItem, isLoading } = useCart();
+  const { cart, cartLines, updateItem, removeItem, removeItem: removeCartItem, isLoading } = useCart();
+
+  async function handleCheckout() {
+    if (!cart) return;
+    // Remove any unavailable lines before sending user to Shopify checkout
+    const unavailableIds = cart.lines.edges
+      .filter((e) => !e.node.merchandise.availableForSale || e.node.quantity === 0)
+      .map((e) => e.node.id);
+    for (const id of unavailableIds) {
+      await removeCartItem(id);
+    }
+    window.location.href = cart.checkoutUrl;
+  }
   const { t, lang } = useLang();
 
   if (cartLines.length === 0) {
@@ -179,14 +191,15 @@ export default function CartPage() {
               </div>
             </div>
 
-            {/* Checkout button — redirects to Shopify hosted checkout */}
+            {/* Checkout button — cleans unavailable lines then redirects to Shopify */}
             {cart && (
-              <a
-                href={cart.checkoutUrl}
-                className="btn-primary w-full text-center text-base py-4 shadow-lg shadow-brand-orange/30"
+              <button
+                onClick={handleCheckout}
+                disabled={isLoading}
+                className="btn-primary w-full text-center text-base py-4 shadow-lg shadow-brand-orange/30 disabled:opacity-50"
               >
                 {t.checkout} →
-              </a>
+              </button>
             )}
 
             {/* Trust micro-badges */}
