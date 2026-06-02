@@ -47,7 +47,8 @@ export default async function ProductPage({ params }: Props) {
     .slice(0, 4);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    /* Mobile: no horizontal padding (image escapes to edges). Desktop: normal container */
+    <div className="max-w-7xl mx-auto md:px-6 lg:px-8 md:py-8">
       <ProductDetail product={product} relatedProducts={relatedProducts} />
     </div>
   );
