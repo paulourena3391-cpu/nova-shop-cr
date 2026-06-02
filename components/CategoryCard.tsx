@@ -1,15 +1,16 @@
-// Server Component — fetches real product images and links each to its product page
+// Server Component — fetches real product images, uses client labels for bilingual text
 import Image from 'next/image';
 import Link from 'next/link';
 import { getCollection } from '@/lib/shopify';
+import { CategoryCardTitle, CategoryShopNow } from './CategoryCardLabels';
 
 type Props = {
   handle: string;
-  title: string;
-  shopNow: string;
+  titleEs: string;
+  titleEn: string;
 };
 
-export default async function CategoryCard({ handle, title, shopNow }: Props) {
+export default async function CategoryCard({ handle, titleEs, titleEn }: Props) {
   let products: Array<{
     id: string;
     title: string;
@@ -26,17 +27,13 @@ export default async function CategoryCard({ handle, title, shopNow }: Props) {
       image: e.node.images.edges[0]?.node ?? null,
     })) ?? [];
   } catch {
-    // silently fail
+    // silently fail — card shows empty placeholders
   }
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
-      {/* Category title → links to collection */}
-      <Link href={`/collections/${handle}`}>
-        <h3 className="font-bold text-navy text-lg mb-3 hover:text-brand-orange transition-colors">
-          {title}
-        </h3>
-      </Link>
+      {/* Bilingual title — client component reads language context */}
+      <CategoryCardTitle handle={handle} titleEs={titleEs} titleEn={titleEn} />
 
       {/* 2×2 product grid — each image links to its product */}
       <div className="grid grid-cols-2 gap-2 mb-3">
@@ -74,13 +71,8 @@ export default async function CategoryCard({ handle, title, shopNow }: Props) {
         )}
       </div>
 
-      {/* "Shop now" → links to full collection */}
-      <Link
-        href={`/collections/${handle}`}
-        className="text-sm text-blue-600 hover:text-brand-orange font-medium transition-colors"
-      >
-        {shopNow} →
-      </Link>
+      {/* Bilingual "Shop now / Comprar ahora" — client component */}
+      <CategoryShopNow handle={handle} />
     </div>
   );
 }

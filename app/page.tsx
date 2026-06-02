@@ -89,8 +89,8 @@ export default async function HomePage() {
               >
                   <CategoryCard
                   handle={cat.handle}
-                  title={cat.titleEs}
-                  shopNow="Comprar ahora"
+                  titleEs={cat.titleEs}
+                  titleEn={cat.titleEn}
                 />
               </Suspense>
             ))}
