@@ -15,6 +15,10 @@ import {
 import { useCart } from '@/context/CartContext';
 import { useLang } from '@/context/LanguageContext';
 import ProductCard from './ProductCard';
+import ProductUrgency from './product/ProductUrgency';
+import ProductBenefits from './product/ProductBenefits';
+import ProductComparison from './product/ProductComparison';
+import ProductReviews from './product/ProductReviews';
 
 type Props = {
   product: ShopifyProduct;
@@ -22,7 +26,7 @@ type Props = {
 };
 
 export default function ProductDetail({ product, relatedProducts }: Props) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { addItem, isLoading } = useCart();
   const router = useRouter();
 
@@ -32,6 +36,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
   const [selectedVariant,  setSelectedVariant]  = useState<ShopifyVariant>(variants[0]);
   const [selectedImageIdx, setSelectedImageIdx] = useState(0);
   const [activeTab,        setActiveTab]        = useState<'description' | 'specs'>('description');
+  const [bundleQty,        setBundleQty]        = useState(1);
 
   const isOnSale  = hasDiscount(product);
   const discount  = discountPercent(product);
@@ -55,21 +60,30 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
 
   async function handleAddToCart() {
     if (!selectedVariant) return;
-    await addItem(selectedVariant.id, 1);
+    await addItem(selectedVariant.id, bundleQty);
   }
 
   // Buy Now: add item first, THEN go to cart (fixes empty-cart bug)
   async function handleBuyNow() {
     if (!selectedVariant || !isAvailable) return;
-    await addItem(selectedVariant.id, 1);
+    await addItem(selectedVariant.id, bundleQty);
     router.push('/cart');
   }
 
   const currentImage = images[selectedImageIdx] ?? null;
-  const price = formatPrice(
+  const unitAmount = parseFloat(
     selectedVariant?.price.amount ?? product.priceRange.minVariantPrice.amount,
-    selectedVariant?.price.currencyCode ?? product.priceRange.minVariantPrice.currencyCode,
   );
+  const currency = selectedVariant?.price.currencyCode ?? product.priceRange.minVariantPrice.currencyCode;
+  const price = formatPrice(String(unitAmount), currency);
+
+  // Bundle tiers — buy more, save more (real discount set via Shopify automatic discount)
+  const es = lang === 'es';
+  const BUNDLES = [
+    { qty: 1, off: 0,  labelEs: '1 unidad',  labelEn: '1 unit',   tagEs: '',              tagEn: '' },
+    { qty: 2, off: 10, labelEs: '2 unidades', labelEn: '2 units', tagEs: 'MÁS POPULAR',   tagEn: 'MOST POPULAR' },
+    { qty: 3, off: 15, labelEs: '3 unidades', labelEn: '3 units', tagEs: 'MEJOR VALOR',   tagEn: 'BEST VALUE' },
+  ];
 
   return (
     /* pb-24 = room for the sticky mobile bar */
@@ -267,6 +281,49 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
             );
           })}
 
+          {/* ── Bundle selector — buy more, save more ── */}
+          <div className="space-y-2 pt-1">
+            <p className="text-sm font-semibold text-navy">
+              {es ? '📦 Comprá más y ahorrá' : '📦 Buy more, save more'}
+            </p>
+            <div className="grid grid-cols-3 gap-2">
+              {BUNDLES.map((b) => {
+                const totalBefore = unitAmount * b.qty;
+                const totalAfter = totalBefore * (1 - b.off / 100);
+                const active = bundleQty === b.qty;
+                return (
+                  <button
+                    key={b.qty}
+                    onClick={() => setBundleQty(b.qty)}
+                    className={`relative rounded-xl border-2 p-3 text-center transition-all duration-300 ease-premium active:scale-95 ${
+                      active
+                        ? 'border-brand-orange bg-orange-50 shadow-cta'
+                        : 'border-gray-200 bg-white hover:border-gray-300'
+                    }`}
+                  >
+                    {b.tagEs && (
+                      <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap bg-brand-orange text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow">
+                        {es ? b.tagEs : b.tagEn}
+                      </span>
+                    )}
+                    <p className={`text-sm font-bold ${active ? 'text-brand-orange' : 'text-navy'}`}>
+                      {es ? b.labelEs : b.labelEn}
+                    </p>
+                    {b.off > 0 ? (
+                      <>
+                        <p className="text-xs font-semibold text-emerald-600 mt-0.5">-{b.off}%</p>
+                        <p className="text-[11px] text-gray-400 line-through">{formatPrice(String(totalBefore), currency)}</p>
+                        <p className="text-xs font-bold text-navy">{formatPrice(String(totalAfter), currency)}</p>
+                      </>
+                    ) : (
+                      <p className="text-xs text-gray-500 mt-0.5">{formatPrice(String(totalBefore), currency)}</p>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* ── Add to cart + Buy Now — visible on ALL screens ──
                Mobile: stacked full-width (Amazon style)
                Desktop: side by side                          */}
@@ -288,6 +345,9 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
               </button>
             )}
           </div>
+
+          {/* ── Urgency + delivery estimate ── */}
+          <ProductUrgency />
 
           {/* ── Trust strip ── */}
           <div className="grid grid-cols-3 gap-2 py-4 border-y border-gray-100">
@@ -360,10 +420,18 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
         )}
       </div>
 
+      {/* ── Conversion sections ─────────────────────────────────── */}
+      <ProductBenefits />
+      <ProductComparison />
+      <ProductReviews />
+
       {/* ── Related products ────────────────────────────────────── */}
       {relatedProducts.length > 0 && (
-        <section className="mt-10 px-4 md:px-0 md:mt-16">
-          <h2 className="text-xl font-bold text-navy mb-4 md:mb-8">{t.relatedProducts}</h2>
+        <section className="mt-12 px-4 md:px-0 md:mt-16">
+          <h2 className="text-2xl md:text-3xl font-bold text-navy tracking-tightest mb-6 inline-flex items-center gap-3">
+            <span className="w-1.5 h-7 bg-brand-orange rounded-full" />
+            {t.relatedProducts}
+          </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             {relatedProducts.map((p) => (
               <ProductCard key={p.id} product={p} />
