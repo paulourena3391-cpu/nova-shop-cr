@@ -27,7 +27,11 @@ export async function GET(req: NextRequest) {
       body: JSON.stringify({ client_id: CLIENT_ID, client_secret: CLIENT_SECRET, code }),
     });
 
-    const data = await res.json();
+    const rawText = await res.text();
+    let data: { access_token?: string } = {};
+    try { data = JSON.parse(rawText); } catch {
+      return new NextResponse(`<html><body style="background:#0a0a0a;color:white;font-family:sans-serif;padding:40px"><h2 style="color:#ff6b1a">Error del servidor Shopify:</h2><pre>${rawText}</pre><p>CLIENT_SECRET presente: ${CLIENT_SECRET ? 'Sí' : 'No (env var vacía)'}</p></body></html>`, { headers: { 'Content-Type': 'text/html' } });
+    }
     const token = data.access_token;
 
     if (!token) {
