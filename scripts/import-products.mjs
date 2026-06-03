@@ -13,6 +13,8 @@ const SHOPIFY_TOKEN = process.env.SHOPIFY_TOKEN || '';
 
 const PUB_ONLINE   = 'gid://shopify/Publication/155260485802';
 const PUB_HEADLESS = 'gid://shopify/Publication/155432157354';
+// "United States" delivery profile — free express to CR + US. New imports auto-assigned here.
+const DELIVERY_PROFILE = 'gid://shopify/DeliveryProfile/97467138218';
 
 function getMarkup(price) {
   if (price <= 5)  return 2.5;
@@ -193,7 +195,8 @@ async function createProduct(full, cat) {
   return res.product;
 }
 
-async function attachAndPublish(productId, collectionId) {
+async function attachAndPublish(product, collectionId) {
+  const productId = product.id;
   await apiRequest(SHOPIFY_STORE, '/admin/api/2024-01/collects.json', 'POST',
     {'X-Shopify-Access-Token': SHOPIFY_TOKEN, 'Content-Type': 'application/json'},
     { collect: { product_id: productId, collection_id: collectionId } });
@@ -202,6 +205,15 @@ async function attachAndPublish(productId, collectionId) {
   await apiRequest(SHOPIFY_STORE, '/admin/api/2024-01/graphql.json', 'POST',
     {'X-Shopify-Access-Token': SHOPIFY_TOKEN, 'Content-Type': 'application/json'},
     { query: 'mutation { publishablePublish(id: "' + gid + '", input: [{publicationId: "' + PUB_ONLINE + '"}, {publicationId: "' + PUB_HEADLESS + '"}]) { userErrors { message } } }' });
+
+  // Assign all variants to the "United States" delivery profile (free CR + US shipping)
+  const variantGids = (product.variants || []).map((v) => 'gid://shopify/ProductVariant/' + v.id);
+  if (variantGids.length) {
+    await apiRequest(SHOPIFY_STORE, '/admin/api/2024-01/graphql.json', 'POST',
+      {'X-Shopify-Access-Token': SHOPIFY_TOKEN, 'Content-Type': 'application/json'},
+      { query: 'mutation A($id:ID!,$v:[ID!]){deliveryProfileUpdate(id:$id,profile:{variantsToAssociate:$v}){userErrors{message}}}',
+        variables: { id: DELIVERY_PROFILE, v: variantGids } });
+  }
 }
 
 // ─── MAIN ────────────────────────────────────────────────────────────────────
@@ -237,7 +249,7 @@ async function main() {
         if (!full?.pid) continue;
         const created = await createProduct(full, cat);
         if (created?.id) {
-          await attachAndPublish(created.id, collectionId);
+          await attachAndPublish(created, collectionId);
           imported++;
           const nVars = created.variants?.length || 1;
           const nOpts = created.options?.map(o => o.name).join('+') || 'simple';
