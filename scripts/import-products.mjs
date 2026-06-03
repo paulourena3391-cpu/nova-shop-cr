@@ -99,7 +99,7 @@ function buildVariantData(cjVariants, markup) {
       inventory_policy: 'continue',
       inventory_quantity: 999,
       requires_shipping: true,
-      taxable: true,
+      taxable: false,
       weight: (v.variantWeight || 300) / 1000,
       weight_unit: 'kg',
     };
@@ -174,7 +174,7 @@ async function createProduct(full, cat) {
   let finalOptions = options;
   if (!finalVariants.length) {
     const price = parseFloat(((full.sellPrice || 10) * markup).toFixed(2));
-    finalVariants = [{ price: price.toString(), inventory_management: null, inventory_policy: 'continue', inventory_quantity: 999, requires_shipping: true, taxable: true }];
+    finalVariants = [{ price: price.toString(), inventory_management: null, inventory_policy: 'continue', inventory_quantity: 999, requires_shipping: true, taxable: false }];
     finalOptions = undefined;
   }
 
