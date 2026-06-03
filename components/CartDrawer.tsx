@@ -9,7 +9,7 @@ import { formatPrice } from '@/lib/shopify';
 
 export default function CartDrawer() {
   const { isOpen, closeCart, cartLines, cart, updateItem, removeItem, isLoading } = useCart();
-  const { t } = useLang();
+  const { t, lang } = useLang();
 
   async function handleCheckout() {
     if (!cart) return;
@@ -157,6 +157,18 @@ export default function CartDrawer() {
                   <span>{t.taxes}</span>
                   <span className="font-semibold">
                     {formatPrice(cart.cost.totalTaxAmount.amount, cart.cost.totalTaxAmount.currencyCode)}
+                  </span>
+                </div>
+              )}
+              {/* Bundle/automatic discount line — shown when total < subtotal */}
+              {parseFloat(cart.cost.totalAmount.amount) < parseFloat(cart.cost.subtotalAmount.amount) && (
+                <div className="flex justify-between text-emerald-600 font-semibold">
+                  <span>{lang === 'es' ? '🎉 Descuento' : '🎉 Discount'}</span>
+                  <span>
+                    −{formatPrice(
+                      String(parseFloat(cart.cost.subtotalAmount.amount) - parseFloat(cart.cost.totalAmount.amount)),
+                      cart.cost.totalAmount.currencyCode,
+                    )}
                   </span>
                 </div>
               )}
