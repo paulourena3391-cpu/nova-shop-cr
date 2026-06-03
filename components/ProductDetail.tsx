@@ -422,10 +422,11 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
         ) : (
           <div className="grid sm:grid-cols-2 gap-3">
             {[
-              ['Vendor',    product.vendor],
-              ['Type',      product.productType],
-              ['SKU',       selectedVariant?.id.split('/').pop() ?? '—'],
-              ['Available', product.availableForSale ? 'Yes' : 'No'],
+              [es ? 'Marca' : 'Brand',          product.vendor],
+              [es ? 'Categoría' : 'Category',   product.productType],
+              [es ? 'Disponibilidad' : 'Availability',
+                product.availableForSale ? (es ? 'En stock' : 'In stock') : (es ? 'Agotado' : 'Out of stock')],
+              [es ? 'Envío' : 'Shipping',       es ? 'Gratis a CR y USA' : 'Free to CR & USA'],
             ]
               .filter(([, v]) => Boolean(v))
               .map(([key, val]) => (
