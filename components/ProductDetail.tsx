@@ -46,17 +46,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
     ...new Set(variants.flatMap((v) => v.selectedOptions.map((o) => o.name))),
   ];
 
-  // Ordered list of unique colors → used to map a color to its product photo by position
   const colorOptionName = optionNames.find((n) => /color/i.test(n));
-  const colorValues = colorOptionName
-    ? [
-        ...new Set(
-          variants.flatMap((v) =>
-            v.selectedOptions.filter((o) => o.name === colorOptionName).map((o) => o.value)
-          )
-        ),
-      ]
-    : [];
 
   function selectOption(name: string, value: string) {
     const updated = (selectedVariant?.selectedOptions ?? []).map((o) =>
@@ -69,18 +59,14 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
     );
     if (match) setSelectedVariant(match);
 
-    // When a COLOR is chosen, switch the main image to that color's photo.
-    // 1) Try the variant's own image (exact match). 2) Fallback: map color → photo by position.
-    if (name === colorOptionName) {
-      const variantUrl = match?.image?.url;
-      const exactIdx = variantUrl ? images.findIndex((img) => img.url === variantUrl) : -1;
-      // If every variant shares the same image, exactIdx is useless → use color position instead
+    // When a COLOR is chosen, switch the main image ONLY if this variant has its own
+    // distinct color photo (exact URL match). We never guess by position to avoid
+    // showing the wrong color.
+    if (name === colorOptionName && match?.image?.url) {
       const sharedImage = new Set(variants.map((v) => v.image?.url)).size <= 1;
-      if (exactIdx >= 0 && !sharedImage) {
-        setSelectedImageIdx(exactIdx);
-      } else if (images.length > 1) {
-        const colorIdx = colorValues.indexOf(value);
-        if (colorIdx >= 0) setSelectedImageIdx(Math.min(colorIdx, images.length - 1));
+      if (!sharedImage) {
+        const exactIdx = images.findIndex((img) => img.url === match.image!.url);
+        if (exactIdx >= 0) setSelectedImageIdx(exactIdx);
       }
     }
   }
