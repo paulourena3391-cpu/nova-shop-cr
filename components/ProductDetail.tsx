@@ -150,7 +150,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
                   alt={currentImage.altText ?? product.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover animate-fade-in"
+                  className="object-cover animate-image-reveal"
                   priority
                 />
               ) : (
