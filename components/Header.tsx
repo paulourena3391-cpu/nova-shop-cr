@@ -101,11 +101,11 @@ export default function Header() {
                   {lang === 'es' ? 'EN' : 'ES'}
                 </button>
 
-                {/* Account */}
+                {/* Account → order tracking (no auth yet) */}
                 <Link
-                  href="/account"
+                  href="/track"
                   className="p-2 text-white/80 hover:text-white transition-colors"
-                  aria-label="Account"
+                  aria-label={lang === 'es' ? 'Seguimiento de pedido' : 'Track order'}
                 >
                   <User size={22} />
                 </Link>

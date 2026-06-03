@@ -105,3 +105,34 @@ main {
 .sticky-safe-bottom {
   padding-bottom: max(12px, env(safe-area-inset-bottom));
 }
+
+/* ── Card hover lift ── */
+.card {
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+}
+
+/* ── Fade-in-up for staggered grids ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up { animation: fadeInUp 0.5s ease-out both; }
+
+/* ── Gradient shimmer for CTA on hover ── */
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ── Respect reduced motion preference ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

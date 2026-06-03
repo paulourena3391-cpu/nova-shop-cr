@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import PageProgressWrapper from '@/components/PageProgressWrapper';
+import WhatsAppButton from '@/components/WhatsAppButton';
 
 export const metadata: Metadata = {
   title: {
@@ -49,8 +50,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Footer />
               </div>
 
-              {/* Floating back-to-top */}
+              {/* Floating buttons */}
               <ScrollToTop />
+              <WhatsAppButton />
             </ToastProvider>
           </CartProvider>
         </LanguageProvider>

@@ -12,23 +12,27 @@ export default function Footer() {
   const links = {
     company: [
       { label: lang === 'es' ? 'Acerca de nosotros' : 'About Us', href: '/about' },
-      { label: lang === 'es' ? 'Carreras' : 'Careers', href: '/careers' },
-      { label: lang === 'es' ? 'Prensa' : 'Press', href: '/press' },
-      { label: lang === 'es' ? 'Blog' : 'Blog', href: '/blog' },
+      { label: lang === 'es' ? 'Contacto' : 'Contact Us', href: '/contact' },
+      { label: lang === 'es' ? 'Envíos' : 'Shipping', href: '/shipping' },
+      { label: lang === 'es' ? 'Devoluciones' : 'Returns', href: '/returns' },
     ],
     help: [
       { label: lang === 'es' ? 'Centro de ayuda' : 'Help Center', href: '/help' },
       { label: lang === 'es' ? 'Seguimiento de pedido' : 'Track Order', href: '/track' },
-      { label: lang === 'es' ? 'Devoluciones' : 'Returns', href: '/returns' },
-      { label: lang === 'es' ? 'Contacto' : 'Contact Us', href: '/contact' },
+      { label: lang === 'es' ? 'Preguntas frecuentes' : 'FAQ', href: '/help' },
     ],
     legal: [
       { label: lang === 'es' ? 'Privacidad' : 'Privacy Policy', href: '/privacy' },
       { label: lang === 'es' ? 'Términos' : 'Terms of Service', href: '/terms' },
-      { label: lang === 'es' ? 'Cookies' : 'Cookie Policy', href: '/cookies' },
-      { label: lang === 'es' ? 'Accesibilidad' : 'Accessibility', href: '/accessibility' },
     ],
   };
+
+  const socials = [
+    { Icon: Facebook, href: 'https://facebook.com/', label: 'Facebook' },
+    { Icon: Instagram, href: 'https://instagram.com/', label: 'Instagram' },
+    { Icon: Twitter, href: 'https://twitter.com/', label: 'Twitter' },
+    { Icon: Youtube, href: 'https://youtube.com/', label: 'YouTube' },
+  ];
 
   return (
     <footer className="bg-navy text-white mt-16">
@@ -49,17 +53,14 @@ export default function Footer() {
             </p>
             {/* Social links */}
             <div className="flex items-center gap-3">
-              {[
-                { Icon: Facebook, href: '#', label: 'Facebook' },
-                { Icon: Instagram, href: '#', label: 'Instagram' },
-                { Icon: Twitter, href: '#', label: 'Twitter' },
-                { Icon: Youtube, href: '#', label: 'YouTube' },
-              ].map(({ Icon, href, label }) => (
+              {socials.map(({ Icon, href, label }) => (
                 <a
                   key={label}
                   href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={label}
-                  className="w-9 h-9 rounded-full bg-white/10 hover:bg-brand-orange flex items-center justify-center transition-colors"
+                  className="w-9 h-9 rounded-full bg-white/10 hover:bg-brand-orange hover:scale-110 flex items-center justify-center transition-all duration-200"
                 >
                   <Icon size={16} />
                 </a>

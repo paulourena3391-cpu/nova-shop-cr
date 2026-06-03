@@ -5,7 +5,7 @@ import { Mail, CheckCircle } from 'lucide-react';
 import { useLang } from '@/context/LanguageContext';
 
 export default function Newsletter() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
@@ -34,8 +34,9 @@ export default function Newsletter() {
           <div className="flex items-center justify-center gap-3 bg-green-500/20 border border-green-500/30 rounded-xl px-6 py-4 text-green-400">
             <CheckCircle size={22} />
             <span className="font-semibold">
-              {/* Show success message */}
-              ¡Listo! / All set! Check your inbox.
+              {lang === 'es'
+                ? '¡Listo! Revisá tu correo.'
+                : 'All set! Check your inbox.'}
             </span>
           </div>
         ) : (
@@ -63,8 +64,9 @@ export default function Newsletter() {
         )}
 
         <p className="text-white/40 text-xs mt-4">
-          {/* Privacy note */}
-          No spam. Unsubscribe anytime.
+          {lang === 'es'
+            ? 'Sin spam. Cancelá cuando quieras.'
+            : 'No spam. Unsubscribe anytime.'}
         </p>
       </div>
     </section>
