@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ShieldCheck, Truck, RefreshCw, Star, ChevronLeft } from 'lucide-react';
+import { ShieldCheck, Truck, RefreshCw, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   ShopifyProduct,
   ShopifyVariant,
@@ -37,6 +37,19 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
   const [selectedImageIdx, setSelectedImageIdx] = useState(0);
   const [activeTab,        setActiveTab]        = useState<'description' | 'specs'>('description');
   const [bundleQty,        setBundleQty]        = useState(1);
+
+  // Image gallery navigation
+  const thumbsRef = useRef<HTMLDivElement>(null);
+  const goPrev = () => setSelectedImageIdx((i) => (i - 1 + images.length) % images.length);
+  const goNext = () => setSelectedImageIdx((i) => (i + 1) % images.length);
+
+  // Keep the active thumbnail scrolled into view
+  useEffect(() => {
+    const strip = thumbsRef.current;
+    if (!strip) return;
+    const active = strip.children[selectedImageIdx] as HTMLElement | undefined;
+    active?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }, [selectedImageIdx]);
 
   const isOnSale  = hasDiscount(product);
   const discount  = discountPercent(product);
@@ -129,18 +142,39 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
             On desktop (md+): normal contained box
           */}
           <div className="-mt-11 md:mt-0">   {/* pull up to cover the back-button row on mobile */}
-            <div className="relative w-full aspect-square md:rounded-2xl overflow-hidden bg-gray-100">
+            <div className="group relative w-full aspect-square md:rounded-2xl overflow-hidden bg-gray-100">
               {currentImage ? (
                 <Image
+                  key={selectedImageIdx}
                   src={currentImage.url}
                   alt={currentImage.altText ?? product.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover"
+                  className="object-cover animate-fade-in"
                   priority
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-8xl">🛍️</div>
+              )}
+
+              {/* Prev / Next arrows — appear on hover (desktop), always visible (mobile) */}
+              {images.length > 1 && (
+                <>
+                  <button
+                    onClick={goPrev}
+                    aria-label="Anterior"
+                    className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/85 backdrop-blur shadow-md flex items-center justify-center text-navy hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200 md:opacity-0 md:group-hover:opacity-100"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+                  <button
+                    onClick={goNext}
+                    aria-label="Siguiente"
+                    className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/85 backdrop-blur shadow-md flex items-center justify-center text-navy hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200 md:opacity-0 md:group-hover:opacity-100"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </>
               )}
 
               {/* Back button overlay (sits on top of image on mobile) */}
@@ -170,17 +204,17 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
             </div>
           </div>
 
-          {/* Thumbnail strip */}
+          {/* Thumbnail strip — scrolls, with active auto-centering */}
           {images.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto py-3 px-4 md:px-0 scrollbar-hide">
+            <div ref={thumbsRef} className="flex gap-2 overflow-x-auto py-3 px-4 md:px-0 scrollbar-hide scroll-smooth">
               {images.map((img, idx) => (
                 <button
                   key={img.url}
                   onClick={() => setSelectedImageIdx(idx)}
-                  className={`relative flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 transition-colors ${
+                  className={`relative flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 ${
                     selectedImageIdx === idx
-                      ? 'border-brand-orange'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-brand-orange ring-2 ring-brand-orange/20 scale-105'
+                      : 'border-gray-200 hover:border-gray-300 opacity-70 hover:opacity-100'
                   }`}
                 >
                   <Image src={img.url} alt={`${idx + 1}`} fill sizes="80px" className="object-cover" />
