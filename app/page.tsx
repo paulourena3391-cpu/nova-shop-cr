@@ -20,13 +20,13 @@ export const dynamic = 'force-dynamic';
 // Collections to feature — only show ones with products
 const FEATURED_CATEGORIES = [
   { handle: 'womens-clothing',      titleEs: 'Ropa de Mujer',     titleEn: "Women's Clothing"  },
-  { handle: 'consumer-electronics', titleEs: 'Electrónica',       titleEn: 'Electronics'       },
+  { handle: 'consumer-electronics', titleEs: 'Tecnología',        titleEn: 'Tech'              },
   { handle: 'hombre',               titleEs: 'Ropa de Hombre',    titleEn: "Men's Clothing"    },
-  { handle: 'calzado-de-mujer',     titleEs: 'Calzado de Mujer',  titleEn: "Women's Footwear"  },
+  { handle: 'belleza-y-cuidado-personal', titleEs: 'Belleza',     titleEn: 'Beauty'           },
   { handle: 'fitness',              titleEs: 'Fitness y Deporte', titleEn: 'Fitness & Sports'  },
   { handle: 'decoracion',           titleEs: 'Hogar y Deco',      titleEn: 'Home & Decor'      },
-  { handle: 'ninos',                titleEs: 'Niños',             titleEn: 'Boys'              },
-  { handle: 'ninas',                titleEs: 'Niñas',             titleEn: 'Girls'             },
+  { handle: 'cocina',               titleEs: 'Cocina',            titleEn: 'Kitchen'          },
+  { handle: 'pets',                 titleEs: 'Mascotas',          titleEn: 'Pets'             },
 ];
 
 function ProductsSkeleton({ count = 4 }: { count?: number }) {

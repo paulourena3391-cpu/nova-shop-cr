@@ -2,9 +2,8 @@
 
 import Link from 'next/link';
 import {
-  Shirt, Laptop, Footprints, Dumbbell, Baby,
-  Waves, Bike, TreePine, Sofa, UtensilsCrossed,
-  Bath, FlowerIcon, Headphones, Tablet, Cpu, Watch, Sparkles
+  Shirt, Footprints, Dumbbell, Baby, Sofa, UtensilsCrossed,
+  Headphones, Smartphone, Sparkles, PawPrint
 } from 'lucide-react';
 import { useLang } from '@/context/LanguageContext';
 
@@ -16,26 +15,19 @@ type Category = {
 };
 
 const CATEGORIES: Category[] = [
-  { handle: 'womens-clothing',        labelEs: 'Ropa Mujer',     labelEn: "Women's",       Icon: Shirt },
-  { handle: 'consumer-electronics',   labelEs: 'Electrónica',    labelEn: 'Electronics',   Icon: Laptop },
-  { handle: 'hombre',                 labelEs: 'Hombre',         labelEn: 'Men',            Icon: Watch },
+  { handle: 'womens-clothing',        labelEs: 'Ropa Mujer',     labelEn: "Women's",        Icon: Shirt },
+  { handle: 'hombre',                 labelEs: 'Hombre',         labelEn: 'Men',            Icon: Shirt },
+  { handle: 'consumer-electronics',   labelEs: 'Tecnología',     labelEn: 'Tech',           Icon: Smartphone },
+  { handle: 'audio',                  labelEs: 'Audio',          labelEn: 'Audio',          Icon: Headphones },
+  { handle: 'belleza-y-cuidado-personal', labelEs: 'Belleza',    labelEn: 'Beauty',         Icon: Sparkles },
   { handle: 'calzado-de-mujer',       labelEs: 'Calzado Mujer',  labelEn: "Women's Shoes",  Icon: Footprints },
   { handle: 'calzado-de-hombre',      labelEs: 'Calzado Hombre', labelEn: "Men's Shoes",    Icon: Footprints },
-  { handle: 'ninos',                  labelEs: 'Niños',          labelEn: 'Boys',           Icon: Baby },
-  { handle: 'ninas',                  labelEs: 'Niñas',          labelEn: 'Girls',          Icon: Sparkles },
   { handle: 'fitness',                labelEs: 'Fitness',        labelEn: 'Fitness',        Icon: Dumbbell },
-  { handle: 'natacion',               labelEs: 'Natación',       labelEn: 'Swimming',       Icon: Waves },
-  { handle: 'ciclismo',               labelEs: 'Ciclismo',       labelEn: 'Cycling',        Icon: Bike },
-  { handle: 'outdoor',                labelEs: 'Outdoor',        labelEn: 'Outdoor',        Icon: TreePine },
-  { handle: 'decoracion',             labelEs: 'Decoración',     labelEn: 'Decor',          Icon: Sofa },
+  { handle: 'decoracion',             labelEs: 'Hogar',          labelEn: 'Home',           Icon: Sofa },
   { handle: 'cocina',                 labelEs: 'Cocina',         labelEn: 'Kitchen',        Icon: UtensilsCrossed },
-  { handle: 'bano',                   labelEs: 'Baño',           labelEn: 'Bathroom',       Icon: Bath },
-  { handle: 'jardin',                 labelEs: 'Jardín',         labelEn: 'Garden',         Icon: FlowerIcon },
-  { handle: 'audio',                  labelEs: 'Audio',          labelEn: 'Audio',          Icon: Headphones },
-  { handle: 'tablets',                labelEs: 'Tablets',        labelEn: 'Tablets',        Icon: Tablet },
-  { handle: 'laptops',                labelEs: 'Laptops',        labelEn: 'Laptops',        Icon: Cpu },
-  { handle: 'woman-hats-caps',        labelEs: 'Gorras',         labelEn: 'Hats & Caps',    Icon: Shirt },
-  { handle: 'accesorios-electronica', labelEs: 'Accesorios',     labelEn: 'Accessories',    Icon: Cpu },
+  { handle: 'ninas',                  labelEs: 'Niñas',          labelEn: 'Girls',          Icon: Sparkles },
+  { handle: 'ninos',                  labelEs: 'Niños',          labelEn: 'Boys',           Icon: Baby },
+  { handle: 'pets',                   labelEs: 'Mascotas',       labelEn: 'Pets',           Icon: PawPrint },
 ];
 
 export default function CategoryGrid() {

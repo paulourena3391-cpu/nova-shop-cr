@@ -23,11 +23,13 @@ export default function Header() {
     { label: t.home,                                          href: '/' },
     { label: lang === 'es' ? 'Ropa Mujer'  : "Women's",      href: '/collections/womens-clothing' },
     { label: lang === 'es' ? 'Hombre'      : 'Men',          href: '/collections/hombre' },
-    { label: lang === 'es' ? 'Electrónica' : 'Electronics',  href: '/collections/consumer-electronics' },
+    { label: lang === 'es' ? 'Tecnología'  : 'Tech',         href: '/collections/consumer-electronics' },
+    { label: lang === 'es' ? 'Belleza'     : 'Beauty',       href: '/collections/belleza-y-cuidado-personal' },
     { label: lang === 'es' ? 'Calzado'     : 'Footwear',     href: '/collections/calzado' },
     { label: lang === 'es' ? 'Hogar'       : 'Home',         href: '/collections/decoracion' },
-    { label: lang === 'es' ? 'Deportes'    : 'Sports',       href: '/collections/fitness' },
+    { label: lang === 'es' ? 'Fitness'     : 'Fitness',      href: '/collections/fitness' },
     { label: lang === 'es' ? 'Niños'       : 'Kids',         href: '/collections/ninos' },
+    { label: lang === 'es' ? 'Mascotas'    : 'Pets',         href: '/collections/pets' },
   ];
 
   function handleSearch(e: FormEvent) {
