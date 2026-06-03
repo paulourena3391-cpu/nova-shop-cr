@@ -16,7 +16,7 @@ const endpoint = `https://${domain}/api/${apiVersion}/graphql.json`;
 export async function shopifyFetch<T = unknown>({
   query,
   variables,
-  cache = 'force-cache',
+  cache = 'no-store',
   tags,
 }: {
   query: string;
@@ -32,7 +32,7 @@ export async function shopifyFetch<T = unknown>({
     },
     body: JSON.stringify({ query, variables }),
     cache,
-    next: tags ? { tags } : undefined,
+    next: tags ? { tags } : { revalidate: 60 },
   });
 
   if (!res.ok) {
