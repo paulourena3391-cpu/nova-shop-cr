@@ -22,16 +22,17 @@ function getMarkup(cjPrice) {
   return 1.8;
 }
 
-// Categories to import with CJ search terms
+// CJ Category IDs mapped to our collections
+// Women's Clothing: 2FE8A083-5E7B-4179-896D-561EA116F730
+// Men's Clothing:   will be searched separately
 const CATEGORIES = [
-  { handle: 'womens-clothing',  query: 'women dress summer',        type: "Women's Clothing",  tags: 'mujer,ropa,moda,women',   count: 25 },
-  { handle: 'hombre',           query: 'men t-shirt casual',        type: "Men's Clothing",    tags: 'hombre,ropa,men,moda',    count: 25 },
-  { handle: 'calzado-de-mujer', query: 'women shoes heels sandals', type: "Women's Footwear",  tags: 'calzado,zapatos,mujer',   count: 20 },
-  { handle: 'ninas',            query: 'girls dress kids clothing',  type: "Girls' Clothing",   tags: 'niñas,kids,girls,ropa',   count: 20 },
-  { handle: 'fitness',          query: 'fitness gym equipment',      type: "Sports & Fitness",  tags: 'fitness,deporte,gym',     count: 20 },
-  { handle: 'audio',            query: 'bluetooth earphones wireless',type: "Electronics",      tags: 'audio,bluetooth,music',   count: 15 },
-  { handle: 'decoracion',       query: 'home decor wall art',        type: "Home Decor",        tags: 'hogar,decoracion,home',   count: 15 },
-  { handle: 'cocina',           query: 'kitchen gadgets cooking',    type: "Kitchen",           tags: 'cocina,hogar,kitchen',    count: 15 },
+  { handle: 'womens-clothing',  categoryId: '2FE8A083-5E7B-4179-896D-561EA116F730', type: "Women's Clothing",  tags: 'mujer,ropa,moda,women',   count: 25 },
+  { handle: 'hombre',           categoryId: 'B8302697-CF47-4211-9BD0-DFE8995AEB30', type: "Men's Clothing",    tags: 'hombre,ropa,men,moda',    count: 25 },
+  { handle: 'calzado-de-mujer', categoryId: '2415A90C-5D7B-4CC7-BA8C-C0949F9FF5D8', type: "Women's Footwear",  tags: 'calzado,zapatos,mujer',   count: 20 },
+  { handle: 'fitness',          categoryId: '4B397425-26C1-4D0E-B6D2-96B0B03689DB', type: "Sports & Fitness",  tags: 'fitness,deporte,gym',     count: 20 },
+  { handle: 'audio',            categoryId: 'D9E66BF8-4E81-4CAB-A425-AEDEC5FBFBF2', type: "Electronics",       tags: 'audio,bluetooth,music',   count: 15 },
+  { handle: 'decoracion',       categoryId: '52FC6CA5-669B-4D0B-B1AC-415675931399', type: "Home Decor",        tags: 'hogar,decoracion,home',   count: 15 },
+  { handle: 'cocina',           categoryId: '52FC6CA5-669B-4D0B-B1AC-415675931399', type: "Kitchen",           tags: 'cocina,hogar,kitchen',    count: 15 },
 ];
 
 // ─── HTTP HELPER ──────────────────────────────────────────────────────────────
@@ -70,16 +71,16 @@ async function getCJToken() {
   return res.data.accessToken;
 }
 
-async function searchCJProducts(token, keyword, page = 1, limit = 20) {
+async function searchCJProducts(token, categoryId, page = 1, limit = 20) {
   const params = new URLSearchParams({
-    keyword,
+    categoryId,
     pageNum: page,
     pageSize: limit,
-    orderBy: 'totalSold',  // Sort by best selling
+    orderBy: 'totalSold',
   });
   const res = await apiRequest(
     'developers.cjdropshipping.com',
-    `/api2.0/v1/product/query?${params}`,
+    `/api2.0/v1/product/list?${params}`,
     'GET',
     { 'CJ-Access-Token': token }
   );
@@ -210,8 +211,8 @@ async function main() {
     }
     console.log(`  ✅ Colección ID: ${collectionId}`);
 
-    // Search CJ products
-    const products = await searchCJProducts(cjToken, cat.query, 1, cat.count);
+    // Search CJ products by category ID
+    const products = await searchCJProducts(cjToken, cat.categoryId, 1, cat.count);
     console.log(`  📋 Encontrados ${products.length} productos en CJ`);
 
     let imported = 0;
