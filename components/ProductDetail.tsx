@@ -59,14 +59,19 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
     );
     if (match) setSelectedVariant(match);
 
-    // When a COLOR is chosen, switch the main image ONLY if this variant has its own
-    // distinct color photo (exact URL match). We never guess by position to avoid
-    // showing the wrong color.
-    if (name === colorOptionName && match?.image?.url) {
+    if (name === colorOptionName) {
+      // 1) If the variant has its own distinct photo → use that (most accurate).
       const sharedImage = new Set(variants.map((v) => v.image?.url)).size <= 1;
-      if (!sharedImage) {
+      if (match?.image?.url && !sharedImage) {
         const exactIdx = images.findIndex((img) => img.url === match.image!.url);
-        if (exactIdx >= 0) setSelectedImageIdx(exactIdx);
+        if (exactIdx >= 0) { setSelectedImageIdx(exactIdx); return; }
+      }
+      // 2) Numbered styles ("3Style", "Style 2", "Color 4") → the number IS the photo
+      //    index, so mapping is reliable. This is exactly where names are useless.
+      const numMatch = value.match(/\d+/);
+      if (numMatch && images.length > 1) {
+        const n = parseInt(numMatch[0], 10);
+        if (n >= 1 && n <= images.length) setSelectedImageIdx(n - 1);
       }
     }
   }
