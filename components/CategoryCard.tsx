@@ -31,7 +31,7 @@ export default async function CategoryCard({ handle, titleEs, titleEn }: Props) 
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
+    <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 ease-premium">
       {/* Bilingual title — client component reads language context */}
       <CategoryCardTitle handle={handle} titleEs={titleEs} titleEn={titleEn} />
 
@@ -43,7 +43,7 @@ export default async function CategoryCard({ handle, titleEs, titleEn }: Props) 
               <Link
                 key={p.id}
                 href={`/products/${p.handle}`}
-                className="block aspect-square bg-gray-50 rounded overflow-hidden group"
+                className="block aspect-square bg-gray-50 rounded-xl overflow-hidden group"
                 title={p.title}
               >
                 {p.image ? (
@@ -52,7 +52,7 @@ export default async function CategoryCard({ handle, titleEs, titleEn }: Props) 
                     alt={p.image.altText ?? p.title}
                     width={150}
                     height={150}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-premium"
                   />
                 ) : (
                   <div className="w-full h-full bg-gray-100" />
@@ -61,7 +61,7 @@ export default async function CategoryCard({ handle, titleEs, titleEn }: Props) 
             ))}
             {/* Fill empty slots if fewer than 4 products */}
             {Array.from({ length: Math.max(0, 4 - products.length) }).map((_, i) => (
-              <div key={`empty-${i}`} className="aspect-square bg-gray-50 rounded" />
+              <div key={`empty-${i}`} className="aspect-square bg-gray-50 rounded-xl" />
             ))}
           </>
         ) : (

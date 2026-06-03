@@ -8,17 +8,22 @@ export default function Hero() {
   const { t, lang } = useLang();
 
   return (
-    <section className="bg-navy">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-20">
+    <section className="relative bg-navy overflow-hidden">
+      {/* Subtle brand glow accents */}
+      <div className="pointer-events-none absolute -top-24 -right-24 w-96 h-96 bg-brand-orange/20 rounded-full blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-32 -left-20 w-80 h-80 bg-brand-orange/10 rounded-full blur-3xl" />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-20">
         <div className="grid md:grid-cols-2 gap-10 items-center">
 
           {/* Left — copy */}
-          <div>
-            <span className="inline-block bg-brand-orange text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded mb-5">
+          <div className="animate-fade-in-up">
+            <span className="inline-flex items-center gap-2 bg-brand-orange/15 border border-brand-orange/30 text-brand-orange text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-5">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand-orange animate-pulse" />
               {t.heroBadge}
             </span>
 
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-5">
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl text-white leading-[1.05] tracking-tightest mb-5">
               {t.heroTitle}
             </h1>
 
@@ -29,14 +34,15 @@ export default function Hero() {
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/collections/womens-clothing"
-                className="inline-flex items-center gap-2 bg-brand-orange hover:bg-brand-orange-hover text-white font-semibold px-7 py-3.5 rounded-lg transition-colors"
+                className="group inline-flex items-center gap-2 text-white font-semibold px-7 py-3.5 rounded-xl shadow-cta hover:shadow-cta-hover hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-300 ease-premium"
+                style={{ backgroundImage: 'linear-gradient(135deg, #FF7A2E 0%, #FF6B1A 55%, #f15e10 100%)' }}
               >
                 {t.shopNow}
-                <ArrowRight size={18} />
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href="/collections/consumer-electronics"
-                className="inline-flex items-center gap-2 border-2 border-white/30 hover:border-white text-white font-semibold px-7 py-3.5 rounded-lg transition-colors"
+                className="inline-flex items-center gap-2 border-2 border-white/25 hover:border-white hover:bg-white/5 text-white font-semibold px-7 py-3.5 rounded-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 ease-premium"
               >
                 {lang === 'es' ? 'Ver Electrónica' : 'View Electronics'}
               </Link>
@@ -51,8 +57,8 @@ export default function Hero() {
               { Icon: RotateCcw,    title: lang === 'es' ? 'Devoluciones'     : 'Easy Returns',     desc: lang === 'es' ? '30 días sin problema' : '30-day hassle-free' },
               { Icon: Headphones,   title: lang === 'es' ? 'Soporte 24/7'     : '24/7 Support',     desc: lang === 'es' ? 'Siempre disponibles' : 'Always available' },
             ].map(({ Icon, title, desc }) => (
-              <div key={title} className="bg-white/5 border border-white/10 rounded-xl p-5 flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-brand-orange/20 flex items-center justify-center flex-shrink-0">
+              <div key={title} className="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-start gap-4 hover:bg-white/10 hover:border-white/20 hover:-translate-y-1 transition-all duration-300 ease-premium">
+                <div className="w-11 h-11 rounded-xl bg-brand-orange/20 flex items-center justify-center flex-shrink-0">
                   <Icon size={20} className="text-brand-orange" />
                 </div>
                 <div>

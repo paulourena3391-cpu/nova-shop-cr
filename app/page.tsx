@@ -104,10 +104,11 @@ export default async function HomePage() {
       {/* ── Deals of the day ── */}
       <section className="py-10 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-3 border-b-2 border-gray-200">
-            <div className="flex items-center gap-4">
-              <h2 className="text-2xl font-bold text-navy">Ofertas del día</h2>
-              <span className="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded">OFERTA</span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-gray-200">
+            <div className="flex items-center gap-3">
+              <span className="w-1.5 h-7 bg-brand-orange rounded-full" />
+              <h2 className="text-2xl md:text-3xl font-bold text-navy tracking-tightest">Ofertas del día</h2>
+              <span className="bg-red-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-wide shadow-sm animate-pulse">OFERTA</span>
             </div>
             <CountdownTimer />
           </div>
@@ -120,13 +121,16 @@ export default async function HomePage() {
       {/* ── Best sellers ── */}
       <section className="py-10 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-6 pb-3 border-b-2 border-gray-200">
-            <h2 className="text-2xl font-bold text-navy">Los más vendidos</h2>
+          <div className="flex items-end justify-between mb-6 pb-4 border-b border-gray-200">
+            <h2 className="text-2xl md:text-3xl font-bold text-navy tracking-tightest inline-flex items-center gap-3">
+              <span className="w-1.5 h-7 bg-brand-orange rounded-full" />
+              Los más vendidos
+            </h2>
             <Link
               href="/collections/womens-clothing"
-              className="text-blue-600 hover:text-brand-orange text-sm font-medium transition-colors"
+              className="group text-brand-orange hover:text-brand-orange-hover text-sm font-semibold transition-colors inline-flex items-center gap-1"
             >
-              Ver todo →
+              Ver todo <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
             </Link>
           </div>
           <Suspense fallback={<ProductsSkeleton count={4} />}>

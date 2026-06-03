@@ -6,29 +6,56 @@
 
 @layer base {
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body { @apply font-sans text-gray-900 bg-white antialiased; }
-  h1, h2, h3 { @apply font-display; }
+  html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+  body {
+    @apply font-sans text-gray-900 bg-white antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  /* Display headings: tighter tracking for a premium editorial feel */
+  h1, h2, h3 { @apply font-display tracking-tightest; }
+  /* Crisper, more accessible focus ring */
+  *:focus-visible {
+    outline: 2px solid theme('colors.brand.orange');
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
 @layer components {
+  /* Premium primary CTA — soft branded shadow, smooth lift, subtle gradient */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-orange hover:bg-brand-orange-hover active:scale-95 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 text-white font-semibold rounded-xl
+           transition-all duration-300 ease-premium
+           shadow-cta hover:shadow-cta-hover hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-y-0;
+    background-image: linear-gradient(135deg, #FF7A2E 0%, #FF6B1A 55%, #f15e10 100%);
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-navy text-white font-semibold rounded-lg hover:bg-navy-50 active:scale-95 transition-all duration-200;
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-navy text-white font-semibold rounded-xl
+           shadow-soft hover:bg-navy-50 hover:-translate-y-0.5 hover:shadow-card-hover
+           active:translate-y-0 active:scale-[0.98] transition-all duration-300 ease-premium;
   }
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-navy text-navy font-semibold rounded-lg hover:bg-navy hover:text-white active:scale-95 transition-all duration-200;
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 border-2 border-navy/15 text-navy font-semibold rounded-xl
+           hover:border-navy hover:bg-navy hover:text-white hover:-translate-y-0.5
+           active:translate-y-0 active:scale-[0.98] transition-all duration-300 ease-premium;
   }
+  /* Card — layered soft shadow that deepens elegantly on hover */
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200;
+    @apply bg-white rounded-2xl border border-gray-100 shadow-card
+           hover:shadow-card-hover transition-all duration-300 ease-premium;
   }
-  .badge         { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold; }
-  .badge-orange  { @apply badge bg-brand-orange text-white; }
+  .badge         { @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide; }
+  .badge-orange  { @apply badge bg-brand-orange text-white shadow-cta; }
   .badge-navy    { @apply badge bg-navy text-white; }
-  .input-field   { @apply w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all; }
-  .section-title    { @apply font-display text-3xl md:text-4xl text-navy mb-2; }
+  .input-field   {
+    @apply w-full px-4 py-3 border border-gray-200 rounded-xl bg-white
+           focus:outline-none focus:ring-2 focus:ring-brand-orange/60 focus:border-brand-orange
+           transition-all duration-200 placeholder:text-gray-400;
+  }
+  .section-title    { @apply font-display text-3xl md:text-4xl text-navy mb-2 tracking-tightest; }
   .section-subtitle { @apply text-gray-500 text-lg; }
 }
 

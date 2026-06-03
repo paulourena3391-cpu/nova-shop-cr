@@ -44,7 +44,8 @@ export default function CategoryGrid() {
   return (
     <section className="py-10 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl font-bold text-navy mb-6 border-b-2 border-brand-orange pb-2 inline-block">
+        <h2 className="text-2xl md:text-3xl font-bold text-navy mb-6 tracking-tightest inline-flex items-center gap-3">
+          <span className="w-1.5 h-7 bg-brand-orange rounded-full" />
           {t.shopByCategory}
         </h2>
 
@@ -53,12 +54,12 @@ export default function CategoryGrid() {
             <Link
               key={handle}
               href={`/collections/${handle}`}
-              className="group flex flex-col items-center gap-2 p-3 bg-white border border-gray-200 rounded-lg hover:border-brand-orange hover:shadow-md transition-all duration-200"
+              className="group flex flex-col items-center gap-2 p-3.5 bg-white border border-gray-100 rounded-2xl shadow-soft hover:border-brand-orange/40 hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 ease-premium"
             >
-              <div className="w-12 h-12 rounded-full bg-gray-50 group-hover:bg-brand-orange-light flex items-center justify-center transition-colors">
+              <div className="w-12 h-12 rounded-2xl bg-gray-50 group-hover:bg-brand-orange-light group-hover:scale-110 flex items-center justify-center transition-all duration-300 ease-premium">
                 <Icon size={22} className="text-gray-500 group-hover:text-brand-orange transition-colors" />
               </div>
-              <span className="text-xs font-medium text-gray-700 group-hover:text-brand-orange text-center leading-tight transition-colors">
+              <span className="text-xs font-semibold text-gray-700 group-hover:text-brand-orange text-center leading-tight transition-colors">
                 {lang === 'es' ? labelEs : labelEn}
               </span>
             </Link>

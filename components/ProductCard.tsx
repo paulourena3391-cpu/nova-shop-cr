@@ -44,7 +44,7 @@ export default function ProductCard({ product, priority = false }: Props) {
   }
 
   return (
-    <article className="group relative bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
+    <article className="group relative bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-card hover:shadow-card-hover hover:-translate-y-1.5 transition-all duration-300 ease-premium flex flex-col">
 
       {/* ── Image wrapper ── */}
       <Link href={`/products/${product.handle}`} className="block relative overflow-hidden">
@@ -122,8 +122,8 @@ export default function ProductCard({ product, priority = false }: Props) {
         </div>
 
         {/* Price */}
-        <div className="flex items-baseline gap-2 mt-2">
-          <span className="text-base font-bold text-navy">
+        <div className="flex items-baseline gap-2 mt-2.5">
+          <span className="text-lg font-extrabold text-navy tracking-tight">
             {formatPrice(
               product.priceRange.minVariantPrice.amount,
               product.priceRange.minVariantPrice.currencyCode,
@@ -143,10 +143,10 @@ export default function ProductCard({ product, priority = false }: Props) {
         <button
           onClick={handleAddToCart}
           disabled={!product.availableForSale || adding}
-          className={`mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+          className={`mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ease-premium disabled:opacity-50 disabled:cursor-not-allowed
             ${adding
               ? 'bg-green-500 text-white scale-95'
-              : 'bg-navy text-white hover:bg-brand-orange active:scale-95'
+              : 'bg-navy text-white hover:bg-brand-orange hover:shadow-cta active:scale-95'
             }`}
         >
           {adding ? (
