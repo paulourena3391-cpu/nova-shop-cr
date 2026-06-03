@@ -12,6 +12,9 @@ type PageProps = {
   searchParams: Promise<{ sort?: string; min?: string; max?: string }>;
 };
 
+// Always render fresh so newly imported products appear immediately
+export const dynamic = 'force-dynamic';
+
 export async function generateStaticParams() {
   try {
     const collections = await getCollections(20);

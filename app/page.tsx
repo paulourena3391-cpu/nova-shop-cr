@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   description: 'Los mejores productos en electrónica, moda, hogar y deportes. Envíos rápidos y pagos seguros en Costa Rica.',
 };
 
+// Always render fresh so newly imported products appear immediately
+export const dynamic = 'force-dynamic';
+
 // Collections to feature — only show ones with products
 const FEATURED_CATEGORIES = [
   { handle: 'womens-clothing',      titleEs: 'Ropa de Mujer',     titleEn: "Women's Clothing"  },
