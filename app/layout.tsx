@@ -9,6 +9,7 @@ import ScrollToTop from '@/components/ScrollToTop';
 import PageProgressWrapper from '@/components/PageProgressWrapper';
 import SocialProof from '@/components/SocialProof';
 import ScrollReveal from '@/components/ScrollReveal';
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
   title: {
@@ -54,6 +55,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {/* CRO: social proof + scroll reveal */}
               <SocialProof />
               <ScrollReveal />
+
+              {/* Real visitor tracking */}
+              <Analytics />
             </ToastProvider>
           </CartProvider>
         </LanguageProvider>
