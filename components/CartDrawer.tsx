@@ -145,6 +145,32 @@ export default function CartDrawer() {
         {/* Footer with totals */}
         {cart && cartLines.length > 0 && (
           <div className="border-t border-gray-100 p-4 space-y-3">
+            {/* CRO: bundle-progress incentive (raises AOV) */}
+            {(() => {
+              const totalQty = cartLines.reduce((s, l) => s + l.quantity, 0);
+              if (totalQty >= 3) {
+                return (
+                  <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 text-emerald-700 text-sm font-semibold rounded-xl px-3 py-2.5">
+                    🎉 {lang === 'es' ? '¡Tenés 15% de descuento aplicado!' : 'You unlocked 15% off!'}
+                  </div>
+                );
+              }
+              const need = totalQty === 2 ? 1 : 2;
+              const off = totalQty === 2 ? '15%' : '10%';
+              return (
+                <div className="bg-orange-50 border border-brand-orange/20 rounded-xl px-3 py-2.5">
+                  <p className="text-sm text-navy font-semibold">
+                    {lang === 'es'
+                      ? `Agregá ${need} más y ahorrá ${off} 🔥`
+                      : `Add ${need} more and save ${off} 🔥`}
+                  </p>
+                  <div className="mt-1.5 h-1.5 bg-orange-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-brand-orange rounded-full transition-all duration-500" style={{ width: `${Math.min(100, (totalQty / 3) * 100)}%` }} />
+                  </div>
+                </div>
+              );
+            })()}
+
             <div className="space-y-2 text-sm">
               <div className="flex justify-between text-gray-600">
                 <span>{t.subtotal}</span>
@@ -187,6 +213,18 @@ export default function CartDrawer() {
             >
               {t.checkout}
             </button>
+
+            {/* CRO: trust + guarantee row */}
+            <div className="flex items-center justify-center gap-4 text-[11px] text-gray-500 pt-1">
+              <span className="inline-flex items-center gap-1">🔒 {lang === 'es' ? 'Pago seguro' : 'Secure checkout'}</span>
+              <span className="inline-flex items-center gap-1">↩️ {lang === 'es' ? '30 días' : '30-day returns'}</span>
+              <span className="inline-flex items-center gap-1">🚚 {lang === 'es' ? 'Envío gratis' : 'Free shipping'}</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 opacity-70">
+              {['Visa', 'MC', 'AMEX', 'PayPal'].map((m) => (
+                <span key={m} className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded font-semibold">{m}</span>
+              ))}
+            </div>
 
             <Link
               href="/cart"

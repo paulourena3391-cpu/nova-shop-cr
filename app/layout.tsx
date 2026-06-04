@@ -9,6 +9,8 @@ import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import PageProgressWrapper from '@/components/PageProgressWrapper';
 import WhatsAppButton from '@/components/WhatsAppButton';
+import SocialProof from '@/components/SocialProof';
+import ScrollReveal from '@/components/ScrollReveal';
 
 export const metadata: Metadata = {
   title: {
@@ -53,6 +55,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {/* Floating buttons */}
               <ScrollToTop />
               <WhatsAppButton />
+
+              {/* CRO: recent-purchase social proof + scroll reveal animations */}
+              <SocialProof />
+              <ScrollReveal />
             </ToastProvider>
           </CartProvider>
         </LanguageProvider>

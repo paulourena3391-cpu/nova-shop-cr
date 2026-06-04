@@ -80,7 +80,7 @@ export default async function HomePage() {
       <TrustBadges />
 
       {/* ── Amazon-style category cards grid ── */}
-      <section className="bg-gray-100 py-8">
+      <section className="bg-gray-100 py-8 reveal">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {FEATURED_CATEGORIES.map((cat) => (
@@ -102,7 +102,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── Deals of the day ── */}
-      <section className="py-10 bg-white">
+      <section className="py-10 bg-white reveal">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-gray-200">
             <div className="flex items-center gap-3">
@@ -119,7 +119,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── Best sellers ── */}
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-gray-50 reveal">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-6 pb-4 border-b border-gray-200">
             <h2 className="text-2xl md:text-3xl font-bold text-navy tracking-tightest inline-flex items-center gap-3">
