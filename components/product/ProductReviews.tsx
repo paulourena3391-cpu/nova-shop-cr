@@ -1,6 +1,7 @@
 'use client';
 
-import { Star, BadgeCheck, ThumbsUp } from 'lucide-react';
+import Image from 'next/image';
+import { Star, BadgeCheck, ThumbsUp, Camera } from 'lucide-react';
 import { useLang } from '@/context/LanguageContext';
 
 type Review = {
@@ -31,7 +32,7 @@ const REVIEWS: Review[] = [
     en: "I regret not buying it sooner. I use it every single day 😍" },
 ];
 
-export default function ProductReviews() {
+export default function ProductReviews({ photos = [] }: { photos?: string[] }) {
   const { lang } = useLang();
   const es = lang === 'es';
 
@@ -82,6 +83,29 @@ export default function ProductReviews() {
         </div>
       </div>
 
+      {/* Customer photos gallery — builds legitimacy */}
+      {photos.length > 1 && (
+        <div className="mb-8">
+          <p className="flex items-center gap-2 text-sm font-semibold text-navy mb-3">
+            <Camera size={15} className="text-brand-orange" />
+            {es ? 'Fotos de clientes' : 'Customer photos'}
+            <span className="text-gray-400 font-normal">({photos.length})</span>
+          </p>
+          <div className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-1">
+            {photos.map((url, i) => (
+              <div key={i} className="relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden shrink-0 border border-gray-100 group">
+                <Image src={url} alt={`Customer photo ${i + 1}`} fill sizes="96px" className="object-cover group-hover:scale-110 transition-transform duration-300" />
+                <div className="absolute bottom-1 left-1 flex gap-0.5">
+                  {Array.from({ length: 5 }).map((_, s) => (
+                    <Star key={s} size={7} className="fill-amber-400 text-amber-400 drop-shadow" />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Review list */}
       <div className="space-y-4">
         {REVIEWS.map((r) => (
@@ -111,6 +135,13 @@ export default function ProductReviews() {
             </div>
 
             <p className="text-gray-600 text-sm mt-2.5 leading-relaxed">{es ? r.es : r.en}</p>
+
+            {/* Attached customer photo on the first couple of reviews */}
+            {REVIEWS.indexOf(r) < photos.length && REVIEWS.indexOf(r) < 2 && (
+              <div className="relative w-24 h-24 rounded-xl overflow-hidden mt-3 border border-gray-100">
+                <Image src={photos[REVIEWS.indexOf(r)]} alt="Review photo" fill sizes="96px" className="object-cover" />
+              </div>
+            )}
 
             <button className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-brand-orange mt-3 transition-colors">
               <ThumbsUp size={13} /> {es ? 'Útil' : 'Helpful'} ({r.likes})

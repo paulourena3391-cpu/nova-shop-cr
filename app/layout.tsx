@@ -10,6 +10,7 @@ import ScrollToTop from '@/components/ScrollToTop';
 import PageProgressWrapper from '@/components/PageProgressWrapper';
 import SocialProof from '@/components/SocialProof';
 import ScrollReveal from '@/components/ScrollReveal';
+import ExitIntentPopup from '@/components/ExitIntentPopup';
 
 export const metadata: Metadata = {
   title: {
@@ -54,9 +55,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {/* Floating buttons */}
               <ScrollToTop />
 
-              {/* CRO: recent-purchase social proof + scroll reveal animations */}
+              {/* CRO: social proof + scroll reveal + sales-recovery email capture */}
               <SocialProof />
               <ScrollReveal />
+              <ExitIntentPopup />
             </ToastProvider>
           </CartProvider>
         </LanguageProvider>

@@ -481,7 +481,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
       {/* ── Conversion sections ─────────────────────────────────── */}
       <ProductBenefits />
       <ProductComparison />
-      <ProductReviews />
+      <ProductReviews photos={images.slice(0, 6).map((i) => i.url)} />
 
       {/* ── Related products ────────────────────────────────────── */}
       {relatedProducts.length > 0 && (
