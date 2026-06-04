@@ -11,7 +11,7 @@ import CartDrawer from './CartDrawer';
 export default function Header() {
   const router = useRouter();
   const { itemCount, toggleCart } = useCart();
-  const { lang, t, toggleLang } = useLang();
+  const { lang, t } = useLang();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -94,15 +94,6 @@ export default function Header() {
 
               {/* Right actions */}
               <div className="flex items-center gap-1 ml-auto md:ml-0">
-                {/* Language toggle */}
-                <button
-                  onClick={toggleLang}
-                  className="hidden md:flex items-center gap-1 text-white/80 hover:text-white text-sm font-medium px-2 py-1 rounded transition-colors"
-                  aria-label="Toggle language"
-                >
-                  {lang === 'es' ? 'EN' : 'ES'}
-                </button>
-
                 {/* Account → order tracking (no auth yet) */}
                 <Link
                   href="/track"
@@ -191,12 +182,6 @@ export default function Header() {
                   {link.label}
                 </Link>
               ))}
-              <button
-                onClick={() => { toggleLang(); setMenuOpen(false); }}
-                className="block w-full text-left text-white/80 hover:text-white text-sm font-medium py-2 px-3 rounded hover:bg-white/10 transition-colors"
-              >
-                Switch to {lang === 'es' ? 'English' : 'Español'}
-              </button>
             </div>
           </div>
         )}
