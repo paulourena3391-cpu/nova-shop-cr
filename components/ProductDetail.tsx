@@ -38,6 +38,11 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
   const [activeTab,        setActiveTab]        = useState<'description' | 'specs'>('description');
   const [bundleQty,        setBundleQty]        = useState(1);
 
+  // Always land at the top (image first) when opening a product
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [product.id]);
+
   // Image gallery navigation
   const thumbsRef = useRef<HTMLDivElement>(null);
   const goPrev = () => setSelectedImageIdx((i) => (i - 1 + images.length) % images.length);
