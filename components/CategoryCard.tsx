@@ -8,9 +8,10 @@ type Props = {
   handle: string;
   titleEs: string;
   titleEn: string;
+  basePath?: string;
 };
 
-export default async function CategoryCard({ handle, titleEs, titleEn }: Props) {
+export default async function CategoryCard({ handle, titleEs, titleEn, basePath = '' }: Props) {
   let products: Array<{
     id: string;
     title: string;
@@ -33,7 +34,7 @@ export default async function CategoryCard({ handle, titleEs, titleEn }: Props) 
   return (
     <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 ease-premium">
       {/* Bilingual title — client component reads language context */}
-      <CategoryCardTitle handle={handle} titleEs={titleEs} titleEn={titleEn} />
+      <CategoryCardTitle handle={handle} titleEs={titleEs} titleEn={titleEn} basePath={basePath} />
 
       {/* 2×2 product grid — each image links to its product */}
       <div className="grid grid-cols-2 gap-2 mb-3">
@@ -42,7 +43,7 @@ export default async function CategoryCard({ handle, titleEs, titleEn }: Props) 
             {products.map((p) => (
               <Link
                 key={p.id}
-                href={`/products/${p.handle}`}
+                href={`${basePath}/products/${p.handle}`}
                 className="block aspect-square bg-gray-50 rounded-xl overflow-hidden group"
                 title={p.title}
               >
@@ -72,7 +73,7 @@ export default async function CategoryCard({ handle, titleEs, titleEn }: Props) 
       </div>
 
       {/* Bilingual "Shop now / Comprar ahora" — client component */}
-      <CategoryShopNow handle={handle} />
+      <CategoryShopNow handle={handle} basePath={basePath} />
     </div>
   );
 }

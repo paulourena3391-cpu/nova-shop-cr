@@ -15,9 +15,10 @@ import { useState } from 'react';
 type Props = {
   product: ShopifyProduct;
   priority?: boolean;
+  basePath?: string;
 };
 
-export default function ProductCard({ product, priority = false }: Props) {
+export default function ProductCard({ product, priority = false, basePath = '' }: Props) {
   const { addItem, isLoading } = useCart();
   const { showToast } = useToast();
   const { t } = useLang();
@@ -47,7 +48,7 @@ export default function ProductCard({ product, priority = false }: Props) {
     <article className="group relative bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-card hover:shadow-card-hover hover:-translate-y-1.5 transition-all duration-300 ease-premium flex flex-col">
 
       {/* ── Image wrapper ── */}
-      <Link href={`/products/${product.handle}`} className="block relative overflow-hidden">
+      <Link href={`${basePath}/products/${product.handle}`} className="block relative overflow-hidden">
         <div className="relative aspect-square bg-gray-50">
           {image ? (
             <Image
@@ -106,7 +107,7 @@ export default function ProductCard({ product, priority = false }: Props) {
           </span>
         )}
 
-        <Link href={`/products/${product.handle}`}>
+        <Link href={`${basePath}/products/${product.handle}`}>
           <h3 className="text-sm font-semibold text-navy mt-0.5 line-clamp-2 hover:text-brand-orange transition-colors leading-snug">
             {product.title}
           </h3>

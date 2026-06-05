@@ -17,7 +17,12 @@ function useDebounce<T>(value: T, delay: number): T {
   return debounced;
 }
 
-export default function SearchInner() {
+type Props = {
+  basePath?: string;
+  filterQuery?: string; // Prepended to every search, e.g. "vendor:Dropi" for CR market
+};
+
+export default function SearchInner({ basePath = '', filterQuery }: Props) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -54,7 +59,8 @@ export default function SearchInner() {
     setLoading(true);
     setHasSearched(false);
 
-    searchProducts(debouncedQuery, 20)
+    const fullQuery = filterQuery ? `${filterQuery} ${debouncedQuery}` : debouncedQuery;
+    searchProducts(fullQuery, 20)
       .then(({ products, totalCount }) => {
         setResults(products);
         setTotalCount(totalCount);
@@ -136,7 +142,7 @@ export default function SearchInner() {
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {results.map((product, i) => (
-                <ProductCard key={product.id} product={product} priority={i < 4} />
+                <ProductCard key={product.id} product={product} priority={i < 4} basePath={basePath} />
               ))}
             </div>
           )}

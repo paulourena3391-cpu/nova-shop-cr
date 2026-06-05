@@ -8,14 +8,16 @@ export function CategoryCardTitle({
   handle,
   titleEs,
   titleEn,
+  basePath = '',
 }: {
   handle: string;
   titleEs: string;
   titleEn: string;
+  basePath?: string;
 }) {
   const { lang } = useLang();
   return (
-    <Link href={`/collections/${handle}`}>
+    <Link href={`${basePath}/collections/${handle}`}>
       <h3 className="font-bold text-navy text-lg mb-3 hover:text-brand-orange transition-colors">
         {lang === 'es' ? titleEs : titleEn}
       </h3>
@@ -24,11 +26,11 @@ export function CategoryCardTitle({
 }
 
 // "Comprar ahora / Shop now" link — shown below the image grid
-export function CategoryShopNow({ handle }: { handle: string }) {
+export function CategoryShopNow({ handle, basePath = '' }: { handle: string; basePath?: string }) {
   const { t } = useLang();
   return (
     <Link
-      href={`/collections/${handle}`}
+      href={`${basePath}/collections/${handle}`}
       className="text-sm text-blue-600 hover:text-brand-orange font-medium transition-colors"
     >
       {t.shopNow} →

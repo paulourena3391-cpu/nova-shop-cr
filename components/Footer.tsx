@@ -3,11 +3,13 @@
 import Link from 'next/link';
 import { Facebook, Instagram, Twitter, Youtube, Mail } from 'lucide-react';
 import { useLang } from '@/context/LanguageContext';
+import { useMarket } from '@/context/MarketContext';
 
 const paymentMethods = ['Visa', 'MC', 'AMEX', 'PayPal'];
 
 export default function Footer() {
   const { t, lang } = useLang();
+  const { basePath } = useMarket();
 
   const links = {
     company: [
@@ -40,7 +42,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-10">
           {/* Brand column */}
           <div className="lg:col-span-2">
-            <Link href="/" className="inline-block mb-4">
+            <Link href={basePath || '/'} className="inline-block mb-4">
               <span className="font-display text-2xl text-white">
                 Nova<span className="text-brand-orange">Shop</span>
                 <span className="text-brand-orange text-sm font-sans ml-1">CR</span>

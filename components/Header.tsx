@@ -6,12 +6,14 @@ import { useRouter } from 'next/navigation';
 import { ShoppingCart, Search, User, Menu, X, ChevronDown } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useLang } from '@/context/LanguageContext';
+import { useMarket } from '@/context/MarketContext';
 import CartDrawer from './CartDrawer';
 
 export default function Header() {
   const router = useRouter();
   const { itemCount, toggleCart } = useCart();
   const { lang, t } = useLang();
+  const { isCR, basePath } = useMarket();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,23 +21,35 @@ export default function Header() {
 
   const searchRef = useRef<HTMLInputElement>(null);
 
-  const navLinks = [
-    { label: t.home,                                          href: '/' },
-    { label: lang === 'es' ? 'Ropa Mujer'  : "Women's",      href: '/collections/womens-clothing' },
-    { label: lang === 'es' ? 'Hombre'      : 'Men',          href: '/collections/hombre' },
-    { label: lang === 'es' ? 'Tecnología'  : 'Tech',         href: '/collections/consumer-electronics' },
-    { label: lang === 'es' ? 'Belleza'     : 'Beauty',       href: '/collections/belleza-y-cuidado-personal' },
-    { label: lang === 'es' ? 'Calzado'     : 'Footwear',     href: '/collections/calzado' },
-    { label: lang === 'es' ? 'Hogar'       : 'Home',         href: '/collections/decoracion' },
-    { label: lang === 'es' ? 'Fitness'     : 'Fitness',      href: '/collections/fitness' },
-    { label: lang === 'es' ? 'Niños'       : 'Kids',         href: '/collections/ninos' },
-    { label: lang === 'es' ? 'Mascotas'    : 'Pets',         href: '/collections/pets' },
-  ];
+  const navLinks = isCR
+    ? [
+        { label: 'Inicio',       href: '/cr' },
+        { label: 'Tecnología',   href: '/cr/collections/cr-tecnologia' },
+        { label: 'Belleza',      href: '/cr/collections/cr-belleza' },
+        { label: 'Moda Mujer',   href: '/cr/collections/cr-moda-mujer' },
+        { label: 'Moda Hombre',  href: '/cr/collections/cr-moda-hombre' },
+        { label: 'Calzado',      href: '/cr/collections/cr-calzado' },
+        { label: 'Hogar',        href: '/cr/collections/cr-hogar' },
+        { label: 'Deportes',     href: '/cr/collections/cr-deportes' },
+        { label: 'Mascotas',     href: '/cr/collections/cr-mascotas' },
+      ]
+    : [
+        { label: t.home,                                          href: '/' },
+        { label: lang === 'es' ? 'Ropa Mujer'  : "Women's",      href: '/collections/womens-clothing' },
+        { label: lang === 'es' ? 'Hombre'      : 'Men',          href: '/collections/hombre' },
+        { label: lang === 'es' ? 'Tecnología'  : 'Tech',         href: '/collections/consumer-electronics' },
+        { label: lang === 'es' ? 'Belleza'     : 'Beauty',       href: '/collections/belleza-y-cuidado-personal' },
+        { label: lang === 'es' ? 'Calzado'     : 'Footwear',     href: '/collections/calzado' },
+        { label: lang === 'es' ? 'Hogar'       : 'Home',         href: '/collections/decoracion' },
+        { label: lang === 'es' ? 'Fitness'     : 'Fitness',      href: '/collections/fitness' },
+        { label: lang === 'es' ? 'Niños'       : 'Kids',         href: '/collections/ninos' },
+        { label: lang === 'es' ? 'Mascotas'    : 'Pets',         href: '/collections/pets' },
+      ];
 
   function handleSearch(e: FormEvent) {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`${basePath}/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery('');
       setSearchFocused(false);
     }
@@ -54,7 +68,7 @@ export default function Header() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-4 h-16">
               {/* Logo */}
-              <Link href="/" className="flex-shrink-0">
+              <Link href={basePath || '/'} className="flex-shrink-0">
                 <span className="font-display text-xl text-white">
                   Nova<span className="text-brand-orange">Shop</span>
                   <span className="text-brand-orange text-sm font-sans ml-1">CR</span>

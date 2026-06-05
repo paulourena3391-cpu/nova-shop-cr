@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
 
 type Lang = 'en' | 'es';
 
@@ -220,11 +221,16 @@ type LanguageContextType = {
 const LanguageContext = createContext<LanguageContextType | null>(null);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLang] = useState<Lang>('en');
+  const pathname = usePathname();
+  const isCR = pathname.startsWith('/cr');
+
+  // In the CR market, language is always Spanish; in the US market the user can toggle.
+  const [langOverride, setLangOverride] = useState<Lang>('en');
+  const lang: Lang = isCR ? 'es' : langOverride;
 
   const toggleLang = useCallback(() => {
-    setLang((prev) => (prev === 'es' ? 'en' : 'es'));
-  }, []);
+    if (!isCR) setLangOverride((prev) => (prev === 'es' ? 'en' : 'es'));
+  }, [isCR]);
 
   const t = lang === 'es' ? es : en;
 

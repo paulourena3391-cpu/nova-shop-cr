@@ -3,6 +3,7 @@ import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { ToastProvider } from '@/context/ToastContext';
+import { MarketProvider } from '@/context/MarketContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <LanguageProvider>
+          <MarketProvider>
           <CartProvider>
             <ToastProvider>
               {/* Navigation progress bar */}
@@ -60,6 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Analytics />
             </ToastProvider>
           </CartProvider>
+          </MarketProvider>
         </LanguageProvider>
       </body>
     </html>

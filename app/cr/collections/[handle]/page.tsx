@@ -1,0 +1,112 @@
+import { Suspense } from 'react';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { getCollection, CollectionSortKey, ShopifyProduct } from '@/lib/shopify';
+import ProductCard from '@/components/ProductCard';
+import CollectionFilters from '@/components/CollectionFilters';
+
+type PageProps = {
+  params: Promise<{ handle: string }>;
+  searchParams: Promise<{ sort?: string; min?: string; max?: string }>;
+};
+
+export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { handle } = await params;
+  const col = await getCollection({ handle, first: 1 });
+  if (!col) return {};
+  return {
+    title: col.title,
+    description: col.description || `Comprá ${col.title} en Nova Shop CR con envío rápido.`,
+  };
+}
+
+const SORT_OPTIONS: { value: string; sortKey: CollectionSortKey; reverse: boolean }[] = [
+  { value: 'best_selling', sortKey: 'BEST_SELLING', reverse: false },
+  { value: 'price_asc',    sortKey: 'PRICE',        reverse: false },
+  { value: 'price_desc',   sortKey: 'PRICE',        reverse: true  },
+  { value: 'newest',       sortKey: 'CREATED',      reverse: true  },
+  { value: 'title_asc',    sortKey: 'TITLE',        reverse: false },
+];
+
+function getSortParams(sort?: string) {
+  return SORT_OPTIONS.find((o) => o.value === sort) ?? SORT_OPTIONS[0];
+}
+
+function filterByPrice(products: ShopifyProduct[], min?: string, max?: string): ShopifyProduct[] {
+  const minPrice = min ? parseFloat(min) : null;
+  const maxPrice = max ? parseFloat(max) : null;
+  return products.filter((p) => {
+    const price = parseFloat(p.priceRange.minVariantPrice.amount);
+    if (minPrice !== null && price < minPrice) return false;
+    if (maxPrice !== null && price > maxPrice) return false;
+    return true;
+  });
+}
+
+export default async function CRCollectionPage({ params, searchParams }: PageProps) {
+  const { handle } = await params;
+  const { sort, min, max } = await searchParams;
+
+  const { sortKey, reverse } = getSortParams(sort);
+
+  const collection = await getCollection({ handle, first: 24, sortKey, reverse });
+  if (!collection) notFound();
+
+  const allProducts = collection.products.edges.map((e) => e.node);
+  const filtered = filterByPrice(allProducts, min, max);
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Breadcrumb */}
+      <nav className="text-sm text-gray-500 mb-6 flex items-center gap-2">
+        <Link href="/cr" className="hover:text-brand-orange transition-colors">
+          Inicio
+        </Link>
+        <span>/</span>
+        <span className="text-navy font-medium">{collection.title}</span>
+      </nav>
+
+      <div className="mb-8">
+        <h1 className="section-title">{collection.title}</h1>
+        {collection.description && (
+          <p className="section-subtitle mt-2">{collection.description}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-8">
+        <aside className="lg:w-64 flex-shrink-0">
+          <Suspense fallback={<div className="h-80 bg-gray-50 rounded-xl animate-pulse" />}>
+            <CollectionFilters
+              currentSort={sort ?? 'best_selling'}
+              minPrice={min}
+              maxPrice={max}
+              productCount={filtered.length}
+            />
+          </Suspense>
+        </aside>
+
+        <div className="flex-1">
+          <p className="text-sm text-gray-500 mb-4">
+            {filtered.length} producto{filtered.length !== 1 ? 's' : ''}
+          </p>
+
+          {filtered.length === 0 ? (
+            <div className="text-center py-20 text-gray-400">
+              <p className="text-xl mb-2">No se encontraron productos</p>
+              <p className="text-sm">Intentá ajustar los filtros o volvé pronto — estamos cargando el catálogo.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {filtered.map((product, i) => (
+                <ProductCard key={product.id} product={product} priority={i < 6} basePath="/cr" />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
