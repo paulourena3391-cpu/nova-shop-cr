@@ -553,6 +553,24 @@ export function formatPrice(amount: string, currencyCode: string): string {
   }).format(parseFloat(amount));
 }
 
+// Tipo de cambio fijo USD → CRC (actualizar periódicamente)
+const USD_TO_CRC = 515;
+
+/**
+ * Convierte y formatea el precio en colones costarricenses (₡).
+ * Si el producto está en USD, lo convierte automáticamente.
+ */
+export function formatPriceCR(amount: string, currencyCode: string): string {
+  const usd = parseFloat(amount);
+  const crc = currencyCode === 'CRC' ? usd : Math.round(usd * USD_TO_CRC);
+  return new Intl.NumberFormat('es-CR', {
+    style: 'currency',
+    currency: 'CRC',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(crc);
+}
+
 export function getFirstImage(product: ShopifyProduct): ShopifyImage | null {
   return product.images.edges[0]?.node ?? null;
 }

@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git push origin main)",
+      "Bash(node scripts/*)",
+      "Bash(npx tsc *)",
+      "Bash(mkdir *)",
+      "Bash(mkdir -p *)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "mcp__Claude_in_Chrome__read_console_messages",
+      "mcp__Claude_in_Chrome__list_connected_browsers",
+      "mcp__Claude_in_Chrome__get_page_text",
+      "mcp__Claude_in_Chrome__find",
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__ccd_session__mark_chapter",
+      "mcp__ccd_session__spawn_task",
+      "mcp__ccd_session__dismiss_task"
+    ],
+    "deny": []
+  }
+}

@@ -9,11 +9,13 @@ import {
   ShopifyProduct,
   ShopifyVariant,
   formatPrice,
+  formatPriceCR,
   hasDiscount,
   discountPercent,
 } from '@/lib/shopify';
 import { useCart } from '@/context/CartContext';
 import { useLang } from '@/context/LanguageContext';
+import { useMarket } from '@/context/MarketContext';
 import ProductCard from './ProductCard';
 import ProductUrgency from './product/ProductUrgency';
 import ProductBenefits from './product/ProductBenefits';
@@ -27,6 +29,8 @@ type Props = {
 
 export default function ProductDetail({ product, relatedProducts }: Props) {
   const { t, lang } = useLang();
+  const { isCR } = useMarket();
+  const fmt = isCR ? formatPriceCR : formatPrice;
   const { addItem, isLoading } = useCart();
   const router = useRouter();
 
@@ -111,7 +115,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
     selectedVariant?.price.amount ?? product.priceRange.minVariantPrice.amount,
   );
   const currency = selectedVariant?.price.currencyCode ?? product.priceRange.minVariantPrice.currencyCode;
-  const price = formatPrice(String(unitAmount), currency);
+  const price = fmt(String(unitAmount), currency);
 
   // Bundle tiers — buy more, save more (real discount set via Shopify automatic discount)
   const es = lang === 'es';
@@ -279,7 +283,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
             {isOnSale && (
               <>
                 <span className="text-lg text-gray-400 line-through">
-                  {formatPrice(
+                  {fmt(
                     selectedVariant?.compareAtPrice?.amount ??
                       product.compareAtPriceRange.minVariantPrice.amount,
                     product.compareAtPriceRange.minVariantPrice.currencyCode,
@@ -369,11 +373,11 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
                     {b.off > 0 ? (
                       <>
                         <p className="text-xs font-semibold text-emerald-600 mt-0.5">-{b.off}%</p>
-                        <p className="text-[11px] text-gray-400 line-through">{formatPrice(String(totalBefore), currency)}</p>
-                        <p className="text-xs font-bold text-navy">{formatPrice(String(totalAfter), currency)}</p>
+                        <p className="text-[11px] text-gray-400 line-through">{fmt(String(totalBefore), currency)}</p>
+                        <p className="text-xs font-bold text-navy">{fmt(String(totalAfter), currency)}</p>
                       </>
                     ) : (
-                      <p className="text-xs text-gray-500 mt-0.5">{formatPrice(String(totalBefore), currency)}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">{fmt(String(totalBefore), currency)}</p>
                     )}
                   </button>
                 );

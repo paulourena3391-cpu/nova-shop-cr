@@ -4,12 +4,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingCart, Star, Eye, Heart } from 'lucide-react';
 import {
-  ShopifyProduct, formatPrice, getFirstImage,
+  ShopifyProduct, formatPrice, formatPriceCR, getFirstImage,
   getFirstVariant, hasDiscount, discountPercent,
 } from '@/lib/shopify';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
 import { useLang } from '@/context/LanguageContext';
+import { useMarket } from '@/context/MarketContext';
 import { useState } from 'react';
 
 type Props = {
@@ -22,6 +23,8 @@ export default function ProductCard({ product, priority = false, basePath = '' }
   const { addItem, isLoading } = useCart();
   const { showToast } = useToast();
   const { t } = useLang();
+  const { isCR } = useMarket();
+  const price = isCR ? formatPriceCR : formatPrice;
   const [adding, setAdding] = useState(false);
   const [wished, setWished] = useState(false);
 
@@ -125,14 +128,14 @@ export default function ProductCard({ product, priority = false, basePath = '' }
         {/* Price */}
         <div className="flex items-baseline gap-2 mt-2.5">
           <span className="text-lg font-extrabold text-navy tracking-tight">
-            {formatPrice(
+            {price(
               product.priceRange.minVariantPrice.amount,
               product.priceRange.minVariantPrice.currencyCode,
             )}
           </span>
           {isOnSale && (
             <span className="text-xs text-gray-400 line-through">
-              {formatPrice(
+              {price(
                 product.compareAtPriceRange.minVariantPrice.amount,
                 product.compareAtPriceRange.minVariantPrice.currencyCode,
               )}
