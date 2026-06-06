@@ -466,13 +466,22 @@ export async function searchProducts(
 // ─── Cart API ──────────────────────────────────────────────────────────────────
 
 export async function createCart(
-  lines: Array<{ merchandiseId: string; quantity: number }>
+  lines: Array<{ merchandiseId: string; quantity: number }>,
+  /** ISO country code (e.g. 'CR'). Sets the buyer's country so the Shopify
+   *  checkout defaults to it instead of the store's home country (US). */
+  countryCode?: string,
 ): Promise<ShopifyCart> {
+  const input: {
+    lines: Array<{ merchandiseId: string; quantity: number }>;
+    buyerIdentity?: { countryCode: string };
+  } = { lines };
+  if (countryCode) input.buyerIdentity = { countryCode };
+
   const data = await shopifyFetch<{
     cartCreate: { cart: ShopifyCart; userErrors: Array<{ field: string; message: string }> };
   }>({
     query: CART_CREATE_MUTATION,
-    variables: { input: { lines } },
+    variables: { input },
     cache: 'no-store',
   });
 

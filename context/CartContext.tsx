@@ -112,6 +112,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     dispatch({ type: 'SET_LOADING', payload: true });
     dispatch({ type: 'SET_ERROR', payload: null });
 
+    // On the CR market, default the checkout country to Costa Rica (not the
+    // store's home country, US) so tico shoppers don't land on a US address form.
+    const countryCode =
+      typeof window !== 'undefined' && window.location.pathname.startsWith('/cr')
+        ? 'CR'
+        : undefined;
+
     try {
       const currentCartId = localStorage.getItem(CART_ID_KEY);
       let updatedCart: ShopifyCart;
@@ -122,11 +129,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         } catch {
           // Cart expired or not found — clear stale ID and create a fresh cart
           localStorage.removeItem(CART_ID_KEY);
-          updatedCart = await createCart([{ merchandiseId, quantity }]);
+          updatedCart = await createCart([{ merchandiseId, quantity }], countryCode);
           localStorage.setItem(CART_ID_KEY, updatedCart.id);
         }
       } else {
-        updatedCart = await createCart([{ merchandiseId, quantity }]);
+        updatedCart = await createCart([{ merchandiseId, quantity }], countryCode);
         localStorage.setItem(CART_ID_KEY, updatedCart.id);
       }
 
