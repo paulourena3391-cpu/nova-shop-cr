@@ -125,9 +125,27 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
     { qty: 3, off: 15, labelEs: '3 unidades', labelEn: '3 units', tagEs: 'MEJOR VALOR',   tagEn: 'BEST VALUE' },
   ];
 
+  // Sticky-bar pricing: reflect the chosen bundle so mobile shoppers see the real total.
+  const selectedBundle = BUNDLES.find((b) => b.qty === bundleQty) ?? BUNDLES[0];
+  const bundleTotalAmount = unitAmount * bundleQty * (1 - selectedBundle.off / 100);
+  const stickyPrice = bundleQty > 1 ? fmt(String(bundleTotalAmount), currency) : price;
+
+  // The non-color option (size/spec) — surfaced in the CR sticky bar for one-tap selection.
+  const sizeOptionName = optionNames.find((n) => !/color/i.test(n));
+  const sizeValues = sizeOptionName
+    ? [...new Set(
+        variants.flatMap((v) =>
+          v.selectedOptions.filter((o) => o.name === sizeOptionName).map((o) => o.value),
+        ),
+      )]
+    : [];
+  const selectedSizeValue = selectedVariant?.selectedOptions.find(
+    (o) => o.name === sizeOptionName,
+  )?.value;
+
   return (
-    /* pb-24 = room for the sticky mobile bar */
-    <div className="pb-24 md:pb-0">
+    /* pb-* = room for the sticky mobile bar (taller smart bar on /cr) */
+    <div className={`${isCR ? 'pb-36' : 'pb-24'} md:pb-0`}>
 
       {/* ── MOBILE: Back button (above image, inside image area) ──
            DESKTOP: breadcrumb below the grid  */}
@@ -151,7 +169,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
             On desktop (md+): normal contained box
           */}
           <div className="-mt-11 md:mt-0">   {/* pull up to cover the back-button row on mobile */}
-            <div className="group relative w-full aspect-square md:rounded-2xl overflow-hidden bg-gray-100">
+            <div className={`group relative w-full overflow-hidden bg-gray-100 md:rounded-2xl ${isCR ? 'h-[56vh] md:h-auto md:aspect-square' : 'aspect-square'}`}>
               {currentImage ? (
                 <Image
                   key={selectedImageIdx}
@@ -505,38 +523,99 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
       {/* ══════════════════════════════════════════════════════════
           STICKY BOTTOM BAR — mobile only
           ══════════════════════════════════════════════════════════ */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200 sticky-safe-bottom">
-        <div className="flex items-center gap-3 px-4 py-3">
-          {/* Price + variant summary */}
-          <div className="flex-1 min-w-0">
-            {selectedVariant?.selectedOptions && selectedVariant.selectedOptions.length > 0 && (
-              <p className="text-xs text-gray-400 truncate leading-none mb-0.5">
-                {selectedVariant.selectedOptions.map((o) => o.value).join(' · ')}
-              </p>
-            )}
-            <p className="text-lg font-extrabold text-navy leading-none">{price}</p>
-          </div>
+      {!isCR ? (
+        /* USA store — unchanged */
+        <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200 sticky-safe-bottom">
+          <div className="flex items-center gap-3 px-4 py-3">
+            {/* Price + variant summary */}
+            <div className="flex-1 min-w-0">
+              {selectedVariant?.selectedOptions && selectedVariant.selectedOptions.length > 0 && (
+                <p className="text-xs text-gray-400 truncate leading-none mb-0.5">
+                  {selectedVariant.selectedOptions.map((o) => o.value).join(' · ')}
+                </p>
+              )}
+              <p className="text-lg font-extrabold text-navy leading-none">{price}</p>
+            </div>
 
-          {/* CTA */}
-          <button
-            onClick={handleAddToCart}
-            disabled={!isAvailable || isLoading}
-            className="btn-primary px-5 py-3 text-sm shrink-0 shadow-lg shadow-brand-orange/30"
-          >
-            {isAvailable ? t.addToCart : t.outOfStock}
-          </button>
-
-          {isAvailable && (
+            {/* CTA */}
             <button
-              onClick={handleBuyNow}
-              disabled={isLoading}
-              className="btn-secondary px-4 py-3 text-sm shrink-0"
+              onClick={handleAddToCart}
+              disabled={!isAvailable || isLoading}
+              className="btn-primary px-5 py-3 text-sm shrink-0 shadow-lg shadow-brand-orange/30"
             >
-              {t.buyNow}
+              {isAvailable ? t.addToCart : t.outOfStock}
             </button>
-          )}
+
+            {isAvailable && (
+              <button
+                onClick={handleBuyNow}
+                disabled={isLoading}
+                className="btn-secondary px-4 py-3 text-sm shrink-0"
+              >
+                {t.buyNow}
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      ) : (
+        /* CR store — smart conversion bar: pick size + see bundle price + CTA, no scroll */
+        <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-8px_24px_rgba(15,27,45,0.08)] sticky-safe-bottom">
+          {/* Quick size / spec picker — tap to choose without scrolling up */}
+          {sizeOptionName && sizeValues.length > 1 && (
+            <div className="flex items-center gap-2 overflow-x-auto px-4 pt-2.5 pb-1.5 scrollbar-hide border-b border-gray-100">
+              <span className="shrink-0 text-[11px] font-semibold text-gray-500">{sizeOptionName}:</span>
+              {sizeValues.map((val) => {
+                const variantForOption = variants.find((v) =>
+                  v.selectedOptions.some((o) => o.name === sizeOptionName && o.value === val),
+                );
+                const available = variantForOption?.availableForSale ?? false;
+                const active = selectedSizeValue === val;
+                return (
+                  <button
+                    key={val}
+                    onClick={() => selectOption(sizeOptionName, val)}
+                    disabled={!available}
+                    className={`shrink-0 min-w-[2.4rem] px-3 py-1.5 rounded-lg text-xs font-semibold border-2 transition-all active:scale-95 ${
+                      active
+                        ? 'border-brand-orange bg-orange-50 text-brand-orange'
+                        : 'border-gray-200 bg-white text-gray-700'
+                    } ${!available ? 'opacity-35 cursor-not-allowed line-through' : ''}`}
+                  >
+                    {val}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Price (bundle-aware) + CTA */}
+          <div className="flex items-center gap-3 px-4 py-2.5">
+            <div className="flex-1 min-w-0">
+              <p className="text-[11px] text-gray-400 truncate leading-none mb-0.5">
+                {bundleQty > 1
+                  ? `${bundleQty} unidades · ahorrás ${selectedBundle.off}%`
+                  : selectedVariant?.selectedOptions?.map((o) => o.value).join(' · ')}
+              </p>
+              <div className="flex items-baseline gap-1.5">
+                <p className="text-lg font-extrabold text-navy leading-none">{stickyPrice}</p>
+                {bundleQty > 1 && (
+                  <p className="text-xs text-gray-400 line-through leading-none">
+                    {fmt(String(unitAmount * bundleQty), currency)}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <button
+              onClick={handleAddToCart}
+              disabled={!isAvailable || isLoading}
+              className="btn-primary px-6 py-3.5 text-sm shrink-0 shadow-lg shadow-brand-orange/30"
+            >
+              {isAvailable ? t.addToCart : t.outOfStock}
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );
