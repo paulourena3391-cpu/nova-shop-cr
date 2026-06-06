@@ -15,14 +15,15 @@ export const dynamic = 'force-dynamic';
 
 // Mapeo handle → título y query de productos
 const CR_COLLECTION_MAP: Record<string, { title: string; query: string }> = {
-  'cr-tecnologia':  { title: 'Tecnología',  query: 'vendor:CJDropshipping product_type:Electronics'     },
-  'cr-belleza':     { title: 'Belleza',      query: 'vendor:CJDropshipping product_type:Beauty'           },
-  'cr-moda-mujer':  { title: 'Moda Mujer',   query: "vendor:CJDropshipping product_type:Women's Clothing" },
-  'cr-moda-hombre': { title: 'Moda Hombre',  query: "vendor:CJDropshipping product_type:Men's Clothing"   },
-  'cr-calzado':     { title: 'Calzado',      query: 'vendor:CJDropshipping product_type:Footwear'         },
-  'cr-hogar':       { title: 'Hogar',        query: 'vendor:CJDropshipping product_type:Home & Living'    },
-  'cr-deportes':    { title: 'Deportes',     query: 'vendor:CJDropshipping product_type:Sports & Fitness' },
-  'cr-mascotas':    { title: 'Mascotas',     query: 'vendor:CJDropshipping product_type:Pet Supplies'     },
+  'cr-tecnologia':  { title: 'Tecnología',    query: 'vendor:CJDropshipping product_type:Electronics'      },
+  'cr-belleza':     { title: 'Belleza',        query: 'vendor:CJDropshipping product_type:Beauty'            },
+  'cr-moda-mujer':  { title: 'Moda Mujer',     query: "vendor:CJDropshipping product_type:Women's Clothing"  },
+  'cr-moda-hombre': { title: 'Moda Hombre',    query: "vendor:CJDropshipping product_type:Men's Clothing"    },
+  'cr-calzado':     { title: 'Calzado',        query: 'vendor:CJDropshipping product_type:Footwear'          },
+  'cr-hogar':       { title: 'Hogar',          query: 'vendor:CJDropshipping product_type:Home & Living'     },
+  'cr-deportes':    { title: 'Fitness',        query: 'vendor:CJDropshipping product_type:Sports & Fitness'  },
+  'cr-mascotas':    { title: 'Mascotas',       query: 'vendor:CJDropshipping product_type:Pet Supplies'      },
+  'cr-swimwear':    { title: 'Trajes de Baño', query: 'vendor:CJDropshipping product_type:Swimwear'          },
 };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

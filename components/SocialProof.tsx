@@ -6,12 +6,21 @@ import { useLang } from '@/context/LanguageContext';
 
 // Recent-purchase social proof popups (bottom-left). Tasteful: appears
 // occasionally, auto-dismisses, GPU-animated, respects reduced motion.
-const NAMES = ['Sarah', 'James', 'Emily', 'Michael', 'Jessica', 'David', 'Ashley', 'Daniel', 'Maria', 'Carlos', 'Sofia', 'Kevin', 'Linda', 'Brian', 'Nicole'];
-const CITIES = ['Miami, FL', 'Austin, TX', 'Los Angeles, CA', 'New York, NY', 'Chicago, IL', 'Houston, TX', 'Phoenix, AZ', 'Orlando, FL', 'Denver, CO', 'Seattle, WA', 'Atlanta, GA', 'San Diego, CA'];
-const PRODUCTS = [
+const NAMES_US = ['Sarah', 'James', 'Emily', 'Michael', 'Jessica', 'David', 'Ashley', 'Daniel', 'Maria', 'Carlos', 'Sofia', 'Kevin', 'Linda', 'Brian', 'Nicole'];
+const CITIES_US = ['Miami, FL', 'Austin, TX', 'Los Angeles, CA', 'New York, NY', 'Chicago, IL', 'Houston, TX', 'Phoenix, AZ', 'Orlando, FL', 'Denver, CO', 'Seattle, WA', 'Atlanta, GA', 'San Diego, CA'];
+const PRODUCTS_US = [
   'Posture Corrector', 'Bluetooth Sleep Headband', 'EMS Body Massager',
   'Pet Hair Remover', 'Smart Watch', 'Wireless Earphones', 'Resistance Bands Set',
   'Scalp Massage Brush', 'LED Work Light', 'Yoga Outfit',
+];
+
+// Costa Rica market
+const NAMES_CR = ['Sofía', 'Andrés', 'Valeria', 'Diego', 'Camila', 'Luis', 'Daniela', 'Sebastián', 'Natalia', 'Carlos', 'Andrea', 'Fabio', 'Mariela', 'Josué', 'Paola'];
+const CITIES_CR = ['San José', 'Heredia', 'Alajuela', 'Cartago', 'Liberia, Guanacaste', 'Pérez Zeledón', 'Desamparados', 'Escazú', 'La Sabana', 'Tres Ríos', 'Curridabat', 'Grecia', 'Nicoya', 'Puntarenas', 'Limón'];
+const PRODUCTS_CR = [
+  'Corrector de postura', 'Reloj inteligente', 'Audífonos Bluetooth',
+  'Set de maquillaje', 'Faja reductora', 'Sandalia de moda',
+  'Kit de yoga', 'Organizador de cocina', 'Cargador inalámbrico', 'Vestido de verano',
 ];
 
 function rand<T>(arr: T[]) { return arr[Math.floor(Math.random() * arr.length)]; }
@@ -19,6 +28,9 @@ function rand<T>(arr: T[]) { return arr[Math.floor(Math.random() * arr.length)];
 export default function SocialProof() {
   const { lang } = useLang();
   const es = lang === 'es';
+  const NAMES    = es ? NAMES_CR    : NAMES_US;
+  const CITIES   = es ? CITIES_CR   : CITIES_US;
+  const PRODUCTS = es ? PRODUCTS_CR : PRODUCTS_US;
   const [item, setItem] = useState<{ name: string; city: string; product: string; mins: number } | null>(null);
   const [visible, setVisible] = useState(false);
 
