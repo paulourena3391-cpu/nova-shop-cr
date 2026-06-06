@@ -39,6 +39,8 @@ const CR_CATEGORIES = [
   { handle: 'cr-deportes',     cjIds: ['4B397425-26C1-4D0E-B6D2-96B0B03689DB'],                                        type: 'Sports & Fitness',       count: 20 },
   { handle: 'cr-belleza',      cjIds: [], keywords: ['serum vitamin c','eyelash curler','foundation brush','epilator women','clay mask','press on nails','jade roller','hair straightener','mascara','contour palette'], type: 'Beauty', count: 20 },
   { handle: 'cr-mascotas',     cjIds: [], keywords: ['dog harness','cat toy','pet feeder','dog collar','pet grooming','pet bed','dog leash','cat litter','pet bowl','dog toy'], type: 'Pet Supplies', count: 20 },
+  { handle: 'cr-calzado-hombre', cjIds: ['0F0296D6-F057-4FD4-9E06-95D5DBCCE6EB'], keywords: ['mens sneakers','mens leather shoes','mens boots','mens loafers','mens running shoes','mens casual shoes'], type: "Men's Footwear", count: 18 },
+  { handle: 'cr-herramientas',   cjIds: [], keywords: ['cordless drill','tool set','car vacuum cleaner','tire inflator','tactical flashlight','screwdriver set','wrench set','angle grinder','laser level','soldering iron','multimeter','heat gun'], type: 'Tools', count: 18 },
 ];
 
 // ─── Envío CR estimado por peso ───────────────────────────────────────────────

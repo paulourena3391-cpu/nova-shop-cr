@@ -24,6 +24,8 @@ const CR_COLLECTION_MAP: Record<string, { title: string; query: string }> = {
   'cr-deportes':    { title: 'Fitness',        query: 'tag:market-cr product_type:Sports & Fitness'  },
   'cr-mascotas':    { title: 'Mascotas',       query: 'tag:market-cr product_type:Pet Supplies'      },
   'cr-swimwear':    { title: 'Trajes de Baño', query: 'tag:market-cr product_type:Swimwear'          },
+  'cr-calzado-hombre': { title: 'Calzado de Hombre', query: "tag:market-cr product_type:Men's Footwear" },
+  'cr-herramientas':   { title: 'Herramientas',      query: 'tag:market-cr product_type:Tools'           },
 };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
