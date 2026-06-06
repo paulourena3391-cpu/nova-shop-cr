@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getCollection, CollectionSortKey, ShopifyProduct } from '@/lib/shopify';
+import { getProducts, ShopifyProduct } from '@/lib/shopify';
 import ProductCard from '@/components/ProductCard';
 import CollectionFilters from '@/components/CollectionFilters';
 
@@ -13,35 +13,35 @@ type PageProps = {
 
 export const dynamic = 'force-dynamic';
 
+// Mapeo handle → título y query de productos
+const CR_COLLECTION_MAP: Record<string, { title: string; query: string }> = {
+  'cr-tecnologia':  { title: 'Tecnología',  query: 'vendor:CJDropshipping product_type:Electronics'     },
+  'cr-belleza':     { title: 'Belleza',      query: 'vendor:CJDropshipping product_type:Beauty'           },
+  'cr-moda-mujer':  { title: 'Moda Mujer',   query: "vendor:CJDropshipping product_type:Women's Clothing" },
+  'cr-moda-hombre': { title: 'Moda Hombre',  query: "vendor:CJDropshipping product_type:Men's Clothing"   },
+  'cr-calzado':     { title: 'Calzado',      query: 'vendor:CJDropshipping product_type:Footwear'         },
+  'cr-hogar':       { title: 'Hogar',        query: 'vendor:CJDropshipping product_type:Home & Living'    },
+  'cr-deportes':    { title: 'Deportes',     query: 'vendor:CJDropshipping product_type:Sports & Fitness' },
+  'cr-mascotas':    { title: 'Mascotas',     query: 'vendor:CJDropshipping product_type:Pet Supplies'     },
+};
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { handle } = await params;
-  const col = await getCollection({ handle, first: 1 });
+  const col = CR_COLLECTION_MAP[handle];
   if (!col) return {};
   return {
     title: col.title,
-    description: col.description || `Comprá ${col.title} en Nova Shop CR con envío rápido.`,
+    description: `Comprá ${col.title} en Nova Shop CR con envío incluido.`,
   };
 }
 
-const SORT_OPTIONS: { value: string; sortKey: CollectionSortKey; reverse: boolean }[] = [
-  { value: 'best_selling', sortKey: 'BEST_SELLING', reverse: false },
-  { value: 'price_asc',    sortKey: 'PRICE',        reverse: false },
-  { value: 'price_desc',   sortKey: 'PRICE',        reverse: true  },
-  { value: 'newest',       sortKey: 'CREATED',      reverse: true  },
-  { value: 'title_asc',    sortKey: 'TITLE',        reverse: false },
-];
-
-function getSortParams(sort?: string) {
-  return SORT_OPTIONS.find((o) => o.value === sort) ?? SORT_OPTIONS[0];
-}
-
 function filterByPrice(products: ShopifyProduct[], min?: string, max?: string): ShopifyProduct[] {
-  const minPrice = min ? parseFloat(min) : null;
-  const maxPrice = max ? parseFloat(max) : null;
+  const minP = min ? parseFloat(min) : null;
+  const maxP = max ? parseFloat(max) : null;
   return products.filter((p) => {
     const price = parseFloat(p.priceRange.minVariantPrice.amount);
-    if (minPrice !== null && price < minPrice) return false;
-    if (maxPrice !== null && price > maxPrice) return false;
+    if (minP !== null && price < minP) return false;
+    if (maxP !== null && price > maxP) return false;
     return true;
   });
 }
@@ -50,30 +50,40 @@ export default async function CRCollectionPage({ params, searchParams }: PagePro
   const { handle } = await params;
   const { sort, min, max } = await searchParams;
 
-  const { sortKey, reverse } = getSortParams(sort);
+  const col = CR_COLLECTION_MAP[handle];
+  if (!col) notFound();
 
-  const collection = await getCollection({ handle, first: 24, sortKey, reverse });
-  if (!collection) notFound();
+  // Shopify sortKey from sort param
+  const sortMap: Record<string, { sortKey: 'BEST_SELLING' | 'PRICE' | 'CREATED_AT' | 'TITLE'; reverse: boolean }> = {
+    best_selling: { sortKey: 'BEST_SELLING', reverse: false },
+    price_asc:    { sortKey: 'PRICE',        reverse: false },
+    price_desc:   { sortKey: 'PRICE',        reverse: true  },
+    newest:       { sortKey: 'CREATED_AT',   reverse: true  },
+    title_asc:    { sortKey: 'TITLE',        reverse: false },
+  };
+  const { sortKey, reverse } = sortMap[sort ?? 'best_selling'] ?? sortMap['best_selling'];
 
-  const allProducts = collection.products.edges.map((e) => e.node);
+  const { products: allProducts } = await getProducts({
+    first: 48,
+    query: col.query,
+    sortKey,
+    reverse,
+  });
+
   const filtered = filterByPrice(allProducts, min, max);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Breadcrumb */}
       <nav className="text-sm text-gray-500 mb-6 flex items-center gap-2">
-        <Link href="/cr" className="hover:text-brand-orange transition-colors">
-          Inicio
-        </Link>
+        <Link href="/cr" className="hover:text-brand-orange transition-colors">Inicio</Link>
         <span>/</span>
-        <span className="text-navy font-medium">{collection.title}</span>
+        <span className="text-navy font-medium">{col.title}</span>
       </nav>
 
       <div className="mb-8">
-        <h1 className="section-title">{collection.title}</h1>
-        {collection.description && (
-          <p className="section-subtitle mt-2">{collection.description}</p>
-        )}
+        <h1 className="section-title">{col.title}</h1>
+        <p className="text-gray-500 text-sm mt-1">Envío incluido en el precio • Entrega en Costa Rica</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
@@ -96,7 +106,7 @@ export default async function CRCollectionPage({ params, searchParams }: PagePro
           {filtered.length === 0 ? (
             <div className="text-center py-20 text-gray-400">
               <p className="text-xl mb-2">No se encontraron productos</p>
-              <p className="text-sm">Intentá ajustar los filtros o volvé pronto — estamos cargando el catálogo.</p>
+              <p className="text-sm">Intentá ajustar los filtros</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

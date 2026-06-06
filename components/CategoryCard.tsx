@@ -1,7 +1,7 @@
 // Server Component — fetches real product images, uses client labels for bilingual text
 import Image from 'next/image';
 import Link from 'next/link';
-import { getCollection } from '@/lib/shopify';
+import { getCollection, getProducts } from '@/lib/shopify';
 import { CategoryCardTitle, CategoryShopNow } from './CategoryCardLabels';
 
 type Props = {
@@ -9,9 +9,12 @@ type Props = {
   titleEs: string;
   titleEn: string;
   basePath?: string;
+  /** When set, fetches products via this Shopify query instead of by collection handle.
+   *  Used for CR market where collections aren't published to the headless channel. */
+  productQuery?: string;
 };
 
-export default async function CategoryCard({ handle, titleEs, titleEn, basePath = '' }: Props) {
+export default async function CategoryCard({ handle, titleEs, titleEn, basePath = '', productQuery }: Props) {
   let products: Array<{
     id: string;
     title: string;
@@ -20,13 +23,25 @@ export default async function CategoryCard({ handle, titleEs, titleEn, basePath 
   }> = [];
 
   try {
-    const collection = await getCollection({ handle, first: 4 });
-    products = collection?.products.edges.slice(0, 4).map((e) => ({
-      id: e.node.id,
-      title: e.node.title,
-      handle: e.node.handle,
-      image: e.node.images.edges[0]?.node ?? null,
-    })) ?? [];
+    if (productQuery) {
+      // CR market: query by vendor+type tag (collections not published to headless)
+      const { products: found } = await getProducts({ first: 4, query: productQuery });
+      products = found.slice(0, 4).map((p) => ({
+        id: p.id,
+        title: p.title,
+        handle: p.handle,
+        image: p.images.edges[0]?.node ?? null,
+      }));
+    } else {
+      // USA market: standard collection fetch
+      const collection = await getCollection({ handle, first: 4 });
+      products = collection?.products.edges.slice(0, 4).map((e) => ({
+        id: e.node.id,
+        title: e.node.title,
+        handle: e.node.handle,
+        image: e.node.images.edges[0]?.node ?? null,
+      })) ?? [];
+    }
   } catch {
     // silently fail — card shows empty placeholders
   }

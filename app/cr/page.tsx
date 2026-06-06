@@ -19,16 +19,17 @@ export const dynamic = 'force-dynamic';
 
 const CR_BASE = '/cr';
 
-// CR market categories — all use cr- prefixed Shopify collection handles
+// CR market categories
+// productQuery: filtra por vendor+tipo ya que las colecciones cr-* no están publicadas al canal headless
 const CR_CATEGORIES = [
-  { handle: 'cr-tecnologia',   titleEs: 'Tecnología',        titleEn: 'Tech'           },
-  { handle: 'cr-belleza',      titleEs: 'Belleza',           titleEn: 'Beauty'         },
-  { handle: 'cr-moda-mujer',   titleEs: 'Moda Mujer',        titleEn: "Women's Fashion" },
-  { handle: 'cr-moda-hombre',  titleEs: 'Moda Hombre',       titleEn: "Men's Fashion"  },
-  { handle: 'cr-calzado',      titleEs: 'Calzado',           titleEn: 'Footwear'       },
-  { handle: 'cr-hogar',        titleEs: 'Hogar',             titleEn: 'Home'           },
-  { handle: 'cr-deportes',     titleEs: 'Deportes',          titleEn: 'Sports'         },
-  { handle: 'cr-mascotas',     titleEs: 'Mascotas',          titleEn: 'Pets'           },
+  { handle: 'cr-tecnologia',  titleEs: 'Tecnología',  titleEn: 'Tech',            productQuery: 'vendor:CJDropshipping product_type:Electronics'      },
+  { handle: 'cr-belleza',     titleEs: 'Belleza',     titleEn: 'Beauty',          productQuery: 'vendor:CJDropshipping product_type:Beauty'            },
+  { handle: 'cr-moda-mujer',  titleEs: 'Moda Mujer',  titleEn: "Women's Fashion", productQuery: "vendor:CJDropshipping product_type:Women's Clothing"  },
+  { handle: 'cr-moda-hombre', titleEs: 'Moda Hombre', titleEn: "Men's Fashion",   productQuery: "vendor:CJDropshipping product_type:Men's Clothing"    },
+  { handle: 'cr-calzado',     titleEs: 'Calzado',     titleEn: 'Footwear',        productQuery: 'vendor:CJDropshipping product_type:Footwear'          },
+  { handle: 'cr-hogar',       titleEs: 'Hogar',       titleEn: 'Home',            productQuery: 'vendor:CJDropshipping product_type:Home & Living'     },
+  { handle: 'cr-deportes',    titleEs: 'Deportes',    titleEn: 'Sports',          productQuery: 'vendor:CJDropshipping product_type:Sports & Fitness'  },
+  { handle: 'cr-mascotas',    titleEs: 'Mascotas',    titleEn: 'Pets',            productQuery: 'vendor:CJDropshipping product_type:Pet Supplies'      },
 ];
 
 function ProductsSkeleton({ count = 4 }: { count?: number }) {
@@ -116,6 +117,7 @@ export default async function CRHomePage() {
                   titleEs={cat.titleEs}
                   titleEn={cat.titleEn}
                   basePath={CR_BASE}
+                  productQuery={cat.productQuery}
                 />
               </Suspense>
             ))}
