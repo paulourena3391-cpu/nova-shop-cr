@@ -2,12 +2,13 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { getProducts } from '@/lib/shopify';
-import Hero from '@/components/Hero';
+import HeroCR from '@/components/cr/HeroCR';
 import TrustBadges from '@/components/TrustBadges';
 import CountdownTimer from '@/components/CountdownTimer';
 import ProductCard from '@/components/ProductCard';
 import Newsletter from '@/components/Newsletter';
 import CategoryCard from '@/components/CategoryCard';
+import { Reveal, StaggerGroup, StaggerItem } from '@/components/motion/Motion';
 
 export const metadata: Metadata = {
   title: 'Inicio',
@@ -56,11 +57,13 @@ async function CRBestSellersGrid() {
   });
   if (!products.length) return <CRComingSoon />;
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <StaggerGroup className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {products.map((product, i) => (
-        <ProductCard key={product.id} product={product} priority={i < 4} basePath={CR_BASE} />
+        <StaggerItem key={product.id}>
+          <ProductCard product={product} priority={i < 4} basePath={CR_BASE} />
+        </StaggerItem>
       ))}
-    </div>
+    </StaggerGroup>
   );
 }
 
@@ -73,11 +76,13 @@ async function CRDealsGrid() {
   });
   if (!products.length) return <CRComingSoon />;
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <StaggerGroup className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {products.map((product) => (
-        <ProductCard key={product.id} product={product} basePath={CR_BASE} />
+        <StaggerItem key={product.id}>
+          <ProductCard product={product} basePath={CR_BASE} />
+        </StaggerItem>
       ))}
-    </div>
+    </StaggerGroup>
   );
 }
 
@@ -91,54 +96,80 @@ function CRComingSoon() {
   );
 }
 
+function SectionHeading({ children, badge }: { children: React.ReactNode; badge?: React.ReactNode }) {
+  return (
+    <h2 className="inline-flex items-center gap-3 text-3xl md:text-4xl font-bold text-navy tracking-tightest">
+      <span className="w-1.5 h-8 rounded-full bg-gradient-to-b from-brand-orange to-amber-400" />
+      {children}
+      {badge}
+    </h2>
+  );
+}
+
 export default async function CRHomePage() {
   return (
     <>
-      {/* Hero — same component, shows Spanish via LanguageContext */}
-      <Hero />
+      {/* Premium animated hero — CR only */}
+      <HeroCR />
 
       {/* Trust strip */}
       <TrustBadges />
 
       {/* ── Category cards grid ── */}
-      <section className="bg-gray-100 py-8 reveal">
+      <section className="bg-gradient-to-b from-gray-100 to-gray-50 py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {CR_CATEGORIES.map((cat) => (
-              <Suspense
-                key={cat.handle}
-                fallback={
-                  <div className="bg-white border border-gray-200 rounded-lg p-4 animate-pulse h-64" />
-                }
-              >
-                <CategoryCard
-                  handle={cat.handle}
-                  titleEs={cat.titleEs}
-                  titleEn={cat.titleEn}
-                  basePath={CR_BASE}
-                  productQuery={cat.productQuery}
-                />
-              </Suspense>
+          <Reveal className="mb-9 text-center">
+            <p className="text-sm font-bold uppercase tracking-widest text-brand-orange mb-2">
+              Explorá la tienda
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-navy tracking-tightest">
+              Comprá por categoría
+            </h2>
+            <p className="mt-3 text-gray-500 max-w-xl mx-auto">
+              Productos seleccionados con envío rápido en todo Costa Rica.
+            </p>
+          </Reveal>
+
+          <StaggerGroup
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+            stagger={0.08}
+          >
+            {CR_CATEGORIES.map((cat, i) => (
+              <StaggerItem key={`${cat.handle}-${i}`}>
+                <Suspense
+                  fallback={
+                    <div className="bg-white border border-gray-100 rounded-2xl p-5 animate-pulse h-64" />
+                  }
+                >
+                  <CategoryCard
+                    handle={cat.handle}
+                    titleEs={cat.titleEs}
+                    titleEn={cat.titleEn}
+                    basePath={CR_BASE}
+                    productQuery={cat.productQuery}
+                  />
+                </Suspense>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerGroup>
         </div>
       </section>
 
       {/* ── Ofertas del día ── */}
-      <section className="py-10 bg-white reveal">
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-gray-200">
-            <div className="flex items-center gap-3">
-              <span className="w-1.5 h-7 bg-brand-orange rounded-full" />
-              <h2 className="text-2xl md:text-3xl font-bold text-navy tracking-tightest">
-                Ofertas del día
-              </h2>
-              <span className="bg-red-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-wide shadow-sm animate-pulse">
-                OFERTA
-              </span>
-            </div>
+          <Reveal className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-5 border-b border-gray-200">
+            <SectionHeading
+              badge={
+                <span className="bg-red-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-wide shadow-sm animate-pulse">
+                  OFERTA
+                </span>
+              }
+            >
+              Ofertas del día
+            </SectionHeading>
             <CountdownTimer />
-          </div>
+          </Reveal>
           <Suspense fallback={<ProductsSkeleton count={4} />}>
             <CRDealsGrid />
           </Suspense>
@@ -146,13 +177,10 @@ export default async function CRHomePage() {
       </section>
 
       {/* ── Más vendidos ── */}
-      <section className="py-10 bg-gray-50 reveal">
+      <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-6 pb-4 border-b border-gray-200">
-            <h2 className="text-2xl md:text-3xl font-bold text-navy tracking-tightest inline-flex items-center gap-3">
-              <span className="w-1.5 h-7 bg-brand-orange rounded-full" />
-              Los más vendidos
-            </h2>
+          <Reveal className="flex items-end justify-between mb-8 pb-5 border-b border-gray-200">
+            <SectionHeading>Los más vendidos</SectionHeading>
             <Link
               href="/cr/collections/cr-tecnologia"
               className="group text-brand-orange hover:text-brand-orange-hover text-sm font-semibold transition-colors inline-flex items-center gap-1"
@@ -160,7 +188,7 @@ export default async function CRHomePage() {
               Ver todo{' '}
               <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
             </Link>
-          </div>
+          </Reveal>
           <Suspense fallback={<ProductsSkeleton count={4} />}>
             <CRBestSellersGrid />
           </Suspense>
@@ -168,7 +196,9 @@ export default async function CRHomePage() {
       </section>
 
       {/* Newsletter */}
-      <Newsletter />
+      <Reveal>
+        <Newsletter />
+      </Reveal>
     </>
   );
 }

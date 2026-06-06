@@ -30,3 +30,6 @@ Thumbs.db
 npm-debug.log*
 
 .vercel
+
+# graphify knowledge graph (local artifact)
+graphify-out/
