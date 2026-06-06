@@ -21,14 +21,14 @@ const CR_BASE = '/cr';
 
 // CR market categories
 const CR_CATEGORIES = [
-  { handle: 'cr-moda-mujer',  titleEs: 'Moda Mujer',   titleEn: "Women's Fashion", productQuery: "vendor:CJDropshipping product_type:Women's Clothing"  },
-  { handle: 'cr-moda-hombre', titleEs: 'Moda Hombre',  titleEn: "Men's Fashion",   productQuery: "vendor:CJDropshipping product_type:Men's Clothing"    },
-  { handle: 'cr-calzado',     titleEs: 'Calzado',      titleEn: 'Footwear',        productQuery: 'vendor:CJDropshipping product_type:Footwear'          },
-  { handle: 'cr-hogar',       titleEs: 'Hogar',        titleEn: 'Home & Living',   productQuery: 'vendor:CJDropshipping product_type:Home & Living'     },
-  { handle: 'cr-deportes',    titleEs: 'Fitness',      titleEn: 'Fitness',         productQuery: 'vendor:CJDropshipping product_type:Sports & Fitness'  },
-  { handle: 'cr-tecnologia',  titleEs: 'Tecnología',   titleEn: 'Tech',            productQuery: 'vendor:CJDropshipping product_type:Electronics'       },
-  { handle: 'cr-mascotas',    titleEs: 'Mascotas',     titleEn: 'Pets',            productQuery: 'vendor:CJDropshipping product_type:Pet Supplies'      },
-  { handle: 'cr-calzado',     titleEs: 'Trajes de Baño', titleEn: 'Swimwear',      productQuery: 'vendor:CJDropshipping product_type:Swimwear'          },
+  { handle: 'cr-moda-mujer',  titleEs: 'Moda Mujer',   titleEn: "Women's Fashion", productQuery: "tag:market-cr product_type:Women's Clothing"  },
+  { handle: 'cr-moda-hombre', titleEs: 'Moda Hombre',  titleEn: "Men's Fashion",   productQuery: "tag:market-cr product_type:Men's Clothing"    },
+  { handle: 'cr-calzado',     titleEs: 'Calzado',      titleEn: 'Footwear',        productQuery: 'tag:market-cr product_type:Footwear'          },
+  { handle: 'cr-hogar',       titleEs: 'Hogar',        titleEn: 'Home & Living',   productQuery: 'tag:market-cr product_type:Home & Living'     },
+  { handle: 'cr-deportes',    titleEs: 'Fitness',      titleEn: 'Fitness',         productQuery: 'tag:market-cr product_type:Sports & Fitness'  },
+  { handle: 'cr-tecnologia',  titleEs: 'Tecnología',   titleEn: 'Tech',            productQuery: 'tag:market-cr product_type:Electronics'       },
+  { handle: 'cr-mascotas',    titleEs: 'Mascotas',     titleEn: 'Pets',            productQuery: 'tag:market-cr product_type:Pet Supplies'      },
+  { handle: 'cr-calzado',     titleEs: 'Trajes de Baño', titleEn: 'Swimwear',      productQuery: 'tag:market-cr product_type:Swimwear'          },
 ];
 
 function ProductsSkeleton({ count = 4 }: { count?: number }) {
@@ -52,7 +52,7 @@ async function CRBestSellersGrid() {
   const { products } = await getProducts({
     first: 4,
     sortKey: 'BEST_SELLING',
-    query: 'vendor:CJDropshipping',
+    query: 'tag:market-cr',
   });
   if (!products.length) return <CRComingSoon />;
   return (
@@ -69,7 +69,7 @@ async function CRDealsGrid() {
     first: 4,
     sortKey: 'CREATED_AT',
     reverse: true,
-    query: "vendor:CJDropshipping product_type:Women's Clothing",
+    query: "tag:market-cr product_type:Women's Clothing",
   });
   if (!products.length) return <CRComingSoon />;
   return (
