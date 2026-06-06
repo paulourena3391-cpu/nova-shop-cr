@@ -29,8 +29,9 @@ type Props = {
 
 export default function ProductDetail({ product, relatedProducts }: Props) {
   const { t, lang } = useLang();
-  const { isCR } = useMarket();
+  const { isCR, basePath } = useMarket();
   const fmt = isCR ? formatPriceCR : formatPrice;
+  const home = basePath || '/';
   const { addItem, isLoading } = useCart();
   const router = useRouter();
 
@@ -151,7 +152,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
            DESKTOP: breadcrumb below the grid  */}
       <div className="flex items-center gap-2 px-4 pt-3 pb-2 md:hidden">
         <Link
-          href="/"
+          href={home}
           className="flex items-center gap-1 text-white bg-black/40 backdrop-blur-sm rounded-full px-3 py-1.5 text-sm font-medium active:opacity-70 transition-opacity"
         >
           <ChevronLeft size={14} />
@@ -207,7 +208,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
               {/* Back button overlay (sits on top of image on mobile) */}
               <div className="absolute top-3 left-3 flex gap-2 md:hidden">
                 <Link
-                  href="/"
+                  href={home}
                   className="flex items-center gap-1 text-white bg-black/40 backdrop-blur-sm rounded-full px-3 py-1.5 text-sm font-medium"
                 >
                   <ChevronLeft size={14} />
@@ -256,16 +257,21 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
 
           {/* Desktop breadcrumb */}
           <nav className="hidden md:flex items-center gap-2 text-sm text-gray-400">
-            <Link href="/" className="hover:text-brand-orange transition-colors">{t.home}</Link>
+            <Link href={home} className="hover:text-brand-orange transition-colors">{t.home}</Link>
             {product.productType && (
               <>
                 <span>/</span>
-                <Link
-                  href={`/collections/${product.productType.toLowerCase().replace(/\s+/g, '-')}`}
-                  className="hover:text-brand-orange transition-colors"
-                >
-                  {product.productType}
-                </Link>
+                {/* On /cr the productType slug doesn't map to a cr-* collection, so show plain text */}
+                {isCR ? (
+                  <span>{product.productType}</span>
+                ) : (
+                  <Link
+                    href={`/collections/${product.productType.toLowerCase().replace(/\s+/g, '-')}`}
+                    className="hover:text-brand-orange transition-colors"
+                  >
+                    {product.productType}
+                  </Link>
+                )}
                 <span>/</span>
               </>
             )}
@@ -514,7 +520,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             {relatedProducts.map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <ProductCard key={p.id} product={p} basePath={basePath} />
             ))}
           </div>
         </section>

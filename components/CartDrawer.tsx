@@ -5,11 +5,14 @@ import Image from 'next/image';
 import { X, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useLang } from '@/context/LanguageContext';
-import { formatPrice } from '@/lib/shopify';
+import { useMarket } from '@/context/MarketContext';
+import { formatPrice, formatPriceCR } from '@/lib/shopify';
 
 export default function CartDrawer() {
   const { isOpen, closeCart, cartLines, cart, updateItem, removeItem, isLoading } = useCart();
   const { t, lang } = useLang();
+  const { isCR, basePath } = useMarket();
+  const fmt = isCR ? formatPriceCR : formatPrice;
 
   async function handleCheckout() {
     if (!cart) return;
@@ -94,7 +97,7 @@ export default function CartDrawer() {
                   {/* Details */}
                   <div className="flex-1 min-w-0">
                     <Link
-                      href={`/products/${line.merchandise.product.handle}`}
+                      href={`${basePath}/products/${line.merchandise.product.handle}`}
                       onClick={closeCart}
                       className="text-sm font-semibold text-navy hover:text-brand-orange transition-colors line-clamp-2"
                     >
@@ -104,7 +107,7 @@ export default function CartDrawer() {
                       <p className="text-xs text-gray-500 mt-0.5">{line.merchandise.title}</p>
                     )}
                     <p className="text-sm font-bold text-navy mt-1">
-                      {formatPrice(line.merchandise.price.amount, line.merchandise.price.currencyCode)}
+                      {fmt(line.merchandise.price.amount, line.merchandise.price.currencyCode)}
                     </p>
 
                     {/* Quantity controls */}
@@ -175,14 +178,14 @@ export default function CartDrawer() {
               <div className="flex justify-between text-gray-600">
                 <span>{t.subtotal}</span>
                 <span className="font-semibold">
-                  {formatPrice(cart.cost.subtotalAmount.amount, cart.cost.subtotalAmount.currencyCode)}
+                  {fmt(cart.cost.subtotalAmount.amount, cart.cost.subtotalAmount.currencyCode)}
                 </span>
               </div>
               {cart.cost.totalTaxAmount && (
                 <div className="flex justify-between text-gray-600">
                   <span>{t.taxes}</span>
                   <span className="font-semibold">
-                    {formatPrice(cart.cost.totalTaxAmount.amount, cart.cost.totalTaxAmount.currencyCode)}
+                    {fmt(cart.cost.totalTaxAmount.amount, cart.cost.totalTaxAmount.currencyCode)}
                   </span>
                 </div>
               )}
@@ -191,7 +194,7 @@ export default function CartDrawer() {
                 <div className="flex justify-between text-emerald-600 font-semibold">
                   <span>{lang === 'es' ? '🎉 Descuento' : '🎉 Discount'}</span>
                   <span>
-                    −{formatPrice(
+                    −{fmt(
                       String(parseFloat(cart.cost.subtotalAmount.amount) - parseFloat(cart.cost.totalAmount.amount)),
                       cart.cost.totalAmount.currencyCode,
                     )}
@@ -201,7 +204,7 @@ export default function CartDrawer() {
               <div className="flex justify-between text-navy font-bold text-base pt-2 border-t border-gray-100">
                 <span>{t.total}</span>
                 <span>
-                  {formatPrice(cart.cost.totalAmount.amount, cart.cost.totalAmount.currencyCode)}
+                  {fmt(cart.cost.totalAmount.amount, cart.cost.totalAmount.currencyCode)}
                 </span>
               </div>
             </div>
@@ -227,7 +230,7 @@ export default function CartDrawer() {
             </div>
 
             <Link
-              href="/cart"
+              href={`${basePath}/cart`}
               onClick={closeCart}
               className="block text-center text-sm text-gray-500 hover:text-navy transition-colors"
             >
