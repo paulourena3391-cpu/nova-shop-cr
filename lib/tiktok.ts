@@ -14,11 +14,36 @@ type TtqParams = {
   currency?: string;
 };
 
-/** Track a standard TikTok event. Silently no-ops if the pixel isn't present. */
+type Ttq = { track: (e: string, p?: object) => void };
+
+/**
+ * Track a standard TikTok event. The pixel is injected by <TikTokPixel/> in a
+ * client effect, which can run a moment AFTER a page's own effects (e.g. the
+ * ViewContent fired on product mount). To avoid losing those early events we
+ * retry briefly until window.ttq is ready, then fire — instead of no-op'ing.
+ */
 export function ttqTrack(event: string, params: TtqParams = {}): void {
   if (typeof window === 'undefined') return;
-  const ttq = (window as unknown as { ttq?: { track: (e: string, p?: object) => void } }).ttq;
-  if (ttq?.track) {
-    ttq.track(event, { currency: 'USD', ...params });
+  const payload = { currency: 'USD', ...params };
+
+  const getTtq = () => (window as unknown as { ttq?: Ttq }).ttq;
+
+  const fireNow = getTtq();
+  if (fireNow?.track) {
+    fireNow.track(event, payload);
+    return;
   }
+
+  // Not ready yet — poll for up to ~10s (the pixel loads within a few hundred ms).
+  let tries = 0;
+  const id = window.setInterval(() => {
+    tries += 1;
+    const ttq = getTtq();
+    if (ttq?.track) {
+      ttq.track(event, payload);
+      window.clearInterval(id);
+    } else if (tries >= 40) {
+      window.clearInterval(id);
+    }
+  }, 250);
 }
