@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ShieldCheck, Truck, RefreshCw, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ShieldCheck, Truck, RefreshCw, Star, ChevronLeft, ChevronRight, Smartphone } from 'lucide-react';
 import {
   ShopifyProduct,
   ShopifyVariant,
@@ -21,6 +21,7 @@ import ProductUrgency from './product/ProductUrgency';
 import ProductBenefits from './product/ProductBenefits';
 import ProductComparison from './product/ProductComparison';
 import ProductReviews from './product/ProductReviews';
+import ProductFAQ from './product/ProductFAQ';
 
 type Props = {
   product: ShopifyProduct;
@@ -325,6 +326,24 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
             </p>
           )}
 
+          {/* CR: above-the-fold trust bullets — store promises for cold TikTok traffic */}
+          {isCR && (
+            <ul className="space-y-2">
+              {[
+                { Icon: Truck,       text: <>Envío a <strong className="text-navy">todo Costa Rica</strong> en 1-3 días hábiles</> },
+                { Icon: Smartphone,  text: <>Pagás con <strong className="text-navy">SINPE Móvil</strong> o tarjeta</> },
+                { Icon: ShieldCheck, text: <>Garantía de <strong className="text-navy">30 días</strong> o te devolvemos tu plata</> },
+              ].map(({ Icon, text }, i) => (
+                <li key={i} className="flex items-center gap-2.5 text-sm text-gray-700">
+                  <span className="w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                    <Icon size={14} className="text-emerald-600" />
+                  </span>
+                  {text}
+                </li>
+              ))}
+            </ul>
+          )}
+
           {/* Divider */}
           <div className="border-t border-gray-100" />
 
@@ -517,6 +536,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
       <ProductBenefits />
       <ProductComparison />
       <ProductReviews photos={images.slice(0, 6).map((i) => i.url)} />
+      {isCR && <ProductFAQ />}
 
       {/* ── Related products ────────────────────────────────────── */}
       {relatedProducts.length > 0 && (

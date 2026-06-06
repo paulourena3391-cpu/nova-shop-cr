@@ -2,6 +2,7 @@
 
 import { Check, X } from 'lucide-react';
 import { useLang } from '@/context/LanguageContext';
+import { useMarket } from '@/context/MarketContext';
 
 const ROWS = [
   { es: 'Precio justo',                en: 'Fair price',              nova: true,  others: false },
@@ -14,7 +15,22 @@ const ROWS = [
 
 export default function ProductComparison() {
   const { lang } = useLang();
+  const { isCR } = useMarket();
   const es = lang === 'es';
+
+  // CR: local shipping + SINPE row (vs "other stores" that ship from abroad).
+  const shippingFixed = ROWS.map((r) =>
+    r.en === 'Fast US shipping' && isCR
+      ? { ...r, es: 'Envío a todo Costa Rica', en: 'Nationwide CR shipping', nova: true, others: false }
+      : r,
+  );
+  const rows = isCR
+    ? [
+        ...shippingFixed.slice(0, 2),
+        { es: 'Pago con SINPE Móvil', en: 'SINPE Móvil payment', nova: true, others: false },
+        ...shippingFixed.slice(2),
+      ]
+    : shippingFixed;
 
   return (
     <section className="mt-12 md:mt-16 px-4 md:px-0">
@@ -41,7 +57,7 @@ export default function ProductComparison() {
             </tr>
           </thead>
           <tbody>
-            {ROWS.map((r, i) => (
+            {rows.map((r, i) => (
               <tr key={r.en} className={i % 2 ? 'bg-gray-50/50' : 'bg-white'}>
                 <td className="px-4 py-3.5 text-navy font-medium">{es ? r.es : r.en}</td>
                 <td className="px-4 py-3.5">

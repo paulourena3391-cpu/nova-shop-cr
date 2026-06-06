@@ -2,6 +2,7 @@
 
 import { Sparkles, Zap, HeartHandshake, PackageCheck, BadgeCheck, Headphones } from 'lucide-react';
 import { useLang } from '@/context/LanguageContext';
+import { useMarket } from '@/context/MarketContext';
 
 const BENEFITS = [
   { Icon: BadgeCheck,     es: 'Calidad premium',        en: 'Premium quality',     dEs: 'Materiales seleccionados que duran.',          dEn: 'Hand-picked materials that last.' },
@@ -14,7 +15,15 @@ const BENEFITS = [
 
 export default function ProductBenefits() {
   const { lang } = useLang();
+  const { isCR } = useMarket();
   const es = lang === 'es';
+
+  // CR market ships locally and fast — override the US shipping benefit.
+  const benefits = BENEFITS.map((b) =>
+    b.en === 'Fast US shipping' && isCR
+      ? { ...b, es: 'Envío a todo Costa Rica', en: 'Nationwide CR shipping', dEs: 'A tu puerta en 1-3 días hábiles.', dEn: 'At your door in 1-3 business days.' }
+      : b,
+  );
 
   return (
     <section className="mt-12 md:mt-16 px-4 md:px-0">
@@ -23,7 +32,7 @@ export default function ProductBenefits() {
         {es ? '¿Por qué te va a encantar?' : "Why you'll love it"}
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {BENEFITS.map(({ Icon, es: tEs, en, dEs, dEn }) => (
+        {benefits.map(({ Icon, es: tEs, en, dEs, dEn }) => (
           <div
             key={en}
             className="flex items-start gap-4 bg-white border border-gray-100 rounded-2xl p-5 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 ease-premium"

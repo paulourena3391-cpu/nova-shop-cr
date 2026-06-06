@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { Star, BadgeCheck, ThumbsUp, Camera } from 'lucide-react';
 import { useLang } from '@/context/LanguageContext';
+import { useMarket } from '@/context/MarketContext';
 
 type Review = {
   name: string;
@@ -32,9 +33,31 @@ const REVIEWS: Review[] = [
     en: "I regret not buying it sooner. I use it every single day 😍" },
 ];
 
+// CR market reviews: all Costa Rican, mention FAST local delivery + SINPE, and are
+// outcome-specific (matches cold TikTok traffic coming from the product's promise).
+const CR_REVIEWS: Review[] = [
+  { name: 'María José R.', country: '🇨🇷', rating: 5, daysAgo: 2, likes: 34,
+    es: 'Paso todo el día en la compu y ya casi no me duele la espalda. Llegó en 2 días a Heredia 🙌',
+    en: '' },
+  { name: 'Andrés M.', country: '🇨🇷', rating: 5, daysAgo: 4, likes: 27,
+    es: 'Andaba super encorvado por el celular. En una semana ya me siento más derecho y nadie lo nota bajo la camisa.',
+    en: '' },
+  { name: 'Daniela S.', country: '🇨🇷', rating: 5, daysAgo: 6, likes: 19,
+    es: 'Pagué con SINPE y me confirmaron rapidísimo por WhatsApp. El producto tal cual las fotos 😍',
+    en: '' },
+  { name: 'Carlos V.', country: '🇨🇷', rating: 5, daysAgo: 9, likes: 22,
+    es: 'Excelente. Cómodo, ajustable y se siente el soporte de una. Llegó rápido a Cartago.',
+    en: '' },
+  { name: 'Gabriela F.', country: '🇨🇷', rating: 4, daysAgo: 13, likes: 8,
+    es: 'Muy bueno. Le doy 4 porque al inicio cuesta acostumbrarse, pero a los días ya ni lo sentís. Vale la pena.',
+    en: '' },
+];
+
 export default function ProductReviews({ photos = [] }: { photos?: string[] }) {
   const { lang } = useLang();
+  const { isCR } = useMarket();
   const es = lang === 'es';
+  const reviews = isCR ? CR_REVIEWS : REVIEWS;
 
   const total = 247;
   const avg = 4.8;
@@ -108,7 +131,7 @@ export default function ProductReviews({ photos = [] }: { photos?: string[] }) {
 
       {/* Review list */}
       <div className="space-y-4">
-        {REVIEWS.map((r) => (
+        {reviews.map((r) => (
           <div key={r.name} className="bg-white border border-gray-100 rounded-2xl p-5 shadow-card">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
@@ -137,9 +160,9 @@ export default function ProductReviews({ photos = [] }: { photos?: string[] }) {
             <p className="text-gray-600 text-sm mt-2.5 leading-relaxed">{es ? r.es : r.en}</p>
 
             {/* Attached customer photo on the first couple of reviews */}
-            {REVIEWS.indexOf(r) < photos.length && REVIEWS.indexOf(r) < 2 && (
+            {reviews.indexOf(r) < photos.length && reviews.indexOf(r) < 2 && (
               <div className="relative w-24 h-24 rounded-xl overflow-hidden mt-3 border border-gray-100">
-                <Image src={photos[REVIEWS.indexOf(r)]} alt="Review photo" fill sizes="96px" className="object-cover" />
+                <Image src={photos[reviews.indexOf(r)]} alt="Review photo" fill sizes="96px" className="object-cover" />
               </div>
             )}
 
