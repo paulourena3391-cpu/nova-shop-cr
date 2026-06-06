@@ -192,6 +192,21 @@ export default function CartView() {
               </div>
             </div>
 
+            {/* Currency note — CR shows colones for reference but charges in USD (PayPal) */}
+            {isCR && cart && (
+              <div className="rounded-xl bg-blue-50 border border-blue-100 p-3 space-y-1.5">
+                <div className="flex justify-between text-sm font-semibold text-navy">
+                  <span>Se cobra en dólares:</span>
+                  <span>{formatPrice(cart.cost.totalAmount.amount, 'USD')}</span>
+                </div>
+                <p className="text-[11px] leading-snug text-gray-500">
+                  💳 Los precios en ₡ son una referencia al tipo de cambio aproximado
+                  (₡515 = $1). El cobro se procesa en dólares (USD) y tu banco lo
+                  convierte a colones automáticamente.
+                </p>
+              </div>
+            )}
+
             {/* Checkout button — cleans unavailable lines then redirects to Shopify */}
             {cart && (
               <button

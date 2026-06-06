@@ -209,6 +209,14 @@ export default function CartDrawer() {
               </div>
             </div>
 
+            {/* Currency note — CR charges in USD (PayPal); colones shown as reference */}
+            {isCR && (
+              <p className="text-[11px] leading-snug text-gray-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
+                💳 Se cobra en dólares ({formatPrice(cart.cost.totalAmount.amount, 'USD')}).
+                Tu banco lo convierte a colones automáticamente.
+              </p>
+            )}
+
             <button
               onClick={handleCheckout}
               disabled={isLoading}

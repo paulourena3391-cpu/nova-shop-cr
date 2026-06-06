@@ -318,6 +318,13 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
             )}
           </div>
 
+          {/* CR: USD reference — checkout is processed in dollars (PayPal) */}
+          {isCR && (
+            <p className="text-sm text-gray-400 -mt-2">
+              ≈ {formatPrice(String(unitAmount), 'USD')} · el pago se procesa en dólares (USD)
+            </p>
+          )}
+
           {/* Divider */}
           <div className="border-t border-gray-100" />
 
