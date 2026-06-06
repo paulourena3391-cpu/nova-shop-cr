@@ -485,7 +485,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
             <button
               onClick={handleAddToCart}
               disabled={!isAvailable || isLoading}
-              className="btn-primary w-full py-4 text-base shadow-lg shadow-brand-orange/25"
+              className={`btn-primary w-full py-4 text-base shadow-lg shadow-brand-orange/25 ${isCR && isAvailable ? 'cta-shine' : ''}`}
             >
               {isAvailable ? t.addToCart : t.outOfStock}
             </button>

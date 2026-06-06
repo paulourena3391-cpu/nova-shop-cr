@@ -8,6 +8,7 @@ import CountdownTimer from '@/components/CountdownTimer';
 import ProductCard from '@/components/ProductCard';
 import Newsletter from '@/components/Newsletter';
 import CategoryCard from '@/components/CategoryCard';
+import StatsCounter from '@/components/cr/StatsCounter';
 import { Reveal, StaggerGroup, StaggerItem } from '@/components/motion/Motion';
 
 export const metadata: Metadata = {
@@ -193,6 +194,9 @@ export default async function CRHomePage() {
           </Suspense>
         </div>
       </section>
+
+      {/* Premium animated stats — builds "established brand" trust */}
+      <StatsCounter />
 
       {/* Newsletter */}
       <Reveal>
