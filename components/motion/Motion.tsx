@@ -4,8 +4,8 @@
 // All are client components, used only under /cr — the USA store (/) is untouched.
 // Respects prefers-reduced-motion: when set, content renders instantly with no transform.
 
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import type { ReactNode } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { Children, cloneElement, isValidElement, type ReactNode, type ReactElement } from 'react';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -39,62 +39,61 @@ export function Reveal({
   );
 }
 
-/** Container that staggers the entrance of its <StaggerItem> children. */
+/**
+ * Container that staggers the entrance of its <StaggerItem> children.
+ * Plain wrapper that injects an `index` into each child so every item can
+ * animate ITSELF on mount (see StaggerItem). We deliberately avoid variant
+ * orchestration / whileInView here: the cards stream in via Suspense, and
+ * parent-driven variants don't reliably reach those streamed children — which
+ * left them stuck at opacity:0 on desktop. Self-animating items always show.
+ */
 export function StaggerGroup({
   children,
   className,
-  stagger = 0.09,
+  stagger = 0.07,
 }: {
   children: ReactNode;
   className?: string;
   stagger?: number;
 }) {
-  const reduce = useReducedMotion();
-
-  const container: Variants = {
-    hidden: {},
-    show: {
-      transition: { staggerChildren: reduce ? 0 : stagger, delayChildren: 0.05 },
-    },
-  };
-
   return (
-    <motion.div
-      className={className}
-      variants={container}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, margin: '0px 0px -80px 0px' }}
-    >
-      {children}
-    </motion.div>
+    <div className={className}>
+      {Children.map(children, (child, i) =>
+        isValidElement(child)
+          ? cloneElement(child as ReactElement<{ index?: number; stagger?: number }>, {
+              index: i,
+              stagger,
+            })
+          : child,
+      )}
+    </div>
   );
 }
 
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 34, scale: 0.97 },
-  show: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.55, ease: EASE },
-  },
-};
-
-/** A single item inside a <StaggerGroup>. Lifts gently on hover. */
+/** A single item inside a <StaggerGroup>. Animates itself on mount; lifts on hover. */
 export function StaggerItem({
   children,
   className,
+  index = 0,
+  stagger = 0.07,
 }: {
   children: ReactNode;
   className?: string;
+  index?: number;
+  stagger?: number;
 }) {
   const reduce = useReducedMotion();
 
   return (
     <motion.div
       className={className}
-      variants={reduce ? { hidden: {}, show: {} } : itemVariants}
+      initial={reduce ? false : { opacity: 0, y: 28, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{
+        duration: 0.5,
+        ease: EASE,
+        delay: reduce ? 0 : Math.min(index, 10) * stagger,
+      }}
       whileHover={reduce ? undefined : { y: -6, transition: { duration: 0.25, ease: EASE } }}
     >
       {children}
