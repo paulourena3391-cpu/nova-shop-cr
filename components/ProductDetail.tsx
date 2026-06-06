@@ -23,6 +23,7 @@ import ProductBenefits from './product/ProductBenefits';
 import ProductComparison from './product/ProductComparison';
 import ProductReviews from './product/ProductReviews';
 import ProductFAQ from './product/ProductFAQ';
+import ProductWhatsApp from './product/ProductWhatsApp';
 
 type Props = {
   product: ShopifyProduct;
@@ -498,6 +499,18 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
               </button>
             )}
           </div>
+
+          {/* CR: order via WhatsApp — captures buyers who don't trust paying online */}
+          {isCR && (
+            <ProductWhatsApp
+              productTitle={product.title}
+              variant={selectedVariant?.selectedOptions
+                ?.filter((o) => o.value !== 'Default Title')
+                .map((o) => o.value)
+                .join(' / ')}
+              price={price}
+            />
+          )}
 
           {/* ── Urgency + delivery estimate ── */}
           <ProductUrgency />
