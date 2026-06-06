@@ -25,7 +25,6 @@ export default function Header() {
     ? [
         { label: 'Inicio',       href: '/cr' },
         { label: 'Tecnología',   href: '/cr/collections/cr-tecnologia' },
-        { label: 'Belleza',      href: '/cr/collections/cr-belleza' },
         { label: 'Moda Mujer',   href: '/cr/collections/cr-moda-mujer' },
         { label: 'Moda Hombre',  href: '/cr/collections/cr-moda-hombre' },
         { label: 'Calzado',      href: '/cr/collections/cr-calzado' },

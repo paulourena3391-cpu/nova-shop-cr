@@ -6,6 +6,7 @@
 // (navy / brand-orange / ease-premium). The USA store (/) keeps its own Hero.
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { ArrowRight, Truck, ShieldCheck, Star, Zap } from 'lucide-react';
 
@@ -119,12 +120,15 @@ export default function HeroCR() {
 
             {/* Social proof line */}
             <motion.div variants={rise} className="mt-8 flex items-center gap-3">
-              <div className="flex -space-x-2">
-                {['#FF6B1A', '#1a2d45', '#FF7A2E', '#0F1B2D'].map((c, i) => (
-                  <span
-                    key={i}
-                    className="h-8 w-8 rounded-full border-2 border-navy"
-                    style={{ background: c }}
+              <div className="flex -space-x-2.5">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <Image
+                    key={n}
+                    src={`/cr-avatars/a${n}.png`}
+                    alt=""
+                    width={36}
+                    height={36}
+                    className="h-9 w-9 rounded-full border-2 border-navy bg-navy-50 object-cover"
                   />
                 ))}
               </div>
