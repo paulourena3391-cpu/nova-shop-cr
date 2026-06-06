@@ -16,6 +16,7 @@ import {
 import { useCart } from '@/context/CartContext';
 import { useLang } from '@/context/LanguageContext';
 import { useMarket } from '@/context/MarketContext';
+import { ttqTrack } from '@/lib/tiktok';
 import ProductCard from './ProductCard';
 import ProductUrgency from './product/ProductUrgency';
 import ProductBenefits from './product/ProductBenefits';
@@ -48,6 +49,19 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [product.id]);
+
+  // TikTok Pixel: ViewContent on product open (CR market only)
+  useEffect(() => {
+    if (!isCR) return;
+    ttqTrack('ViewContent', {
+      content_id: product.id,
+      content_type: 'product',
+      content_name: product.title,
+      value: parseFloat(product.priceRange.minVariantPrice.amount),
+      currency: 'USD',
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.id, isCR]);
 
   // Image gallery navigation
   const thumbsRef = useRef<HTMLDivElement>(null);
@@ -103,13 +117,41 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
   async function handleAddToCart() {
     if (!selectedVariant) return;
     await addItem(selectedVariant.id, bundleQty);
+    if (isCR) {
+      ttqTrack('AddToCart', {
+        content_id: product.id,
+        content_type: 'product',
+        content_name: product.title,
+        quantity: bundleQty,
+        value: parseFloat(selectedVariant.price.amount) * bundleQty,
+        currency: 'USD',
+      });
+    }
   }
 
   // Buy Now: add item first, THEN go to cart (fixes empty-cart bug)
   async function handleBuyNow() {
     if (!selectedVariant || !isAvailable) return;
     await addItem(selectedVariant.id, bundleQty);
-    router.push('/cart');
+    if (isCR) {
+      ttqTrack('AddToCart', {
+        content_id: product.id,
+        content_type: 'product',
+        content_name: product.title,
+        quantity: bundleQty,
+        value: parseFloat(selectedVariant.price.amount) * bundleQty,
+        currency: 'USD',
+      });
+      ttqTrack('InitiateCheckout', {
+        content_id: product.id,
+        content_type: 'product',
+        content_name: product.title,
+        quantity: bundleQty,
+        value: parseFloat(selectedVariant.price.amount) * bundleQty,
+        currency: 'USD',
+      });
+    }
+    router.push(`${basePath}/cart`);
   }
 
   const currentImage = images[selectedImageIdx] ?? null;

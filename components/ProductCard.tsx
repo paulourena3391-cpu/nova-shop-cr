@@ -11,6 +11,7 @@ import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
 import { useLang } from '@/context/LanguageContext';
 import { useMarket } from '@/context/MarketContext';
+import { ttqTrack } from '@/lib/tiktok';
 import { useState } from 'react';
 
 type Props = {
@@ -40,6 +41,16 @@ export default function ProductCard({ product, priority = false, basePath = '' }
     try {
       await addItem(variant.id, 1);
       showToast(`"${product.title.slice(0, 30)}..." agregado al carrito`, 'cart');
+      if (isCR) {
+        ttqTrack('AddToCart', {
+          content_id: product.id,
+          content_type: 'product',
+          content_name: product.title,
+          quantity: 1,
+          value: parseFloat(variant.price.amount),
+          currency: 'USD',
+        });
+      }
     } catch {
       showToast('Error al agregar. Intentá de nuevo.', 'error');
     } finally {

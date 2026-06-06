@@ -10,6 +10,7 @@ import ScrollToTop from '@/components/ScrollToTop';
 import PageProgressWrapper from '@/components/PageProgressWrapper';
 import SocialProof from '@/components/SocialProof';
 import ScrollReveal from '@/components/ScrollReveal';
+import TikTokPixel from '@/components/TikTokPixel';
 import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
@@ -60,6 +61,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
               {/* Real visitor tracking */}
               <Analytics />
+
+              {/* TikTok Ads pixel — CR market only (self-gates by pathname) */}
+              <TikTokPixel />
             </ToastProvider>
           </CartProvider>
           </MarketProvider>

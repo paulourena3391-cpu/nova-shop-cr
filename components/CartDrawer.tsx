@@ -7,6 +7,7 @@ import { useCart } from '@/context/CartContext';
 import { useLang } from '@/context/LanguageContext';
 import { useMarket } from '@/context/MarketContext';
 import { formatPrice, formatPriceCR } from '@/lib/shopify';
+import { ttqTrack } from '@/lib/tiktok';
 
 export default function CartDrawer() {
   const { isOpen, closeCart, cartLines, cart, updateItem, removeItem, isLoading } = useCart();
@@ -21,6 +22,13 @@ export default function CartDrawer() {
       .map((e) => e.node.id);
     for (const id of unavailableIds) {
       await removeItem(id);
+    }
+    if (isCR) {
+      ttqTrack('InitiateCheckout', {
+        content_type: 'product',
+        value: parseFloat(cart.cost.totalAmount.amount),
+        currency: 'USD',
+      });
     }
     window.location.href = cart.checkoutUrl;
   }
