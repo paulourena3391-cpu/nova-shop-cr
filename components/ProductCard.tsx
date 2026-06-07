@@ -28,6 +28,7 @@ export default function ProductCard({ product, priority = false, basePath = '' }
   const price = isCR ? formatPriceCR : formatPrice;
   const [adding, setAdding] = useState(false);
   const [wished, setWished] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   const image = getFirstImage(product);
   const variant = getFirstVariant(product);
@@ -37,8 +38,9 @@ export default function ProductCard({ product, priority = false, basePath = '' }
   // Prueba social determinista (estable por producto) — no random en cada render
   const seed = Array.from(product.id).reduce((a, c) => a + c.charCodeAt(0), 0);
   const rating = (4.5 + (seed % 5) / 10).toFixed(1); // 4.5 – 4.9
-  const sold = 60 + (seed % 940); // 60 – 999
-  const isTrending = sold > 600;
+  const sold = 120 + (seed % 1880); // 120 – 1999
+  const soldLabel = sold >= 1000 ? `+${(sold / 1000).toFixed(1).replace('.0', '')} mil` : `+${sold}`;
+  const isTrending = sold > 900;
 
   async function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault();
@@ -71,14 +73,20 @@ export default function ProductCard({ product, priority = false, basePath = '' }
       <Link href={`${basePath}/products/${product.handle}`} className="block relative overflow-hidden">
         <div className="relative aspect-square bg-gray-50">
           {image ? (
-            <Image
-              src={image.url}
-              alt={image.altText ?? product.title}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              priority={priority}
-              className="object-cover group-hover:scale-110 transition-transform duration-500"
-            />
+            <>
+              {!imgLoaded && <div className="absolute inset-0 bg-gray-100 animate-pulse" />}
+              <Image
+                src={image.url}
+                alt={image.altText ?? product.title}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                priority={priority}
+                onLoad={() => setImgLoaded(true)}
+                className={`object-cover group-hover:scale-110 transition-all duration-500 ${
+                  imgLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
+              />
+            </>
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gray-100">
               <ShoppingCart size={40} className="text-gray-300" />
@@ -144,7 +152,7 @@ export default function ProductCard({ product, priority = false, basePath = '' }
             <Star size={12} className="fill-amber-400 text-amber-400" />
             {rating}
           </span>
-          <span className="text-[10px] text-gray-400">• {sold} vendidos</span>
+          <span className="text-[10px] text-gray-400">• {soldLabel} vendidos</span>
         </div>
 
         {/* Price */}

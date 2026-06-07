@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import MobileBottomNav from '@/components/cr/MobileBottomNav';
+import RecentPurchasePopup from '@/components/cr/RecentPurchasePopup';
 
 export const metadata: Metadata = {
   title: {
@@ -21,6 +22,7 @@ export default function CRLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <div className="pb-16 md:pb-0">{children}</div>
+      <RecentPurchasePopup />
       <MobileBottomNav />
     </>
   );
