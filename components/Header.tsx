@@ -30,6 +30,7 @@ export default function Header() {
         { label: 'Tecnología',      href: '/cr/collections/cr-tecnologia' },
         { label: 'Zapatos',         href: '/cr/collections/cr-calzado' },
         { label: 'Relojes',         href: '/cr/collections/cr-relojes' },
+        { label: 'Joyería',         href: '/cr/collections/cr-joyeria' },
         { label: 'Mascotas',        href: '/cr/collections/cr-mascotas' },
         { label: 'Parrillas y BBQ', href: '/cr/collections/cr-parrillas' },
         { label: 'Hogar',           href: '/cr/collections/cr-hogar' },

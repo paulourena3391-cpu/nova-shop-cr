@@ -20,18 +20,18 @@ const CR_COLLECTION_MAP: Record<string, { title: string; query: string }> = {
   'cr-moda-mujer':  { title: 'Moda Mujer',     query: "tag:market-cr product_type:Women's Clothing"  },
   'cr-moda-hombre': { title: 'Moda Hombre',    query: "tag:market-cr product_type:Men's Clothing"    },
   'cr-calzado':     { title: 'Zapatos',        query: 'tag:market-cr product_type:Footwear'          },
+  'cr-calzado-hombre': { title: 'Zapatos de Hombre', query: 'tag:market-cr product_type:Footwear tag:genero-hombre' },
+  'cr-calzado-mujer':  { title: 'Zapatos de Mujer',  query: 'tag:market-cr product_type:Footwear tag:genero-mujer'  },
   'cr-relojes':     { title: 'Relojes',        query: 'tag:market-cr product_type:Watches'           },
+  'cr-relojes-hombre': { title: 'Relojes de Hombre', query: 'tag:market-cr product_type:Watches tag:genero-hombre' },
+  'cr-relojes-mujer':  { title: 'Relojes de Mujer',  query: 'tag:market-cr product_type:Watches tag:genero-mujer'  },
+  'cr-joyeria':     { title: 'Joyería',        query: 'tag:market-cr product_type:Jewelry'           },
   'cr-ofertas':     { title: 'Ofertas',        query: 'tag:market-cr product_type:Varios'            },
   'cr-hogar':       { title: 'Hogar',          query: 'tag:market-cr product_type:Home & Living'     },
   'cr-deportes':    { title: 'Fitness',        query: 'tag:market-cr product_type:Sports & Fitness'  },
   'cr-mascotas':    { title: 'Mascotas',       query: 'tag:market-cr product_type:Pet Supplies'      },
-  'cr-swimwear':    { title: 'Trajes de Baño', query: 'tag:market-cr product_type:Swimwear'          },
-  'cr-calzado-hombre': { title: 'Calzado de Hombre', query: "tag:market-cr product_type:Men's Footwear" },
-  'cr-calzado-mujer':  { title: 'Calzado de Mujer',  query: "tag:market-cr product_type:Women's Footwear" },
-  'cr-herramientas':   { title: 'Herramientas',      query: 'tag:market-cr product_type:Tools'           },
   'cr-parrillas':      { title: 'Parrillas y BBQ',   query: 'tag:market-cr product_type:BBQ'             },
   'cr-auto':           { title: 'Automóvil',         query: 'tag:market-cr product_type:Auto'           },
-  'cr-virales':        { title: 'Virales',           query: 'tag:market-cr product_type:Trending'       },
 };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -93,6 +93,31 @@ export default async function CRCollectionPage({ params, searchParams }: PagePro
       <div className="mb-8">
         <h1 className="section-title">{col.title}</h1>
         <p className="text-gray-500 text-sm mt-1">Envío incluido en el precio • Entrega en Costa Rica</p>
+        {(handle.startsWith('cr-relojes') || handle.startsWith('cr-calzado')) && (
+          <div className="flex gap-2 mt-4">
+            {(() => {
+              const base = handle.startsWith('cr-relojes') ? 'cr-relojes' : 'cr-calzado';
+              const tabs = [
+                { h: base, label: 'Todos' },
+                { h: `${base}-hombre`, label: 'Hombre' },
+                { h: `${base}-mujer`, label: 'Mujer' },
+              ];
+              return tabs.map((t) => (
+                <Link
+                  key={t.h}
+                  href={`/cr/collections/${t.h}`}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                    handle === t.h
+                      ? 'bg-brand-orange text-white border-brand-orange'
+                      : 'bg-white text-navy border-gray-200 hover:border-brand-orange'
+                  }`}
+                >
+                  {t.label}
+                </Link>
+              ));
+            })()}
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">

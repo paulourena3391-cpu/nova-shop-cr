@@ -3,13 +3,22 @@ const T = process.env.SHOPIFY_ADMIN_TOKEN, H = 'yd7u79-bt.myshopify.com';
 if (!T) { console.error('FALTA SHOPIFY_ADMIN_TOKEN'); process.exit(1); }
 async function rest(p, m, b) {
   for (let a = 0; a < 6; a++) {
-    const r = await fetch(`https://${H}/admin/api/2024-10/${p}`, {
-      method: m || 'GET',
-      headers: { 'X-Shopify-Access-Token': T, 'Content-Type': 'application/json' },
-      body: b ? JSON.stringify(b) : undefined,
-    });
-    if (r.status === 429) { await sleep(2000); continue; }
-    return m === 'DELETE' ? {} : r.json();
+    const ctrl = new AbortController();
+    const to = setTimeout(() => ctrl.abort(), 12000);
+    try {
+      const r = await fetch(`https://${H}/admin/api/2024-10/${p}`, {
+        method: m || 'GET',
+        headers: { 'X-Shopify-Access-Token': T, 'Content-Type': 'application/json' },
+        body: b ? JSON.stringify(b) : undefined,
+        signal: ctrl.signal,
+      });
+      clearTimeout(to);
+      if (r.status === 429) { await sleep(2000); continue; }
+      return m === 'DELETE' ? {} : r.json();
+    } catch (e) {
+      clearTimeout(to);
+      await sleep(1500); // timeout o error de red -> reintenta
+    }
   }
   return {};
 }

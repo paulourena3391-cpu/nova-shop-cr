@@ -1,0 +1,20 @@
+cargados 1101 productos para precios
+filas mapping: 874
+  cambiados 50/874
+  cambiados 100/874
+  cambiados 150/874
+  cambiados 200/874
+  cambiados 250/874
+  cambiados 300/874
+  cambiados 350/874
+  cambiados 400/874
+  cambiados 450/874
+  cambiados 500/874
+  cambiados 550/874
+  cambiados 600/874
+  cambiados 650/874
+  cambiados 700/874
+  cambiados 750/874
+  cambiados 800/874
+  cambiados 850/874
+FIN | cambiados:873 | borrados:1 | precios:0 | errores:0

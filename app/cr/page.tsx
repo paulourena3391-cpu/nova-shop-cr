@@ -28,6 +28,7 @@ const CR_CATEGORIES = [
   { handle: 'cr-tecnologia',  titleEs: 'Tecnología',     titleEn: 'Tech',       productQuery: 'tag:market-cr product_type:Electronics'      },
   { handle: 'cr-calzado',     titleEs: 'Zapatos',        titleEn: 'Footwear',   productQuery: 'tag:market-cr product_type:Footwear'         },
   { handle: 'cr-relojes',     titleEs: 'Relojes',        titleEn: 'Watches',    productQuery: 'tag:market-cr product_type:Watches'          },
+  { handle: 'cr-joyeria',     titleEs: 'Joyería',        titleEn: 'Jewelry',    productQuery: 'tag:market-cr product_type:Jewelry'          },
   { handle: 'cr-mascotas',    titleEs: 'Mascotas',       titleEn: 'Pets',       productQuery: 'tag:market-cr product_type:Pet Supplies'     },
   { handle: 'cr-parrillas',   titleEs: 'Parrillas y BBQ',titleEn: 'BBQ',        productQuery: 'tag:market-cr product_type:BBQ'              },
   { handle: 'cr-hogar',       titleEs: 'Hogar',          titleEn: 'Home',       productQuery: 'tag:market-cr product_type:Home & Living'    },
