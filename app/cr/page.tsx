@@ -58,16 +58,35 @@ function ProductsSkeleton({ count = 4 }: { count?: number }) {
 
 async function CRBestSellersGrid() {
   const { products } = await getProducts({
-    first: 4,
+    first: 8,
     sortKey: 'BEST_SELLING',
     query: 'tag:market-cr',
   });
   if (!products.length) return <CRComingSoon />;
   return (
-    <StaggerGroup className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <StaggerGroup className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
       {products.map((product, i) => (
         <StaggerItem key={product.id}>
           <ProductCard product={product} priority={i < 4} basePath={CR_BASE} />
+        </StaggerItem>
+      ))}
+    </StaggerGroup>
+  );
+}
+
+async function CRNewArrivalsGrid() {
+  const { products } = await getProducts({
+    first: 8,
+    sortKey: 'CREATED_AT',
+    reverse: true,
+    query: 'tag:market-cr',
+  });
+  if (!products.length) return <CRComingSoon />;
+  return (
+    <StaggerGroup className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+      {products.map((product) => (
+        <StaggerItem key={product.id}>
+          <ProductCard product={product} basePath={CR_BASE} />
         </StaggerItem>
       ))}
     </StaggerGroup>
@@ -201,6 +220,33 @@ export default async function CRHomePage() {
           </Reveal>
           <Suspense fallback={<ProductsSkeleton count={4} />}>
             <CRBestSellersGrid />
+          </Suspense>
+        </div>
+      </section>
+
+      {/* ── Recién llegados ── */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Reveal className="flex items-end justify-between mb-8 pb-5 border-b border-gray-200">
+            <SectionHeading
+              badge={
+                <span className="bg-emerald-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-wide shadow-sm">
+                  NUEVO
+                </span>
+              }
+            >
+              Recién llegados
+            </SectionHeading>
+            <Link
+              href="/cr/collections/cr-ofertas"
+              className="group text-brand-orange hover:text-brand-orange-hover text-sm font-semibold transition-colors inline-flex items-center gap-1"
+            >
+              Ver todo{' '}
+              <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
+            </Link>
+          </Reveal>
+          <Suspense fallback={<ProductsSkeleton count={8} />}>
+            <CRNewArrivalsGrid />
           </Suspense>
         </div>
       </section>

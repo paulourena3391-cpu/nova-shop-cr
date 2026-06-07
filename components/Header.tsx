@@ -1,26 +1,21 @@
 'use client';
 
-import { useState, useRef, useEffect, FormEvent } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { ShoppingCart, Search, User, Menu, X, ChevronDown } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, ChevronDown } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useLang } from '@/context/LanguageContext';
 import { useMarket } from '@/context/MarketContext';
 import CartDrawer from './CartDrawer';
+import SearchBox from './SearchBox';
 
 export default function Header() {
-  const router = useRouter();
   const { itemCount, toggleCart } = useCart();
   const { lang, t } = useLang();
   const { isCR, basePath } = useMarket();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSub, setOpenSub] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchFocused, setSearchFocused] = useState(false);
-
-  const searchRef = useRef<HTMLInputElement>(null);
 
   const navLinks = isCR
     ? [
@@ -62,15 +57,6 @@ export default function Header() {
         { label: lang === 'es' ? 'Mascotas'    : 'Pets',         href: '/collections/pets' },
       ];
 
-  function handleSearch(e: FormEvent) {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`${basePath}/search?q=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery('');
-      setSearchFocused(false);
-    }
-  }
-
   // Close mobile menu on route change
   useEffect(() => {
     setMenuOpen(false);
@@ -82,7 +68,7 @@ export default function Header() {
         {/* Main header row */}
         <div className="bg-navy">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-4 h-16">
+            <div className="flex items-center gap-4 h-14 md:h-16">
               {/* Logo */}
               <Link href={basePath || '/'} className="flex-shrink-0">
                 <span className="font-display text-xl text-white">
@@ -91,36 +77,10 @@ export default function Header() {
                 </span>
               </Link>
 
-              {/* Search bar */}
-              <form
-                onSubmit={handleSearch}
-                className="flex-1 max-w-2xl mx-auto hidden md:flex"
-              >
-                <div
-                  className={`flex w-full rounded-lg overflow-hidden border-2 transition-colors ${
-                    searchFocused ? 'border-brand-orange' : 'border-transparent'
-                  }`}
-                >
-                  <input
-                    ref={searchRef}
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onFocus={() => setSearchFocused(true)}
-                    onBlur={() => setSearchFocused(false)}
-                    placeholder={t.searchPlaceholder}
-                    className="flex-1 px-4 py-2 text-sm text-gray-900 outline-none"
-                    aria-label={t.searchPlaceholder}
-                  />
-                  <button
-                    type="submit"
-                    className="px-4 bg-brand-orange hover:bg-brand-orange-hover text-white transition-colors"
-                    aria-label={t.search}
-                  >
-                    <Search size={18} />
-                  </button>
-                </div>
-              </form>
+              {/* Search bar — desktop */}
+              <div className="flex-1 max-w-2xl mx-auto hidden md:block">
+                <SearchBox basePath={basePath} isCR={isCR} placeholder={t.searchPlaceholder} />
+              </div>
 
               {/* Right actions */}
               <div className="flex items-center gap-1 ml-auto md:ml-0">
@@ -202,23 +162,8 @@ export default function Header() {
         </nav>
 
         {/* Mobile search bar */}
-        <div className="md:hidden bg-navy px-4 pb-3">
-          <form onSubmit={handleSearch} className="flex rounded-lg overflow-hidden">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t.searchPlaceholder}
-              className="flex-1 px-4 py-2 text-sm text-gray-900 outline-none"
-            />
-            <button
-              type="submit"
-              className="px-4 bg-brand-orange text-white"
-              aria-label={t.search}
-            >
-              <Search size={18} />
-            </button>
-          </form>
+        <div className="md:hidden bg-navy px-3 pb-2.5">
+          <SearchBox basePath={basePath} isCR={isCR} placeholder={t.searchPlaceholder} />
         </div>
 
         {/* Mobile nav drawer */}

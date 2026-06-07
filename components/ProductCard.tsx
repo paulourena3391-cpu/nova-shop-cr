@@ -125,7 +125,7 @@ export default function ProductCard({ product, priority = false, basePath = '' }
       </button>
 
       {/* ── Content ── */}
-      <div className="p-3 flex flex-col flex-1">
+      <div className="p-2.5 flex flex-col flex-1">
         {product.vendor && (
           <span className="text-[10px] text-brand-orange font-bold uppercase tracking-widest">
             {product.vendor}
@@ -165,11 +165,17 @@ export default function ProductCard({ product, priority = false, basePath = '' }
           )}
         </div>
 
-        {/* Add to cart */}
+        {isCR && (
+          <span className="text-[10px] text-green-600 font-semibold mt-1 inline-flex items-center gap-1">
+            🚚 Envío incluido
+          </span>
+        )}
+
+        {/* Add to cart — compacto */}
         <button
           onClick={handleAddToCart}
           disabled={!product.availableForSale || adding}
-          className={`mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ease-premium disabled:opacity-50 disabled:cursor-not-allowed
+          className={`mt-2.5 w-full flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-semibold transition-all duration-300 ease-premium disabled:opacity-50 disabled:cursor-not-allowed
             ${adding
               ? 'bg-green-500 text-white scale-95'
               : 'bg-navy text-white hover:bg-brand-orange hover:shadow-cta active:scale-95'
@@ -178,12 +184,12 @@ export default function ProductCard({ product, priority = false, basePath = '' }
           {adding ? (
             <>
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              Agregando...
+              Agregado
             </>
           ) : (
             <>
               <ShoppingCart size={14} />
-              {product.availableForSale ? t.addToCart : t.outOfStock}
+              {product.availableForSale ? 'Agregar' : t.outOfStock}
             </>
           )}
         </button>
