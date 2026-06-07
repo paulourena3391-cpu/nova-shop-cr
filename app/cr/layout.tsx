@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import MobileBottomNav from '@/components/cr/MobileBottomNav';
 
 export const metadata: Metadata = {
   title: {
@@ -17,5 +18,10 @@ export const metadata: Metadata = {
 export default function CRLayout({ children }: { children: React.ReactNode }) {
   // Language is forced to Spanish via LanguageContext (detects /cr prefix).
   // This layout only provides CR-specific metadata.
-  return <>{children}</>;
+  return (
+    <>
+      <div className="pb-16 md:pb-0">{children}</div>
+      <MobileBottomNav />
+    </>
+  );
 }

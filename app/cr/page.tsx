@@ -9,6 +9,7 @@ import ProductCard from '@/components/ProductCard';
 import Newsletter from '@/components/Newsletter';
 import CategoryCard from '@/components/CategoryCard';
 import StatsCounter from '@/components/cr/StatsCounter';
+import QuickCategories from '@/components/cr/QuickCategories';
 import { Reveal, StaggerGroup, StaggerItem } from '@/components/motion/Motion';
 
 export const metadata: Metadata = {
@@ -117,6 +118,9 @@ export default async function CRHomePage() {
     <>
       {/* Premium animated hero — CR only */}
       <HeroCR />
+
+      {/* Quick categories — horizontal scroll (mobile discovery) */}
+      <QuickCategories />
 
       {/* Trust strip */}
       <TrustBadges />

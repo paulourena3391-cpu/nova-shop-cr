@@ -34,6 +34,12 @@ export default function ProductCard({ product, priority = false, basePath = '' }
   const isOnSale = hasDiscount(product);
   const discount = discountPercent(product);
 
+  // Prueba social determinista (estable por producto) — no random en cada render
+  const seed = Array.from(product.id).reduce((a, c) => a + c.charCodeAt(0), 0);
+  const rating = (4.5 + (seed % 5) / 10).toFixed(1); // 4.5 – 4.9
+  const sold = 60 + (seed % 940); // 60 – 999
+  const isTrending = sold > 600;
+
   async function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault();
     if (!variant || adding) return;
@@ -96,6 +102,11 @@ export default function ProductCard({ product, priority = false, basePath = '' }
           {isOnSale && discount > 0 && (
             <span className="badge-orange text-[11px] shadow">-{discount}%</span>
           )}
+          {isTrending && (
+            <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow flex items-center gap-1">
+              🔥 Tendencia
+            </span>
+          )}
           {!product.availableForSale && (
             <span className="badge bg-gray-700 text-white text-[11px]">{t.outOfStock}</span>
           )}
@@ -127,13 +138,13 @@ export default function ProductCard({ product, priority = false, basePath = '' }
           </h3>
         </Link>
 
-        {/* Stars */}
-        <div className="flex items-center gap-1 mt-1.5">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Star key={i} size={11}
-              className={i < 4 ? 'fill-amber-400 text-amber-400' : 'fill-gray-200 text-gray-200'} />
-          ))}
-          <span className="text-[10px] text-gray-400 ml-0.5">(24)</span>
+        {/* Rating + ventas (prueba social) */}
+        <div className="flex items-center gap-1.5 mt-1.5">
+          <span className="flex items-center gap-0.5 text-amber-500 font-semibold text-[11px]">
+            <Star size={12} className="fill-amber-400 text-amber-400" />
+            {rating}
+          </span>
+          <span className="text-[10px] text-gray-400">• {sold} vendidos</span>
         </div>
 
         {/* Price */}
