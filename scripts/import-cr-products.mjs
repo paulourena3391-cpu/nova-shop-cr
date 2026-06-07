@@ -328,6 +328,7 @@ async function main() {
     const seen = new Set();
     candidates = candidates.filter(p => {
       if (!p.pid || seen.has(p.pid)) return false;
+      if (existingPids.has(p.pid)) return false;  // dedup ANTES de gastar getDetail
       if (!p.sellPrice || p.sellPrice <= 0 || p.sellPrice > 22) return false;
       seen.add(p.pid);
       return true;
