@@ -10,6 +10,8 @@ import Newsletter from '@/components/Newsletter';
 import CategoryCard from '@/components/CategoryCard';
 import StatsCounter from '@/components/cr/StatsCounter';
 import QuickCategories from '@/components/cr/QuickCategories';
+import MobileHero from '@/components/cr/MobileHero';
+import QuickAccess from '@/components/cr/QuickAccess';
 import { Reveal, StaggerGroup, StaggerItem } from '@/components/motion/Motion';
 
 export const metadata: Metadata = {
@@ -64,7 +66,7 @@ async function CRBestSellersGrid() {
   });
   if (!products.length) return <CRComingSoon />;
   return (
-    <StaggerGroup className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+    <StaggerGroup className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
       {products.map((product, i) => (
         <StaggerItem key={product.id}>
           <ProductCard product={product} priority={i < 4} basePath={CR_BASE} />
@@ -83,7 +85,7 @@ async function CRNewArrivalsGrid() {
   });
   if (!products.length) return <CRComingSoon />;
   return (
-    <StaggerGroup className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+    <StaggerGroup className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
       {products.map((product) => (
         <StaggerItem key={product.id}>
           <ProductCard product={product} basePath={CR_BASE} />
@@ -95,17 +97,16 @@ async function CRNewArrivalsGrid() {
 
 async function CRDealsGrid() {
   const { products } = await getProducts({
-    first: 4,
-    sortKey: 'CREATED_AT',
-    reverse: true,
-    query: "tag:market-cr product_type:Women's Clothing",
+    first: 8,
+    sortKey: 'BEST_SELLING',
+    query: 'tag:market-cr product_type:Watches',
   });
   if (!products.length) return <CRComingSoon />;
   return (
-    <StaggerGroup className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {products.map((product) => (
+    <StaggerGroup className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
+      {products.map((product, i) => (
         <StaggerItem key={product.id}>
-          <ProductCard product={product} basePath={CR_BASE} />
+          <ProductCard product={product} priority={i < 4} basePath={CR_BASE} />
         </StaggerItem>
       ))}
     </StaggerGroup>
@@ -124,8 +125,8 @@ function CRComingSoon() {
 
 function SectionHeading({ children, badge }: { children: React.ReactNode; badge?: React.ReactNode }) {
   return (
-    <h2 className="inline-flex items-center gap-3 text-3xl md:text-4xl font-bold text-navy tracking-tightest">
-      <span className="w-1.5 h-8 rounded-full bg-gradient-to-b from-brand-orange to-amber-400" />
+    <h2 className="inline-flex items-center gap-2 md:gap-3 text-xl md:text-4xl font-bold text-navy tracking-tightest">
+      <span className="w-1 md:w-1.5 h-6 md:h-8 rounded-full bg-gradient-to-b from-brand-orange to-amber-400" />
       {children}
       {badge}
     </h2>
@@ -135,17 +136,23 @@ function SectionHeading({ children, badge }: { children: React.ReactNode; badge?
 export default async function CRHomePage() {
   return (
     <>
-      {/* Premium animated hero — CR only */}
-      <HeroCR />
+      {/* Hero premium — solo escritorio */}
+      <div className="hidden md:block">
+        <HeroCR />
+      </div>
 
-      {/* Quick categories — horizontal scroll (mobile discovery) */}
+      {/* ── MÓVIL: máxima densidad (estilo marketplace) ── */}
+      <MobileHero />
       <QuickCategories />
+      <QuickAccess />
 
-      {/* Trust strip */}
-      <TrustBadges />
+      {/* Trust strip — solo escritorio (en móvil va QuickAccess) */}
+      <div className="hidden md:block">
+        <TrustBadges />
+      </div>
 
-      {/* ── Category cards grid ── */}
-      <section className="bg-gradient-to-b from-gray-100 to-gray-50 py-14">
+      {/* ── Category cards grid (escritorio; en móvil van las categorías rápidas) ── */}
+      <section className="hidden md:block bg-gradient-to-b from-gray-100 to-gray-50 py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="mb-9 text-center">
             <p className="text-sm font-bold uppercase tracking-widest text-brand-orange mb-2">
@@ -185,9 +192,9 @@ export default async function CRHomePage() {
       </section>
 
       {/* ── Ofertas del día ── */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Reveal className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-5 border-b border-gray-200">
+      <section className="py-5 md:py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <Reveal className="flex flex-row items-center justify-between gap-4 mb-4 md:mb-8 pb-3 md:pb-5 border-b border-gray-200">
             <SectionHeading
               badge={
                 <span className="bg-red-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-wide shadow-sm animate-pulse">
@@ -206,9 +213,9 @@ export default async function CRHomePage() {
       </section>
 
       {/* ── Más vendidos ── */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Reveal className="flex items-end justify-between mb-8 pb-5 border-b border-gray-200">
+      <section className="py-5 md:py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <Reveal className="flex items-end justify-between mb-4 md:mb-8 pb-3 md:pb-5 border-b border-gray-200">
             <SectionHeading>Los más vendidos</SectionHeading>
             <Link
               href="/cr/collections/cr-tecnologia"
@@ -225,9 +232,9 @@ export default async function CRHomePage() {
       </section>
 
       {/* ── Recién llegados ── */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Reveal className="flex items-end justify-between mb-8 pb-5 border-b border-gray-200">
+      <section className="py-5 md:py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <Reveal className="flex items-end justify-between mb-4 md:mb-8 pb-3 md:pb-5 border-b border-gray-200">
             <SectionHeading
               badge={
                 <span className="bg-emerald-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-wide shadow-sm">

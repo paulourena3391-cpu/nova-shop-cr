@@ -18,21 +18,21 @@ const QUICK: { label: string; href: string; emoji: string }[] = [
 
 export default function QuickCategories() {
   return (
-    <section className="bg-white border-b border-gray-100 md:hidden">
+    <section className="bg-white md:hidden">
       <div
-        className="flex gap-4 overflow-x-auto px-4 py-4 scrollbar-hide"
+        className="flex gap-3 overflow-x-auto px-3 py-2.5 scrollbar-hide"
         style={{ scrollbarWidth: 'none' }}
       >
         {QUICK.map((c) => (
           <Link
             key={c.href}
             href={c.href}
-            className="flex flex-col items-center gap-1.5 flex-shrink-0 w-[64px] active:scale-95 transition-transform"
+            className="flex flex-col items-center gap-1 flex-shrink-0 w-[54px] active:scale-95 transition-transform"
           >
-            <span className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-100 flex items-center justify-center text-2xl shadow-sm">
+            <span className="w-11 h-11 rounded-full bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-100 flex items-center justify-center text-xl shadow-sm">
               {c.emoji}
             </span>
-            <span className="text-[11px] font-medium text-navy text-center leading-tight whitespace-nowrap">
+            <span className="text-[10px] font-medium text-navy text-center leading-tight whitespace-nowrap">
               {c.label}
             </span>
           </Link>
