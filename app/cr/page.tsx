@@ -29,6 +29,7 @@ const CR_CATEGORIES = [
   { handle: 'cr-hogar',       titleEs: 'Hogar',        titleEn: 'Home & Living',   productQuery: 'tag:market-cr product_type:Home & Living'     },
   { handle: 'cr-deportes',    titleEs: 'Fitness',      titleEn: 'Fitness',         productQuery: 'tag:market-cr product_type:Sports & Fitness'  },
   { handle: 'cr-tecnologia',  titleEs: 'Tecnología',   titleEn: 'Tech',            productQuery: 'tag:market-cr product_type:Electronics'       },
+  { handle: 'cr-mascotas',    titleEs: 'Mascotas',     titleEn: 'Pets',            productQuery: 'tag:market-cr product_type:Pet Supplies'      },
   { handle: 'cr-swimwear',    titleEs: 'Trajes de Baño', titleEn: 'Swimwear',      productQuery: 'tag:market-cr product_type:Swimwear'          },
 ];
 

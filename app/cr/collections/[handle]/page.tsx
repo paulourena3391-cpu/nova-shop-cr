@@ -25,7 +25,11 @@ const CR_COLLECTION_MAP: Record<string, { title: string; query: string }> = {
   'cr-mascotas':    { title: 'Mascotas',       query: 'tag:market-cr product_type:Pet Supplies'      },
   'cr-swimwear':    { title: 'Trajes de Baño', query: 'tag:market-cr product_type:Swimwear'          },
   'cr-calzado-hombre': { title: 'Calzado de Hombre', query: "tag:market-cr product_type:Men's Footwear" },
+  'cr-calzado-mujer':  { title: 'Calzado de Mujer',  query: "tag:market-cr product_type:Women's Footwear" },
   'cr-herramientas':   { title: 'Herramientas',      query: 'tag:market-cr product_type:Tools'           },
+  'cr-parrillas':      { title: 'Parrillas y BBQ',   query: 'tag:market-cr product_type:BBQ'             },
+  'cr-auto':           { title: 'Automóvil',         query: 'tag:market-cr product_type:Auto'           },
+  'cr-virales':        { title: 'Virales',           query: 'tag:market-cr product_type:Trending'       },
 };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

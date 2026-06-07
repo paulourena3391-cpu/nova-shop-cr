@@ -30,39 +30,58 @@ const PUB_ONLINE   = 'gid://shopify/Publication/155260485802';
 const PUB_HEADLESS = 'gid://shopify/Publication/155432157354';
 
 // ─── Colecciones CR y sus fuentes en CJ ──────────────────────────────────────
+// Import POR CATEGORÍA (IDs reales de CJ) → productos relevantes, sin junk de keywords.
 const CR_CATEGORIES = [
-  { handle: 'cr-tecnologia',   cjIds: ['C83EF2A0-8FA3-4713-9901-2FD6E4554D97','6DB79FAF-593D-4F52-B6FF-AB1D14331862'], keywords: ['smart watch','bluetooth earphone','phone case','led light','usb gadget','wireless charger','ring light','power bank'], type: 'Electronics', count: 20 },
-  { handle: 'cr-moda-mujer',   cjIds: ['2FE8A083-5E7B-4179-896D-561EA116F730'],                                        type: "Women's Clothing",       count: 20 },
-  { handle: 'cr-moda-hombre',  cjIds: ['B8302697-CF47-4211-9BD0-DFE8995AEB30'],                                        type: "Men's Clothing",         count: 20 },
-  { handle: 'cr-calzado',      cjIds: ['AAB54987-4E92-40C7-B0F5-5E814C1E6980','0F0296D6-F057-4FD4-9E06-95D5DBCCE6EB'], type: 'Footwear',               count: 20 },
-  { handle: 'cr-hogar',        cjIds: ['7B975B46-46DF-4C3A-BC58-1F4F2DDB9413','E448A723-43DC-4BD8-A9AD-2FB9699338B4'], keywords: ['wall clock','throw pillow','kitchen organizer','candle holder','desk lamp','storage box','shower curtain','door mat'], type: 'Home & Living', count: 20 },
-  { handle: 'cr-deportes',     cjIds: ['4B397425-26C1-4D0E-B6D2-96B0B03689DB'],                                        type: 'Sports & Fitness',       count: 20 },
-  { handle: 'cr-belleza',      cjIds: [], keywords: ['serum vitamin c','eyelash curler','foundation brush','epilator women','clay mask','press on nails','jade roller','hair straightener','mascara','contour palette'], type: 'Beauty', count: 20 },
-  { handle: 'cr-mascotas',     cjIds: [], keywords: ['dog harness','cat toy','pet feeder','dog collar','pet grooming','pet bed','dog leash','cat litter','pet bowl','dog toy'], type: 'Pet Supplies', count: 20 },
-  { handle: 'cr-calzado-hombre', cjIds: ['0F0296D6-F057-4FD4-9E06-95D5DBCCE6EB'], keywords: ['mens sneakers','mens leather shoes','mens boots','mens loafers','mens running shoes','mens casual shoes'], type: "Men's Footwear", count: 18 },
-  { handle: 'cr-herramientas',   cjIds: [], keywords: ['cordless drill','tool set','car vacuum cleaner','tire inflator','tactical flashlight','screwdriver set','wrench set','angle grinder','laser level','soldering iron','multimeter','heat gun'], type: 'Tools', count: 18 },
+  { handle: 'cr-tecnologia',     type: 'Electronics',      count: 35, cjIds: ['B200FABB-A76B-4750-9957-FEA3DCB21F1F','00134C46-B7DF-4500-A3D9-ABB7B779EFD0','491E5474-524C-4666-BDD7-4E35E38900EA','9170B3F9-5B9C-4C39-8CD6-7DC00E481D47','DAECCC3B-13D8-4978-86A8-61D3DF186134','C83EF2A0-8FA3-4713-9901-2FD6E4554D97','C1AB7563-AED4-44D8-9F01-05BD91C65307'] },
+  { handle: 'cr-mascotas',       type: 'Pet Supplies',     count: 35, cjIds: ['2410110341061612000','2410110358051626100','2410110352471611400','2410110352591600400','2410110339451623300','2410110354491625800','2410110341451628800'] },
+  { handle: 'cr-parrillas',      type: 'BBQ',              count: 35, cjIds: ['E448A723-43DC-4BD8-A9AD-2FB9699338B4','23ADD7CB-065A-4A02-B8E8-43D3F041B90B','BEDFD1CC-E7CC-438F-9050-D7737904203D'] },
+  { handle: 'cr-calzado-hombre', type: "Men's Footwear",   count: 35, cjIds: ['F419006D-AE55-4691-93FC-52FEBB459DBA','0F0296D6-F057-4FD4-9E06-95D5DBCCE6EB','11C9DE73-0438-40E2-80B8-72697795C9F2'] },
+  { handle: 'cr-calzado-mujer',  type: "Women's Footwear", count: 35, cjIds: ['AAB54987-4E92-40C7-B0F5-5E814C1E6980','F35FC838-1CFE-49D1-A8CA-CF7401F9C444','1988B912-7A18-4ED2-B1E1-61ED290A0E82','638284D0-3651-4FC9-9F25-B0A0BA323D83'] },
+  { handle: 'cr-hogar',          type: 'Home & Living',    count: 35, cjIds: ['56845C3D-4D9E-4729-B5D4-6D7DE310C031','2502140315331600200','B62EE40F-7650-4715-A7A5-BA227540593C','A0E89009-FFD6-4B2E-906A-8076DF45B32C','C1394E10-1EDF-4107-AA93-F142B44C3136'] },
+  { handle: 'cr-deportes',       type: 'Sports & Fitness', count: 35, cjIds: ['C20B25A2-348C-48C8-A2C8-FE33749A40DE','79F47CD1-F813-4B4D-8D21-2B35966FBA66'] },
+  { handle: 'cr-auto',           type: 'Auto',             count: 35, cjIds: ['D44C3391-0AF1-455A-A671-29214DA68F27','00E6FC51-B865-4D50-9EF9-21E7050F5653','2A64C22F-F04A-4AAA-9C1C-8AF89323FB63','5559DD57-7F12-44BC-9C29-9E9BD1CDB029','77A90826-779B-47DD-AB79-8FEE91AE0A3E'] },
+  { handle: 'cr-belleza',        type: 'Beauty',           count: 35, cjIds: ['A30E8F55-DC2C-4842-9372-91B96DEFDCC2','2502140311201613700','AB11F624-D292-4A8E-9284-BD368B893A2C','6D086E0D-8C3F-4B99-BA44-140F3F7C444E','EADB666A-12A5-4FA1-AD1F-BC351A7E7AF5','47D355FB-E6C1-4E0B-AE31-0B1696A4B68E'] },
+  { handle: 'cr-virales',        type: 'Trending',         count: 35, cjIds: ['538CB48E-B7A0-46F7-B5A2-BB8183247B23','EDB5F43E-EAC0-489A-8355-5188EAB72D08','0AC6B44A-12CC-456F-831F-54064C77D303','7E431502-1275-4FF3-A236-B97C107C3AFA'] },
 ];
+
+// ─── Relevancia: el título DEBE matchear la categoría (filtra junk irrelevante) ──
+const CATEGORY_MUST = {
+  'cr-tecnologia':     /phone|charger|cable|usb|watch|bluetooth|earphone|earbud|headphone|airpod|led|power ?bank|adapter|speaker|wireless|charging|hub|tripod|ring light|gaming|mouse|keyboard|projector|gadget/i,
+  'cr-mascotas':       /\bdog|\bcat\b|\bpet|puppy|kitten|aquarium|bird|paw|leash|collar|kennel/i,
+  'cr-parrillas':      /bbq|grill|barbecue|\bmeat|skewer|thermometer|basting|apron|charcoal|smoker|spatula/i,
+  'cr-calzado-hombre': /shoe|sneaker|loafer|\bboot|footwear|\bmen/i,
+  'cr-calzado-mujer':  /shoe|sneaker|sandal|\bheel|\bflat|loafer|women/i,
+  'cr-hogar':          /organizer|storage|\brack|kitchen|drawer|closet|\bhook|holder|\bbox|shelf|cabinet|household|sink|hanger|dispenser/i,
+  'cr-deportes':       /fitness|resistance|yoga|workout|\bgym|muscle|massage|exercise|training|\bband|roller|posture|waist|\babs?\b|sport|skipping|dumbbell/i,
+  'cr-auto':           /\bcar\b|\bauto|vehicle|tire|tyre|\bdash|windshield|\bseat/i,
+  'cr-belleza':        /makeup|brush|\bhair|\bnail|\bface|facial|beauty|\bskin|\blash|eyebrow|cosmetic|mirror|massager|curler|straighten|epilator|blackhead/i,
+  'cr-virales':        /\bled|light|projector|\blamp|magnetic|portable|fidget|\btoy|gadget|\bmini|\brgb|night|galaxy|levitat|flying/i,
+};
 
 // ─── Envío CR estimado por peso ───────────────────────────────────────────────
 function shippingCR(weightKg) {
   if (weightKg < 0.3) return 6.50;
   if (weightKg < 1.0) return 7.50;
-  return 9.00;
+  if (weightKg < 2.0) return 10.00;
+  if (weightKg < 3.0) return 13.00;
+  return 16.00;
 }
 
 // ─── Precio con envío incluido ────────────────────────────────────────────────
 function getMarkup(cost) {
-  if (cost <= 6)  return 3.2;
-  if (cost <= 12) return 2.8;
-  if (cost <= 20) return 2.4;
-  return 2.0;
+  if (cost <= 6)  return 2.6;
+  if (cost <= 12) return 2.2;
+  if (cost <= 20) return 1.9;
+  return 1.7;
 }
 
 function salePrice(productCost, weightKg) {
-  const ship  = shippingCR(weightKg);
-  const total = productCost + ship;
-  const price = total * getMarkup(total);
-  // Redondear a .99
+  const ship = shippingCR(weightKg);
+  // Markup on the PRODUCT only, shipping added at cost (not multiplied) →
+  // impulse-friendly prices that still cover shipping + leave margin.
+  let price = productCost * getMarkup(productCost) + ship;
+  // Safety floor: never below cost + real shipping + $3 profit
+  price = Math.max(price, productCost + ship + 3);
   return (Math.ceil(price) - 0.01);
 }
 
@@ -205,9 +224,12 @@ function buildImages(full) {
 
 async function createProduct(full, cat) {
   const weightKg  = (full.productWeight || 300) / 1000;
+  // Quality/risk filters: skip heavy items (expensive/slow shipping to CR)
+  if (weightKg > 3.0) return null;
   const price     = salePrice(full.sellPrice || 5, weightKg);
   const images    = buildImages(full);
-  if (!images.length) return null;
+  // Require at least 2 images → avoids cheap-looking single-photo listings
+  if (images.length < 2) return null;
 
   const { options, variants } = buildVariantData(full.variants || [], price);
   let finalVariants = variants, finalOptions = options;
@@ -253,12 +275,32 @@ async function attachAndPublish(product, collectionId) {
     { query: `mutation{publishablePublish(id:"${gid}",input:[{publicationId:"${PUB_ONLINE}"},{publicationId:"${PUB_HEADLESS}"}]){userErrors{message}}}` });
 }
 
+// Trae los cj-pid ya importados a Shopify → evita duplicados al re-correr/top-up
+async function getExistingPids() {
+  const pids = new Set();
+  let url = `/admin/api/2024-01/products.json?limit=250&fields=id,tags&vendor=CJDropshipping`;
+  for (let page = 0; page < 20 && url; page++) {
+    const res = await apiRequest(SHOPIFY_STORE, url, 'GET',
+      { 'X-Shopify-Access-Token': SHOPIFY_TOKEN });
+    const list = res.products || [];
+    for (const p of list) {
+      const m = (p.tags || '').match(/cj-pid:([^,\s]+)/);
+      if (m) pids.add(m[1]);
+    }
+    url = list.length === 250 ? `/admin/api/2024-01/products.json?limit=250&fields=id,tags&vendor=CJDropshipping&since_id=${list[list.length - 1].id}` : null;
+  }
+  return pids;
+}
+
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
 async function main() {
   console.log('\n🇨🇷  Nova Shop CR — Importador (mismo método que USA, probado)\n');
 
   const cjToken = await getCJToken();
   console.log('✅  CJ autenticado\n');
+
+  const existingPids = await getExistingPids();
+  console.log(`📦  ${existingPids.size} cj-pid ya en Shopify (se omiten para no duplicar)\n`);
 
   const only  = process.env.ONLY ? process.env.ONLY.split(',').map(s => s.trim()) : null;
   let   total = 0;
@@ -282,11 +324,11 @@ async function main() {
       }
     }
 
-    // Deduplicar y filtrar precio razonable para CR
+    // Deduplicar + filtrar precio impulso (productos ya relevantes por categoría)
     const seen = new Set();
     candidates = candidates.filter(p => {
       if (!p.pid || seen.has(p.pid)) return false;
-      if (!p.sellPrice || p.sellPrice <= 0 || p.sellPrice > 50) return false;
+      if (!p.sellPrice || p.sellPrice <= 0 || p.sellPrice > 22) return false;
       seen.add(p.pid);
       return true;
     });
@@ -299,11 +341,13 @@ async function main() {
       try {
         const full = await getDetail(cjToken, p.pid);
         if (!full?.pid) continue;
+        if (existingPids.has(full.pid)) continue;  // ya importado → no duplicar
 
         const created = await createProduct(full, cat);
         if (!created?.id) continue;
 
         await attachAndPublish(created, collectionId);
+        existingPids.add(full.pid);
         imported++;
 
         const nVars = created.variants?.length || 1;
