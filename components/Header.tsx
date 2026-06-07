@@ -23,14 +23,17 @@ export default function Header() {
 
   const navLinks = isCR
     ? [
-        { label: 'Inicio',       href: '/cr' },
-        { label: 'Tecnología',   href: '/cr/collections/cr-tecnologia' },
-        { label: 'Moda Mujer',   href: '/cr/collections/cr-moda-mujer' },
-        { label: 'Moda Hombre',  href: '/cr/collections/cr-moda-hombre' },
-        { label: 'Calzado',      href: '/cr/collections/cr-calzado' },
-        { label: 'Hogar',        href: '/cr/collections/cr-hogar' },
-        { label: 'Deportes',     href: '/cr/collections/cr-deportes' },
-        { label: 'Mascotas',     href: '/cr/collections/cr-mascotas' },
+        { label: 'Inicio',          href: '/cr' },
+        { label: 'Ofertas',         href: '/cr/collections/cr-ofertas' },
+        { label: 'Tecnología',      href: '/cr/collections/cr-tecnologia' },
+        { label: 'Zapatos',         href: '/cr/collections/cr-calzado' },
+        { label: 'Relojes',         href: '/cr/collections/cr-relojes' },
+        { label: 'Mascotas',        href: '/cr/collections/cr-mascotas' },
+        { label: 'Parrillas y BBQ', href: '/cr/collections/cr-parrillas' },
+        { label: 'Hogar',           href: '/cr/collections/cr-hogar' },
+        { label: 'Fitness',         href: '/cr/collections/cr-deportes' },
+        { label: 'Automóvil',       href: '/cr/collections/cr-auto' },
+        { label: 'Belleza',         href: '/cr/collections/cr-belleza' },
       ]
     : [
         { label: t.home,                                          href: '/' },

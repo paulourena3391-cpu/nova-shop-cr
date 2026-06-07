@@ -23,14 +23,16 @@ const CR_BASE = '/cr';
 
 // CR market categories
 const CR_CATEGORIES = [
-  { handle: 'cr-moda-mujer',  titleEs: 'Moda Mujer',   titleEn: "Women's Fashion", productQuery: "tag:market-cr product_type:Women's Clothing"  },
-  { handle: 'cr-moda-hombre', titleEs: 'Moda Hombre',  titleEn: "Men's Fashion",   productQuery: "tag:market-cr product_type:Men's Clothing"    },
-  { handle: 'cr-calzado',     titleEs: 'Calzado',      titleEn: 'Footwear',        productQuery: 'tag:market-cr product_type:Footwear'          },
-  { handle: 'cr-hogar',       titleEs: 'Hogar',        titleEn: 'Home & Living',   productQuery: 'tag:market-cr product_type:Home & Living'     },
-  { handle: 'cr-deportes',    titleEs: 'Fitness',      titleEn: 'Fitness',         productQuery: 'tag:market-cr product_type:Sports & Fitness'  },
-  { handle: 'cr-tecnologia',  titleEs: 'Tecnología',   titleEn: 'Tech',            productQuery: 'tag:market-cr product_type:Electronics'       },
-  { handle: 'cr-mascotas',    titleEs: 'Mascotas',     titleEn: 'Pets',            productQuery: 'tag:market-cr product_type:Pet Supplies'      },
-  { handle: 'cr-swimwear',    titleEs: 'Trajes de Baño', titleEn: 'Swimwear',      productQuery: 'tag:market-cr product_type:Swimwear'          },
+  { handle: 'cr-tecnologia',  titleEs: 'Tecnología',     titleEn: 'Tech',       productQuery: 'tag:market-cr product_type:Electronics'      },
+  { handle: 'cr-calzado',     titleEs: 'Zapatos',        titleEn: 'Footwear',   productQuery: 'tag:market-cr product_type:Footwear'         },
+  { handle: 'cr-relojes',     titleEs: 'Relojes',        titleEn: 'Watches',    productQuery: 'tag:market-cr product_type:Watches'          },
+  { handle: 'cr-mascotas',    titleEs: 'Mascotas',       titleEn: 'Pets',       productQuery: 'tag:market-cr product_type:Pet Supplies'     },
+  { handle: 'cr-parrillas',   titleEs: 'Parrillas y BBQ',titleEn: 'BBQ',        productQuery: 'tag:market-cr product_type:BBQ'              },
+  { handle: 'cr-hogar',       titleEs: 'Hogar',          titleEn: 'Home',       productQuery: 'tag:market-cr product_type:Home & Living'    },
+  { handle: 'cr-deportes',    titleEs: 'Fitness',        titleEn: 'Fitness',    productQuery: 'tag:market-cr product_type:Sports & Fitness' },
+  { handle: 'cr-auto',        titleEs: 'Automóvil',      titleEn: 'Auto',       productQuery: 'tag:market-cr product_type:Auto'             },
+  { handle: 'cr-belleza',     titleEs: 'Belleza',        titleEn: 'Beauty',     productQuery: 'tag:market-cr product_type:Beauty'           },
+  { handle: 'cr-ofertas',     titleEs: 'Ofertas',        titleEn: 'Deals',      productQuery: 'tag:market-cr product_type:Varios'           },
 ];
 
 function ProductsSkeleton({ count = 4 }: { count?: number }) {
