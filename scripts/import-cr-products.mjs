@@ -69,10 +69,10 @@ function shippingCR(weightKg) {
 
 // ─── Precio con envío incluido ────────────────────────────────────────────────
 function getMarkup(cost) {
-  if (cost <= 6)  return 2.6;
-  if (cost <= 12) return 2.2;
-  if (cost <= 20) return 1.9;
-  return 1.7;
+  if (cost <= 6)  return 2.0;
+  if (cost <= 12) return 1.7;
+  if (cost <= 20) return 1.5;
+  return 1.4;
 }
 
 function salePrice(productCost, weightKg) {
