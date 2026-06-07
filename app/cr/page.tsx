@@ -23,6 +23,8 @@ const CR_BASE = '/cr';
 
 // CR market categories
 const CR_CATEGORIES = [
+  { handle: 'cr-moda-mujer',  titleEs: 'Moda Mujer',     titleEn: "Women",      productQuery: "tag:market-cr product_type:Women's Clothing" },
+  { handle: 'cr-moda-hombre', titleEs: 'Moda Hombre',    titleEn: "Men",        productQuery: "tag:market-cr product_type:Men's Clothing"   },
   { handle: 'cr-tecnologia',  titleEs: 'Tecnología',     titleEn: 'Tech',       productQuery: 'tag:market-cr product_type:Electronics'      },
   { handle: 'cr-calzado',     titleEs: 'Zapatos',        titleEn: 'Footwear',   productQuery: 'tag:market-cr product_type:Footwear'         },
   { handle: 'cr-relojes',     titleEs: 'Relojes',        titleEn: 'Watches',    productQuery: 'tag:market-cr product_type:Watches'          },
