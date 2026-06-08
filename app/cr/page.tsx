@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { getProducts } from '@/lib/shopify';
+import { getProducts, type ShopifyProduct } from '@/lib/shopify';
 import HeroCR from '@/components/cr/HeroCR';
 import TrustBadges from '@/components/TrustBadges';
 import CountdownTimer from '@/components/CountdownTimer';
@@ -41,62 +41,34 @@ const CR_CATEGORIES = [
   { handle: 'cr-ofertas',     titleEs: 'Ofertas',        titleEn: 'Deals',      productQuery: 'tag:market-cr product_type:Varios'           },
 ];
 
-function ProductsSkeleton({ count = 4 }: { count?: number }) {
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="card overflow-hidden animate-pulse">
-          <div className="aspect-square bg-gray-100" />
-          <div className="p-3 space-y-2">
-            <div className="h-3 bg-gray-100 rounded w-1/3" />
-            <div className="h-4 bg-gray-100 rounded w-4/5" />
-            <div className="h-9 bg-gray-100 rounded mt-3" />
-          </div>
-        </div>
-      ))}
-    </div>
+// Tipos de producto para mezclar variedad en el inicio
+const VARIETY_TYPES = [
+  'Electronics', 'Footwear', "Women's Clothing", "Men's Clothing", 'Home & Living',
+  'Pet Supplies', 'Beauty', 'Auto', 'BBQ', 'Jewelry', 'Watches', 'Sports & Fitness',
+];
+
+// Trae productos de TODAS las categorías y los intercala (round-robin) para máxima variedad
+async function getVaried(
+  perType: number,
+  sortKey: 'BEST_SELLING' | 'CREATED_AT',
+  reverse = false,
+) {
+  const lists: ShopifyProduct[][] = await Promise.all(
+    VARIETY_TYPES.map((tp) =>
+      getProducts({ first: perType, sortKey, reverse, query: `tag:market-cr product_type:${tp}` })
+        .then((r) => r.products)
+        .catch((): ShopifyProduct[] => []),
+    ),
   );
+  const out: ShopifyProduct[] = [];
+  const max = Math.max(0, ...lists.map((l) => l.length));
+  for (let i = 0; i < max; i++) {
+    for (const l of lists) if (l[i]) out.push(l[i]);
+  }
+  return out;
 }
 
-async function CRBestSellersGrid() {
-  const { products } = await getProducts({
-    first: 8,
-    sortKey: 'BEST_SELLING',
-    query: 'tag:market-cr',
-  });
-  if (!products.length) return <CRComingSoon />;
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
-      {products.map((product, i) => (
-        <ProductCard key={product.id} product={product} priority={i < 4} basePath={CR_BASE} />
-      ))}
-    </div>
-  );
-}
-
-async function CRNewArrivalsGrid() {
-  const { products } = await getProducts({
-    first: 8,
-    sortKey: 'CREATED_AT',
-    reverse: true,
-    query: 'tag:market-cr',
-  });
-  if (!products.length) return <CRComingSoon />;
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} basePath={CR_BASE} />
-      ))}
-    </div>
-  );
-}
-
-async function CRDealsGrid() {
-  const { products } = await getProducts({
-    first: 8,
-    sortKey: 'BEST_SELLING',
-    query: 'tag:market-cr product_type:Watches',
-  });
+function VariedGrid({ products }: { products: ShopifyProduct[] }) {
   if (!products.length) return <CRComingSoon />;
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
@@ -128,6 +100,15 @@ function SectionHeading({ children, badge }: { children: React.ReactNode; badge?
 }
 
 export default async function CRHomePage() {
+  // Pools variados (intercalados entre todas las categorías)
+  const bestPool = await getVaried(4, 'BEST_SELLING');
+  const newPoolRaw = await getVaried(3, 'CREATED_AT', true);
+
+  const ofertas = bestPool.slice(0, 8);
+  const masVendidos = bestPool.slice(8, 24);
+  const usados = new Set([...ofertas, ...masVendidos].map((p) => p.id));
+  const recien = newPoolRaw.filter((p) => !usados.has(p.id)).slice(0, 12);
+
   return (
     <>
       {/* Hero premium — solo escritorio */}
@@ -200,9 +181,7 @@ export default async function CRHomePage() {
             </SectionHeading>
             <CountdownTimer />
           </Reveal>
-          <Suspense fallback={<ProductsSkeleton count={4} />}>
-            <CRDealsGrid />
-          </Suspense>
+          <VariedGrid products={ofertas} />
         </div>
       </section>
 
@@ -219,9 +198,7 @@ export default async function CRHomePage() {
               <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
             </Link>
           </Reveal>
-          <Suspense fallback={<ProductsSkeleton count={4} />}>
-            <CRBestSellersGrid />
-          </Suspense>
+          <VariedGrid products={masVendidos} />
         </div>
       </section>
 
@@ -246,9 +223,7 @@ export default async function CRHomePage() {
               <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
             </Link>
           </Reveal>
-          <Suspense fallback={<ProductsSkeleton count={8} />}>
-            <CRNewArrivalsGrid />
-          </Suspense>
+          <VariedGrid products={recien} />
         </div>
       </section>
 
