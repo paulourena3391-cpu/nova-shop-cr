@@ -21,11 +21,11 @@ export default function ProductUrgency() {
     return () => clearInterval(id);
   }, []);
 
-  // Delivery window: today + 7 to today + 14 days
+  // Delivery window
   const fmt = (d: Date) =>
     d.toLocaleDateString(es ? 'es-CR' : 'en-US', { day: 'numeric', month: 'short' });
-  const from = new Date(); from.setDate(from.getDate() + (isCR ? 1 : 7));
-  const to = new Date(); to.setDate(to.getDate() + (isCR ? 3 : 14));
+  const from = new Date(); from.setDate(from.getDate() + (isCR ? 10 : 7));
+  const to = new Date(); to.setDate(to.getDate() + (isCR ? 15 : 14));
 
   return (
     <div className="space-y-3">

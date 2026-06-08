@@ -22,7 +22,7 @@ export default function MobileHero() {
               Hasta <span className="text-brand-orange">60%</span> de descuento
             </h2>
             <p className="text-[11px] text-white/60 leading-snug mt-0.5">
-              Envío desde bodega local · Precios en colones · Sin aduanas
+              Envío a todo el país · Precios en colones · Sin aduanas
             </p>
           </div>
           <span className="flex-shrink-0 inline-flex items-center gap-1 rounded-xl bg-brand-orange px-3 py-2 text-sm font-bold shadow-cta">

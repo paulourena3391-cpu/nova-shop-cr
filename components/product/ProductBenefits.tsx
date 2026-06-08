@@ -21,7 +21,7 @@ export default function ProductBenefits() {
   // CR market ships locally and fast — override the US shipping benefit.
   const benefits = BENEFITS.map((b) =>
     b.en === 'Fast US shipping' && isCR
-      ? { ...b, es: 'Envío a todo Costa Rica', en: 'Nationwide CR shipping', dEs: 'A tu puerta en 1-3 días hábiles.', dEn: 'At your door in 1-3 business days.' }
+      ? { ...b, es: 'Envío a todo Costa Rica', en: 'Nationwide CR shipping', dEs: 'A tu puerta en 1 a 2 semanas, con seguimiento.', dEn: 'At your door in 1-2 weeks, with tracking.' }
       : b,
   );
 

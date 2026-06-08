@@ -404,7 +404,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
           {isCR && (
             <ul className="space-y-2">
               {[
-                { Icon: Truck,       text: <>Envío a <strong className="text-navy">todo Costa Rica</strong> en 1-3 días hábiles</> },
+                { Icon: Truck,       text: <>Envío a <strong className="text-navy">todo Costa Rica</strong> en 1 a 2 semanas</> },
                 { Icon: Smartphone,  text: <>Pagás con <strong className="text-navy">SINPE Móvil</strong> o tarjeta</> },
                 { Icon: ShieldCheck, text: <>Garantía de <strong className="text-navy">30 días</strong> o te devolvemos tu plata</> },
               ].map(({ Icon, text }, i) => (
@@ -424,7 +424,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
               {[
                 { e: '🚚', t: 'Envíos a CR' },
                 { e: '💳', t: 'Pago seguro' },
-                { e: '📦', t: 'Bodega local' },
+                { e: '📦', t: 'Con seguimiento' },
                 { e: '🛡️', t: 'Garantía' },
               ].map((x) => (
                 <div key={x.t} className="flex flex-col items-center gap-0.5 text-center">
@@ -592,7 +592,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
 
       {/* ── Beneficios + Reseñas UGC (prioridad alta, arriba) ── */}
       <ProductBenefits />
-      <ProductReviews photos={images.slice(0, 6).map((i) => i.url)} />
+      <ProductReviews photos={images.slice(0, 6).map((i) => i.url)} productType={product.productType} seed={seed} />
 
       {/* ── Description / Specs ─────────────────────────────────── */}
       <div className="mt-8 px-4 md:px-0 md:mt-14">

@@ -234,7 +234,7 @@ export default function CartView() {
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <Truck size={14} className="text-blue-500 flex-shrink-0" />
-                {lang === 'es' ? 'Envío estimado: 2-3 días hábiles' : 'Estimated shipping: 2-3 business days'}
+                {lang === 'es' ? 'Envío estimado: 1 a 2 semanas' : 'Estimated shipping: 1-2 weeks'}
               </div>
             </div>
 

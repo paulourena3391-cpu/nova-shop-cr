@@ -28,7 +28,7 @@ function useCountUp(target: number, run: boolean, duration = 1400) {
 const STATS = [
   { Icon: Users,       target: 2500, decimals: 0, prefix: '', suffix: '+', label: 'Clientes felices' },
   { Icon: Star,        target: 4.8,  decimals: 1, prefix: '', suffix: '★', label: 'Calificación promedio' },
-  { Icon: Truck,       target: 3,    decimals: 0, prefix: '1-', suffix: ' días', label: 'Envío a todo CR' },
+  { Icon: Truck,       target: 14,   decimals: 0, prefix: '10-', suffix: ' días', label: 'Envío a todo CR' },
   { Icon: ShieldCheck, target: 100,  decimals: 0, prefix: '', suffix: '%', label: 'Compra protegida' },
 ];
 

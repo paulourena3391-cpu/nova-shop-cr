@@ -22,7 +22,7 @@ const rise: Variants = {
 };
 
 const stats = [
-  { Icon: Truck, title: 'Envío Express', desc: 'Bodega local · 1-3 días' },
+  { Icon: Truck, title: 'Envío a todo CR', desc: 'A tu puerta · 1-2 semanas' },
   { Icon: ShieldCheck, title: 'Compra Protegida', desc: 'Pago 100% seguro' },
   { Icon: Star, title: '+4.8 / 5', desc: 'Miles de clientes ticos' },
   { Icon: Zap, title: 'Ofertas del día', desc: 'Hasta 60% de descuento' },
@@ -97,7 +97,7 @@ export default function HeroCR() {
               variants={rise}
               className="mt-6 max-w-md text-lg leading-relaxed text-white/70"
             >
-              Tecnología, moda, hogar y más — con envío rápido desde bodega local y
+              Tecnología, moda, hogar y más — con envío a todo el país y
               precios en colones. Calidad premium, sin esperas de aduana.
             </motion.p>
 

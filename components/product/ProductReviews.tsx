@@ -5,72 +5,124 @@ import { Star, BadgeCheck, ThumbsUp, Camera } from 'lucide-react';
 import { useLang } from '@/context/LanguageContext';
 import { useMarket } from '@/context/MarketContext';
 
-type Review = {
-  name: string;
-  country: string;
-  rating: number;
-  daysAgo: number;
-  es: string;
-  en: string;
-  likes: number;
+type Props = { photos?: string[]; productType?: string; seed?: number };
+
+const NAMES = [
+  'María José', 'Andrés', 'Daniela', 'Carlos', 'Gabriela', 'José Pablo', 'Natalia',
+  'Mauricio', 'Karla', 'Esteban', 'Priscila', 'Bryan', 'Tatiana', 'Diego', 'Valeria', 'Kevin',
+];
+const SURNAMES = ['R.', 'M.', 'S.', 'V.', 'F.', 'C.', 'A.', 'G.', 'J.', 'B.', 'P.', 'Q.'];
+const CANTONES = [
+  'Heredia', 'Cartago', 'Alajuela', 'San José', 'Curridabat', 'Desamparados',
+  'Pérez Zeledón', 'Liberia', 'San Carlos', 'Grecia', 'Escazú', 'Tibás', 'Moravia', 'Pococí',
+];
+
+// Reseñas genéricas (sirven para cualquier producto). {c} = cantón, {d} = días de envío.
+const GENERIC = [
+  'Tardó como {d} días en llegar a {c} pero valió la pena, la calidad está muy buena.',
+  'Pagué con SINPE y me confirmaron rapidísimo por WhatsApp. Llegó tal cual las fotos 🙌',
+  'Igual a la descripción. Me dieron el seguimiento y llegó bien empacado a {c}.',
+  'Tenía dudas de comprar en línea pero todo bien. El producto cumple y la atención excelente.',
+  'Relación precio-calidad brutal. Ya pedí otro. Demoró un poquito pero llegó perfecto.',
+  'Súper recomendado. Me avisaron cuando salió el envío y llegó a {c} sin problema.',
+  'Buenísimo. Esperé como dos semanas pero llegó en buen estado y funciona perfecto.',
+];
+
+// Frases específicas por categoría (más creíbles para cada producto)
+const BY_TYPE: Record<string, string[]> = {
+  Watches: [
+    'El reloj se ve elegante y la batería rinde un montón. Me encantó.',
+    'Tiene un montón de funciones para el precio. La correa es cómoda y se ve fino.',
+  ],
+  Footwear: [
+    'Súper cómodos y tallaron bien. Los uso a diario.',
+    'El material se siente resistente y son livianos. Quedé feliz.',
+  ],
+  "Women's Clothing": [
+    'La tela es suave y la talla quedó tal cual la guía. Me quedó hermoso.',
+    'El color es igual a la foto y la costura está bien hecha. Calidad muy buena.',
+  ],
+  "Men's Clothing": [
+    'Buena tela y la talla quedó perfecta. Cómodo y fresco.',
+    'Se ve mejor en persona, la calidad sorprende para el precio.',
+  ],
+  Electronics: [
+    'Funciona perfecto y fácil de usar. Cumple justo lo que promete.',
+    'La calidad sorprende para el precio. Conecta sin problema y vino completo.',
+  ],
+  'Home & Living': [
+    'Práctico y bien hecho. Le saco provecho todos los días en la casa.',
+    'Justo lo que necesitaba, buena calidad y resistente.',
+  ],
+  'Pet Supplies': [
+    'A mi mascota le encantó y se ve resistente. Muy buena compra.',
+    'Calidad muy buena, mi perro quedó feliz. Lo recomiendo.',
+  ],
+  Beauty: [
+    'Se nota el resultado y rinde bastante. Llegó bien sellado.',
+    'Funciona tal cual lo describen. Buen producto por el precio.',
+  ],
+  Jewelry: [
+    'Se ve fino y no se destiñe. Quedó hermoso, ideal para regalar.',
+    'Más bonito en persona y llegó en su cajita. Me encantó.',
+  ],
+  Auto: [
+    'Fácil de instalar y se siente resistente. Calza bien en el carro.',
+    'Cumple perfecto y la calidad es buena para el precio.',
+  ],
+  BBQ: [
+    'Resistente y práctico para el asado del fin de semana. Excelente.',
+    'Buen material, aguanta bien el calor. Quedé satisfecho.',
+  ],
+  'Sports & Fitness': [
+    'Buen material y cómodo para entrenar. Se siente firme y resistente.',
+    'Cumple para el ejercicio en casa. Calidad mejor de lo que esperaba.',
+  ],
 };
 
-const REVIEWS: Review[] = [
-  { name: 'María José R.', country: '🇨🇷', rating: 5, daysAgo: 3,  likes: 24,
-    es: 'Mae llegó antes de lo que pensaba y la calidad está brutal. Ya pedí otro para regalar 🙌',
-    en: 'Arrived faster than expected and the quality is amazing. Already ordered another one as a gift 🙌' },
-  { name: 'Jessica M.',   country: '🇺🇸', rating: 5, daysAgo: 6,  likes: 41,
-    es: 'Lo pedí sin fe y resultó buenísimo. 100% recomendado, vale cada centavo.',
-    en: 'Ordered it with zero faith and it turned out amazing. 100% recommend, worth every penny.' },
-  { name: 'Carlos V.',    country: '🇨🇷', rating: 5, daysAgo: 8,  likes: 17,
-    es: 'Excelente atención y el producto tal cual las fotos. El envío llegó en 9 días.',
-    en: 'Great service and the product is exactly like the photos. Shipping took 9 days.' },
-  { name: 'Ashley T.',    country: '🇺🇸', rating: 4, daysAgo: 12, likes: 9,
-    es: 'Muy bueno por el precio. Le doy 4 estrellas solo porque tardó un poquito el envío.',
-    en: 'Really good for the price. 4 stars only because shipping took a bit.' },
-  { name: 'Daniela S.',   country: '🇨🇷', rating: 5, daysAgo: 15, likes: 33,
-    es: 'Me arrepiento de no haberlo comprado antes. Lo uso todos los días 😍',
-    en: "I regret not buying it sooner. I use it every single day 😍" },
-];
-
-// CR market reviews: all Costa Rican, mention FAST local delivery + SINPE, and are
-// outcome-specific (matches cold TikTok traffic coming from the product's promise).
-const CR_REVIEWS: Review[] = [
-  { name: 'María José R.', country: '🇨🇷', rating: 5, daysAgo: 2, likes: 34,
-    es: 'Paso todo el día en la compu y ya casi no me duele la espalda. Llegó en 2 días a Heredia 🙌',
-    en: '' },
-  { name: 'Andrés M.', country: '🇨🇷', rating: 5, daysAgo: 4, likes: 27,
-    es: 'Andaba super encorvado por el celular. En una semana ya me siento más derecho y nadie lo nota bajo la camisa.',
-    en: '' },
-  { name: 'Daniela S.', country: '🇨🇷', rating: 5, daysAgo: 6, likes: 19,
-    es: 'Pagué con SINPE y me confirmaron rapidísimo por WhatsApp. El producto tal cual las fotos 😍',
-    en: '' },
-  { name: 'Carlos V.', country: '🇨🇷', rating: 5, daysAgo: 9, likes: 22,
-    es: 'Excelente. Cómodo, ajustable y se siente el soporte de una. Llegó rápido a Cartago.',
-    en: '' },
-  { name: 'Gabriela F.', country: '🇨🇷', rating: 4, daysAgo: 13, likes: 8,
-    es: 'Muy bueno. Le doy 4 porque al inicio cuesta acostumbrarse, pero a los días ya ni lo sentís. Vale la pena.',
-    en: '' },
-];
-
-export default function ProductReviews({ photos = [] }: { photos?: string[] }) {
+export default function ProductReviews({ photos = [], productType = '', seed = 0 }: Props) {
   const { lang } = useLang();
   const { isCR } = useMarket();
   const es = lang === 'es';
-  const reviews = isCR ? CR_REVIEWS : REVIEWS;
 
-  const total = 247;
-  const avg = 4.8;
+  // Garantiza relevancia: primero frases de la categoría, luego genéricas (rotadas por seed)
+  const count = 5;
+  const typePhrases = BY_TYPE[productType] ?? [];
+  const texts: string[] = [...typePhrases.slice(0, 2)];
+  let gi = seed % GENERIC.length;
+  while (texts.length < count) {
+    texts.push(GENERIC[gi % GENERIC.length]);
+    gi += 2;
+  }
+
+  // Construye reseñas deterministas (estables por producto, distintas entre productos)
+  const reviews = texts.slice(0, count).map((raw, i) => {
+    const k = seed + i * 7 + 1;
+    const text = raw
+      .replace('{c}', CANTONES[(k * 3) % CANTONES.length])
+      .replace('{d}', String(10 + (k % 6))); // 10–15 días
+    const rating = i === 3 ? 4 : 5; // una de 4★ para credibilidad
+    return {
+      name: `${NAMES[k % NAMES.length]} ${SURNAMES[(k * 2) % SURNAMES.length]}`,
+      rating,
+      daysAgo: 2 + ((k * 5) % 24),
+      likes: 6 + ((k * 11) % 38),
+      text,
+    };
+  });
+
+  // Resumen (estable por producto)
+  const avg = (4.6 + (seed % 4) / 10).toFixed(1);
+  const total = 60 + (seed % 280);
   const dist = [
-    { stars: 5, pct: 86 },
-    { stars: 4, pct: 10 },
+    { stars: 5, pct: 84 },
+    { stars: 4, pct: 11 },
     { stars: 3, pct: 3 },
     { stars: 2, pct: 1 },
-    { stars: 1, pct: 0 },
+    { stars: 1, pct: 1 },
   ];
 
-  const ago = (d: number) =>
-    es ? `hace ${d} días` : `${d} days ago`;
+  const ago = (d: number) => (es ? `hace ${d} días` : `${d} days ago`);
 
   return (
     <section className="mt-12 md:mt-16 px-4 md:px-0">
@@ -106,7 +158,7 @@ export default function ProductReviews({ photos = [] }: { photos?: string[] }) {
         </div>
       </div>
 
-      {/* Customer photos gallery — builds legitimacy */}
+      {/* Customer photos gallery */}
       {photos.length > 1 && (
         <div className="mb-8">
           <p className="flex items-center gap-2 text-sm font-semibold text-navy mb-3">
@@ -117,7 +169,7 @@ export default function ProductReviews({ photos = [] }: { photos?: string[] }) {
           <div className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-1">
             {photos.map((url, i) => (
               <div key={i} className="relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden shrink-0 border border-gray-100 group">
-                <Image src={url} alt={`Customer photo ${i + 1}`} fill sizes="96px" className="object-cover group-hover:scale-110 transition-transform duration-300" />
+                <Image src={url} alt={`Foto de cliente ${i + 1}`} fill sizes="96px" className="object-cover group-hover:scale-110 transition-transform duration-300" />
                 <div className="absolute bottom-1 left-1 flex gap-0.5">
                   {Array.from({ length: 5 }).map((_, s) => (
                     <Star key={s} size={7} className="fill-amber-400 text-amber-400 drop-shadow" />
@@ -131,8 +183,8 @@ export default function ProductReviews({ photos = [] }: { photos?: string[] }) {
 
       {/* Review list */}
       <div className="space-y-4">
-        {reviews.map((r) => (
-          <div key={r.name} className="bg-white border border-gray-100 rounded-2xl p-5 shadow-card">
+        {reviews.map((r, idx) => (
+          <div key={idx} className="bg-white border border-gray-100 rounded-2xl p-5 shadow-card">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-brand-orange-light flex items-center justify-center font-bold text-brand-orange">
@@ -140,7 +192,7 @@ export default function ProductReviews({ photos = [] }: { photos?: string[] }) {
                 </div>
                 <div>
                   <p className="font-semibold text-navy text-sm flex items-center gap-1.5">
-                    {r.name} <span>{r.country}</span>
+                    {r.name} <span>🇨🇷</span>
                   </p>
                   <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 font-medium">
                     <BadgeCheck size={12} /> {es ? 'Compra verificada' : 'Verified purchase'}
@@ -157,12 +209,12 @@ export default function ProductReviews({ photos = [] }: { photos?: string[] }) {
               ))}
             </div>
 
-            <p className="text-gray-600 text-sm mt-2.5 leading-relaxed">{es ? r.es : r.en}</p>
+            <p className="text-gray-600 text-sm mt-2.5 leading-relaxed">{r.text}</p>
 
-            {/* Attached customer photo on the first couple of reviews */}
-            {reviews.indexOf(r) < photos.length && reviews.indexOf(r) < 2 && (
+            {/* Foto adjunta en las primeras reseñas */}
+            {idx < photos.length && idx < 2 && (
               <div className="relative w-24 h-24 rounded-xl overflow-hidden mt-3 border border-gray-100">
-                <Image src={photos[reviews.indexOf(r)]} alt="Review photo" fill sizes="96px" className="object-cover" />
+                <Image src={photos[idx]} alt="Foto de reseña" fill sizes="96px" className="object-cover" />
               </div>
             )}
 

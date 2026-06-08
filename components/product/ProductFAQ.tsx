@@ -13,7 +13,7 @@ const FAQS = [
   },
   {
     q: '¿Cuánto tarda en llegar mi pedido?',
-    a: 'Enviamos a todo Costa Rica en 1 a 3 días hábiles. Apenas se despacha tu pedido te avisamos por WhatsApp para que estés pendiente.',
+    a: 'Enviamos a todo Costa Rica en aproximadamente 1 a 2 semanas (10 a 15 días). Apenas se despacha tu pedido te avisamos por WhatsApp y te damos el seguimiento.',
   },
   {
     q: '¿Y si no me sirve o no me gusta?',
