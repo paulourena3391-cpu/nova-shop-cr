@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ShieldCheck, Truck, RefreshCw, Star, ChevronLeft, ChevronRight, Smartphone } from 'lucide-react';
+import { ShieldCheck, Truck, RefreshCw, Star, ChevronLeft, ChevronRight, Smartphone, Heart, Zap, ShoppingCart } from 'lucide-react';
 import {
   ShopifyProduct,
   ShopifyVariant,
@@ -45,6 +45,14 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
   const [selectedImageIdx, setSelectedImageIdx] = useState(0);
   const [activeTab,        setActiveTab]        = useState<'description' | 'specs'>('description');
   const [bundleQty,        setBundleQty]        = useState(1);
+  const [wished,           setWished]           = useState(false);
+
+  // Prueba social determinista (estable por producto)
+  const seed = Array.from(product.id).reduce((a, c) => a + c.charCodeAt(0), 0);
+  const ratingVal = (4.6 + (seed % 4) / 10).toFixed(1); // 4.6 – 4.9
+  const soldCount = 180 + (seed % 760);                 // 180 – 939
+  const satisfaction = 92 + (seed % 8);                 // 92 – 99
+  const reviewCount = 60 + (seed % 280);                // 60 – 339
 
   // Always land at the top (image first) when opening a product
   useEffect(() => {
@@ -273,6 +281,13 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
                   {selectedImageIdx + 1} / {images.length}
                 </div>
               )}
+
+              {/* CR: social-proof badge */}
+              {isCR && (
+                <div className="absolute bottom-3 left-3 bg-black/55 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded-full flex items-center gap-1">
+                  🔥 Recomendado por compradores
+                </div>
+              )}
             </div>
           </div>
 
@@ -334,32 +349,48 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
             {product.title}
           </h1>
 
-          {/* Rating */}
-          <div className="flex items-center gap-2">
-            <div className="flex">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} size={14}
-                  className={i < 4 ? 'fill-amber-400 text-amber-400' : 'fill-gray-200 text-gray-200'} />
-              ))}
-            </div>
-            <span className="text-xs text-gray-400">4.0 · 24 reseñas</span>
+          {/* Rating + prueba social (una línea) */}
+          <div className="flex items-center gap-2 flex-wrap text-sm">
+            <span className="flex items-center gap-1 font-bold text-amber-500">
+              <Star size={15} className="fill-amber-400 text-amber-400" />
+              {ratingVal}
+            </span>
+            <span className="text-gray-300">|</span>
+            <span className="text-gray-500">{soldCount} vendidos</span>
+            <span className="text-gray-300">|</span>
+            <span className="text-emerald-600 font-medium">{satisfaction}% satisfacción</span>
           </div>
 
           {/* ── Price ── */}
-          <div className="flex items-baseline gap-3 flex-wrap py-1">
-            <span className="text-3xl font-extrabold text-navy">{price}</span>
-            {isOnSale && (
-              <>
-                <span className="text-lg text-gray-400 line-through">
+          <div className="rounded-2xl bg-orange-50/60 border border-orange-100 p-3 md:bg-transparent md:border-0 md:p-0">
+            <div className="flex items-baseline gap-3 flex-wrap">
+              <span className="text-3xl font-extrabold text-navy">{price}</span>
+              {isOnSale && discount > 0 && (
+                <span className="bg-red-500 text-white text-sm font-bold px-2 py-0.5 rounded-md">-{discount}%</span>
+              )}
+              {isOnSale && (
+                <span className="text-base text-gray-400 line-through">
                   {fmt(
                     selectedVariant?.compareAtPrice?.amount ??
                       product.compareAtPriceRange.minVariantPrice.amount,
                     product.compareAtPriceRange.minVariantPrice.currencyCode,
                   )}
                 </span>
-                <span className="badge-orange text-xs">{discount}% OFF</span>
-              </>
-            )}
+              )}
+            </div>
+            {isOnSale && (() => {
+              const compareAmt = parseFloat(
+                selectedVariant?.compareAtPrice?.amount ??
+                  product.compareAtPriceRange.minVariantPrice.amount,
+              );
+              const saving = compareAmt - unitAmount;
+              if (!(saving > 0)) return null;
+              return (
+                <p className="mt-1 text-sm font-semibold text-emerald-600">
+                  Ahorrás {fmt(String(saving), currency)}
+                </p>
+              );
+            })()}
           </div>
 
           {/* CR: USD reference — checkout is processed in dollars (PayPal) */}
@@ -385,6 +416,23 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
                 </li>
               ))}
             </ul>
+          )}
+
+          {/* CR: barra de confianza compacta */}
+          {isCR && (
+            <div className="grid grid-cols-4 gap-1.5 rounded-xl bg-gray-50 border border-gray-100 p-2">
+              {[
+                { e: '🚚', t: 'Envíos a CR' },
+                { e: '💳', t: 'Pago seguro' },
+                { e: '📦', t: 'Bodega local' },
+                { e: '🛡️', t: 'Garantía' },
+              ].map((x) => (
+                <div key={x.t} className="flex flex-col items-center gap-0.5 text-center">
+                  <span className="text-lg leading-none">{x.e}</span>
+                  <span className="text-[10px] text-gray-500 font-medium leading-tight">{x.t}</span>
+                </div>
+              ))}
+            </div>
           )}
 
           {/* Divider */}
@@ -542,6 +590,10 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
         </div>
       </div>
 
+      {/* ── Beneficios + Reseñas UGC (prioridad alta, arriba) ── */}
+      <ProductBenefits />
+      <ProductReviews photos={images.slice(0, 6).map((i) => i.url)} />
+
       {/* ── Description / Specs ─────────────────────────────────── */}
       <div className="mt-8 px-4 md:px-0 md:mt-14">
         <div className="border-b border-gray-200 mb-5">
@@ -587,10 +639,8 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
         )}
       </div>
 
-      {/* ── Conversion sections ─────────────────────────────────── */}
-      <ProductBenefits />
+      {/* ── Más secciones de conversión ── */}
       <ProductComparison />
-      <ProductReviews photos={images.slice(0, 6).map((i) => i.url)} />
       {isCR && <ProductFAQ />}
 
       {/* ── Related products ────────────────────────────────────── */}
@@ -676,31 +726,58 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
             </div>
           )}
 
-          {/* Price (bundle-aware) + CTA */}
-          <div className="flex items-center gap-3 px-4 py-2.5">
-            <div className="flex-1 min-w-0">
-              <p className="text-[11px] text-gray-400 truncate leading-none mb-0.5">
-                {bundleQty > 1
-                  ? `${bundleQty} unidades · ahorrás ${selectedBundle.off}%`
-                  : selectedVariant?.selectedOptions?.map((o) => o.value).join(' · ')}
-              </p>
-              <div className="flex items-baseline gap-1.5">
-                <p className="text-lg font-extrabold text-navy leading-none">{stickyPrice}</p>
+          {/* Price (bundle-aware) + acciones */}
+          <div className="px-3 py-2">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-baseline gap-1.5 min-w-0">
+                <p className="text-xl font-extrabold text-navy leading-none">{stickyPrice}</p>
                 {bundleQty > 1 && (
                   <p className="text-xs text-gray-400 line-through leading-none">
                     {fmt(String(unitAmount * bundleQty), currency)}
                   </p>
                 )}
               </div>
+              <p className="text-[11px] text-gray-400 truncate leading-none ml-2">
+                {bundleQty > 1
+                  ? `${bundleQty} uds · ahorrás ${selectedBundle.off}%`
+                  : selectedVariant?.selectedOptions?.map((o) => o.value).join(' · ')}
+              </p>
             </div>
 
-            <button
-              onClick={handleAddToCart}
-              disabled={!isAvailable || isLoading}
-              className="btn-primary px-6 py-3.5 text-sm shrink-0 shadow-lg shadow-brand-orange/30"
-            >
-              {isAvailable ? t.addToCart : t.outOfStock}
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Favoritos */}
+              <button
+                onClick={() => setWished((w) => !w)}
+                aria-label="Favoritos"
+                className={`shrink-0 w-12 h-12 rounded-xl border-2 flex items-center justify-center transition-all active:scale-95 ${
+                  wished ? 'border-red-400 text-red-500 bg-red-50' : 'border-gray-200 text-gray-400 bg-white'
+                }`}
+              >
+                <Heart size={20} fill={wished ? 'currentColor' : 'none'} />
+              </button>
+
+              {/* Agregar al carrito */}
+              <button
+                onClick={handleAddToCart}
+                disabled={!isAvailable || isLoading}
+                className="flex-1 h-12 rounded-xl border-2 border-navy text-navy font-semibold text-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all disabled:opacity-50"
+              >
+                <ShoppingCart size={17} />
+                {isAvailable ? 'Agregar' : t.outOfStock}
+              </button>
+
+              {/* Comprar ahora */}
+              {isAvailable && (
+                <button
+                  onClick={handleBuyNow}
+                  disabled={isLoading}
+                  className="flex-1 h-12 rounded-xl btn-primary text-sm flex items-center justify-center gap-1.5 shadow-lg shadow-brand-orange/30"
+                >
+                  <Zap size={17} />
+                  Comprar ya
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
