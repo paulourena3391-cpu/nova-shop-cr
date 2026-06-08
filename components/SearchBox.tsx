@@ -134,7 +134,14 @@ export default function SearchBox({ basePath = '', isCR = false, placeholder = '
           type="text"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          onFocus={() => setOpen(true)}
+          onFocus={() => {
+            // En móvil: ir a la página de búsqueda completa (sin dropdown raro).
+            if (typeof window !== 'undefined' && window.innerWidth < 768) {
+              router.push(`${basePath}/search`);
+            } else {
+              setOpen(true);
+            }
+          }}
           placeholder={placeholder}
           className="flex-1 px-3 py-2.5 text-sm text-gray-900 outline-none bg-transparent min-w-0"
           aria-label="Buscar"

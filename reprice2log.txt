@@ -1,0 +1,34 @@
+SKUs con costo: 11908
+productos: 873
+  ...25 productos
+  ...50 productos
+  ...75 productos
+  ...100 productos
+  ...125 productos
+  ...150 productos
+  ...175 productos
+  ...200 productos
+  ...225 productos
+  ...250 productos
+  ...275 productos
+  ...300 productos
+  ...325 productos
+  ...350 productos
+  ...375 productos
+  ...400 productos
+  ...425 productos
+  ...450 productos
+  ...475 productos
+  ...500 productos
+  ...525 productos
+  ...550 productos
+  ...575 productos
+  ...600 productos
+  ...625 productos
+  ...650 productos
+  ...675 productos
+  ...700 productos
+  ...725 productos
+  ...750 productos
+FIN | variantes subidas: 10764 | productos: 767 | variantes sin costo (sin tocar): 1757
+Magnitud de subidas $: {"<5":8884,"5-10":1880,"10-15":0,">15":0}

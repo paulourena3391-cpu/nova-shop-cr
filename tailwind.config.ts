@@ -48,8 +48,10 @@ const config: Config = {
         'slide-up':   'slideUp 0.25s ease-out',
         'pulse-glow': 'pulseGlow 2s infinite',
         'fade-in-up': 'fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both',
+        marquee:     'marquee 30s linear infinite',
       },
       keyframes: {
+        marquee:   { '0%': { transform: 'translateX(0)' }, '100%': { transform: 'translateX(-50%)' } },
         fadeIn:    { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
         slideDown: { '0%': { transform: 'translateY(-8px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
         slideUp:   { '0%': { transform: 'translateY(16px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },

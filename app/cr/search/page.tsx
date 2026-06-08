@@ -17,7 +17,7 @@ export default function CRSearchPage() {
         </div>
       }
     >
-      <SearchInner basePath="/cr" filterQuery="vendor:Dropi" />
+      <SearchInner basePath="/cr" filterQuery="tag:market-cr" />
     </Suspense>
   );
 }

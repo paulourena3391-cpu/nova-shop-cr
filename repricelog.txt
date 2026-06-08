@@ -1,0 +1,19 @@
+SKUs con costo (se omiten): 7609 [DRY RUN]
+productos market-cr: 873
+  Reloj Minimalista con Calendario | CJQL280008101AZ | 21.99 → 28.99 (kg 0.09)
+  Reloj Minimalista con Calendario | CJQL280008102BY | 21.99 → 28.99 (kg 0.09)
+  Reloj Minimalista con Calendario | CJQL280008103CX | 21.99 → 28.99 (kg 0.09)
+  Reloj Minimalista con Calendario | CJQL280008104DW | 21.99 → 28.99 (kg 0.09)
+  Reloj Minimalista con Calendario | CJQL280008105EV | 21.99 → 28.99 (kg 0.09)
+  Reloj Minimalista con Calendario | CJQL280008106FU | 21.99 → 28.99 (kg 0.09)
+  Reloj Minimalista con Calendario | CJQL280008107GT | 21.99 → 28.99 (kg 0.09)
+  Reloj Minimalista con Calendario | CJQL280008108HS | 21.99 → 28.99 (kg 0.09)
+  Cargador 12V para Linterna de Au | CJCD28306490001 | 26.99 → 35.99 (kg 1)
+  Cargador de Pared para Linterna  | CJCD28306470001 | 23.99 → 31.99 (kg 1)
+  Traje de Baño Entero Estampado L | CJNT292344301AZ | 16.99 → 22.99 (kg 0.23)
+  Traje de Baño Entero Estampado L | CJNT292344302BY | 16.99 → 22.99 (kg 0.24)
+  Traje de Baño Entero Estampado L | CJNT292344303CX | 16.99 → 22.99 (kg 0.25)
+  Traje de Baño Entero Estampado L | CJNT292344304DW | 16.99 → 22.99 (kg 0.26)
+  Blusa Blanca Holgada Versátil | CJYD292344001AZ | 10.99 → 14.99 (kg 0.27)
+  Blusa Blanca Holgada Versátil | CJYD292344002BY | 10.99 → 14.99 (kg 0.28)
+FIN | productos reprecio: 337 | variantes: 5625
