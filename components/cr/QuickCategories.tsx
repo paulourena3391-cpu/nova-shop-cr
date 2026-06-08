@@ -1,3 +1,6 @@
+'use client';
+
+import { useRef, useEffect } from 'react';
 import Link from 'next/link';
 
 const QUICK: { label: string; href: string; emoji: string }[] = [
@@ -35,14 +38,56 @@ function Item({ c }: { c: (typeof QUICK)[number] }) {
 }
 
 export default function QuickCategories() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    // respeta usuarios con movimiento reducido
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let paused = false;
+    let resumeT: ReturnType<typeof setTimeout>;
+    let acc = el.scrollLeft;
+
+    const pause = () => {
+      paused = true;
+      clearTimeout(resumeT);
+      resumeT = setTimeout(() => { paused = false; acc = el.scrollLeft; }, 2200);
+    };
+    // solo gestos del usuario pausan (no el auto-scroll)
+    el.addEventListener('pointerdown', pause);
+    el.addEventListener('touchstart', pause, { passive: true });
+    el.addEventListener('wheel', pause, { passive: true });
+
+    const id = setInterval(() => {
+      if (paused || !el) { if (el) acc = el.scrollLeft; return; }
+      const half = el.scrollWidth / 2;
+      acc += 0.4; // velocidad lenta
+      if (acc >= half) acc -= half;
+      el.scrollLeft = acc;
+    }, 16);
+
+    return () => {
+      clearInterval(id);
+      clearTimeout(resumeT);
+      el.removeEventListener('pointerdown', pause);
+      el.removeEventListener('touchstart', pause);
+      el.removeEventListener('wheel', pause);
+    };
+  }, []);
+
   return (
-    <section className="bg-white md:hidden overflow-hidden py-2.5">
-      {/* fila que se mueve sola (marquee). Se pausa al tocar para que puedan dar clic. */}
-      <div className="flex w-max gap-4 px-3 animate-marquee [animation-play-state:running] hover:[animation-play-state:paused] active:[animation-play-state:paused] motion-reduce:animate-none motion-reduce:flex-wrap">
+    <section className="bg-white md:hidden py-2.5">
+      <div
+        ref={ref}
+        className="flex gap-4 px-3 overflow-x-auto scrollbar-hide"
+        style={{ scrollbarWidth: 'none' }}
+      >
         {QUICK.map((c) => (
           <Item key={c.href} c={c} />
         ))}
-        {/* copia para loop continuo */}
+        {/* copia para loop continuo (auto-scroll infinito) */}
         {QUICK.map((c) => (
           <Item key={c.href + '-dup'} c={c} />
         ))}
