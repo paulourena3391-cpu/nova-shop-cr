@@ -66,13 +66,11 @@ async function CRBestSellersGrid() {
   });
   if (!products.length) return <CRComingSoon />;
   return (
-    <StaggerGroup className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
       {products.map((product, i) => (
-        <StaggerItem key={product.id}>
-          <ProductCard product={product} priority={i < 4} basePath={CR_BASE} />
-        </StaggerItem>
+        <ProductCard key={product.id} product={product} priority={i < 4} basePath={CR_BASE} />
       ))}
-    </StaggerGroup>
+    </div>
   );
 }
 
@@ -85,13 +83,11 @@ async function CRNewArrivalsGrid() {
   });
   if (!products.length) return <CRComingSoon />;
   return (
-    <StaggerGroup className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
       {products.map((product) => (
-        <StaggerItem key={product.id}>
-          <ProductCard product={product} basePath={CR_BASE} />
-        </StaggerItem>
+        <ProductCard key={product.id} product={product} basePath={CR_BASE} />
       ))}
-    </StaggerGroup>
+    </div>
   );
 }
 
@@ -103,13 +99,11 @@ async function CRDealsGrid() {
   });
   if (!products.length) return <CRComingSoon />;
   return (
-    <StaggerGroup className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
       {products.map((product, i) => (
-        <StaggerItem key={product.id}>
-          <ProductCard product={product} priority={i < 4} basePath={CR_BASE} />
-        </StaggerItem>
+        <ProductCard key={product.id} product={product} priority={i < 4} basePath={CR_BASE} />
       ))}
-    </StaggerGroup>
+    </div>
   );
 }
 
