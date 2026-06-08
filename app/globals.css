@@ -12,6 +12,10 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    /* Clipa el ancho extra que iOS Safari cuenta de los paneles off-canvas
+       (CartDrawer translate-x-full). 'clip' NO crea scroll-container, así que
+       el header sticky y los scrolls horizontales internos siguen funcionando. */
+    overflow-x: clip;
   }
   /* Display headings: tighter tracking for a premium editorial feel */
   h1, h2, h3 { @apply font-display tracking-tightest; }

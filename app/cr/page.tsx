@@ -169,7 +169,7 @@ export default async function CRHomePage() {
       {/* ── Ofertas del día ── */}
       <section className="py-5 md:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <Reveal className="flex flex-row items-center justify-between gap-4 mb-4 md:mb-8 pb-3 md:pb-5 border-b border-gray-200">
+          <Reveal className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 md:mb-8 pb-3 md:pb-5 border-b border-gray-200">
             <SectionHeading
               badge={
                 <span className="bg-red-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-wide shadow-sm animate-pulse">
@@ -179,7 +179,9 @@ export default async function CRHomePage() {
             >
               Ofertas del día
             </SectionHeading>
-            <CountdownTimer />
+            <div className="max-w-full overflow-x-auto scrollbar-hide">
+              <CountdownTimer />
+            </div>
           </Reveal>
           <VariedGrid products={ofertas} />
         </div>
