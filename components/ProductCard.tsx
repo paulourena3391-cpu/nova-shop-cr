@@ -40,7 +40,7 @@ export default function ProductCard({ product, priority = false, basePath = '' }
   const rating = (4.5 + (seed % 5) / 10).toFixed(1); // 4.5 – 4.9
   const sold = 120 + (seed % 1880); // 120 – 1999
   const soldLabel = sold >= 1000 ? `+${(sold / 1000).toFixed(1).replace('.0', '')} mil` : `+${sold}`;
-  const isTrending = sold > 900;
+  const isTrending = sold > 1700;
 
   async function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault();
