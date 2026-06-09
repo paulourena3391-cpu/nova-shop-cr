@@ -534,7 +534,9 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
                 ?.filter((o) => o.value !== 'Default Title')
                 .map((o) => o.value)
                 .join(' / ')}
-              price={price}
+              price={bundleQty > 1 ? fmt(String(bundleTotalAmount), currency) : price}
+              qty={bundleQty}
+              bundleOff={selectedBundle.off}
             />
           )}
 
@@ -696,11 +698,41 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
           </div>
         </div>
       ) : (
-        /* CR store — smart conversion bar: pick size + see bundle price + CTA, no scroll */
-        <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-8px_24px_rgba(15,27,45,0.08)] sticky-safe-bottom">
-          {/* Quick size / spec picker — tap to choose without scrolling up */}
+        /* CR store — buy box sticky: cantidad + opción + WhatsApp, sin scroll */
+        <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white/98 backdrop-blur-md border-t border-gray-200 shadow-[0_-8px_24px_rgba(15,27,45,0.10)] sticky-safe-bottom">
+
+          {/* Fila 1: selector de cantidad (bundle) */}
+          <div className="flex items-center gap-1.5 px-3 pt-2.5 pb-1.5 border-b border-gray-100">
+            <span className="shrink-0 text-[11px] font-semibold text-gray-500 mr-0.5">Cantidad:</span>
+            {BUNDLES.map((b) => {
+              const active = bundleQty === b.qty;
+              return (
+                <button
+                  key={b.qty}
+                  onClick={() => setBundleQty(b.qty)}
+                  className={`relative shrink-0 flex flex-col items-center justify-center rounded-xl border-2 px-3 py-1 transition-all active:scale-95 ${
+                    active ? 'border-brand-orange bg-orange-50' : 'border-gray-200 bg-white'
+                  }`}
+                >
+                  {b.off > 0 && (
+                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-brand-orange text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">
+                      -{b.off}%
+                    </span>
+                  )}
+                  <span className={`text-xs font-bold leading-none ${active ? 'text-brand-orange' : 'text-navy'}`}>
+                    {b.qty} {b.qty === 1 ? 'ud' : 'uds'}
+                  </span>
+                  <span className={`text-[10px] leading-none mt-0.5 ${active ? 'text-brand-orange' : 'text-gray-400'}`}>
+                    {fmt(String(unitAmount * b.qty * (1 - b.off / 100)), currency)}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Fila 2: opción/talla (si aplica) */}
           {sizeOptionName && sizeValues.length > 1 && (
-            <div className="flex items-center gap-2 overflow-x-auto px-4 pt-2.5 pb-1.5 scrollbar-hide border-b border-gray-100">
+            <div className="flex items-center gap-2 overflow-x-auto px-3 py-1.5 scrollbar-hide border-b border-gray-100">
               <span className="shrink-0 text-[11px] font-semibold text-gray-500">{sizeOptionName}:</span>
               {sizeValues.map((val) => {
                 const variantForOption = variants.find((v) =>
@@ -713,10 +745,8 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
                     key={val}
                     onClick={() => selectOption(sizeOptionName, val)}
                     disabled={!available}
-                    className={`shrink-0 min-w-[2.4rem] px-3 py-1.5 rounded-lg text-xs font-semibold border-2 transition-all active:scale-95 ${
-                      active
-                        ? 'border-brand-orange bg-orange-50 text-brand-orange'
-                        : 'border-gray-200 bg-white text-gray-700'
+                    className={`shrink-0 min-w-[2.4rem] px-3 py-1 rounded-lg text-xs font-semibold border-2 transition-all active:scale-95 ${
+                      active ? 'border-brand-orange bg-orange-50 text-brand-orange' : 'border-gray-200 bg-white text-gray-700'
                     } ${!available ? 'opacity-35 cursor-not-allowed line-through' : ''}`}
                   >
                     {val}
@@ -726,73 +756,62 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
             </div>
           )}
 
-          {/* Price (bundle-aware) + acciones */}
-          <div className="px-3 py-2">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-baseline gap-1.5 min-w-0">
-                <p className="text-xl font-extrabold text-navy leading-none">{stickyPrice}</p>
-                {bundleQty > 1 && (
-                  <p className="text-xs text-gray-400 line-through leading-none">
-                    {fmt(String(unitAmount * bundleQty), currency)}
-                  </p>
-                )}
-              </div>
-              <p className="text-[11px] text-gray-400 truncate leading-none ml-2">
-                {bundleQty > 1
-                  ? `${bundleQty} uds · ahorrás ${selectedBundle.off}%`
-                  : selectedVariant?.selectedOptions?.map((o) => o.value).join(' · ')}
-              </p>
+          {/* Fila 3: precio total + botones */}
+          <div className="flex items-center gap-2 px-3 py-2">
+            {/* Precio */}
+            <div className="shrink-0 min-w-[80px]">
+              <p className="text-lg font-extrabold text-navy leading-none">{stickyPrice}</p>
+              {bundleQty > 1 && (
+                <p className="text-[10px] text-gray-400 line-through leading-none mt-0.5">
+                  {fmt(String(unitAmount * bundleQty), currency)}
+                </p>
+              )}
             </div>
 
-            <div className="flex items-center gap-2">
-              {/* Favoritos */}
-              <button
-                onClick={() => setWished((w) => !w)}
-                aria-label="Favoritos"
-                className={`shrink-0 w-12 h-12 rounded-xl border-2 flex items-center justify-center transition-all active:scale-95 ${
-                  wished ? 'border-red-400 text-red-500 bg-red-50' : 'border-gray-200 text-gray-400 bg-white'
-                }`}
-              >
-                <Heart size={20} fill={wished ? 'currentColor' : 'none'} />
-              </button>
+            {/* WhatsApp — principal */}
+            {(() => {
+              const _variant = selectedVariant?.selectedOptions
+                ?.filter((o) => o.value !== 'Default Title')
+                .map((o) => o.value)
+                .join(' / ');
+              const _bundleLabel = bundleQty > 1
+                ? `${bundleQty} unidades (ahorro ${selectedBundle.off}%)`
+                : '1 unidad';
+              const _msg =
+                `Hola! Quiero hacer este pedido:\n\n` +
+                `*${product.title}*` +
+                (_variant ? `\nOpcion: ${_variant}` : '') +
+                `\nCantidad: ${_bundleLabel}` +
+                `\nTotal: ${stickyPrice}\n\n` +
+                `Me ayudas a completar mi compra?`;
+              const _href = `https://wa.me/50661950239?text=${encodeURIComponent(_msg)}`;
+              return (
+                <a
+                  href={_href}
+                  rel="noopener noreferrer"
+                  className={`flex-1 h-11 rounded-xl font-semibold text-sm flex items-center justify-center gap-1.5 transition-all active:scale-95 ${
+                    isAvailable
+                      ? 'bg-[#25D366] text-white shadow-lg shadow-[#25D366]/30'
+                      : 'bg-gray-200 text-gray-400 pointer-events-none'
+                  }`}
+                >
+                  <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden>
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                  </svg>
+                  Pedir por WhatsApp
+                </a>
+              );
+            })()}
 
-              {/* Pedir por WhatsApp — principal para CR */}
-              {isAvailable && (() => {
-                const _variant = selectedVariant?.selectedOptions
-                  ?.filter((o) => o.value !== 'Default Title')
-                  .map((o) => o.value)
-                  .join(' / ');
-                const _msg =
-                  `Hola! Quiero hacer este pedido:\n\n` +
-                  `*${product.title}*` +
-                  (_variant ? `\nOpcion: ${_variant}` : '') +
-                  `\nPrecio: ${stickyPrice}\n\n` +
-                  `Me ayudas a completar mi compra?`;
-                const _href = `https://wa.me/50661950239?text=${encodeURIComponent(_msg)}`;
-                return (
-                  <a
-                    href={_href}
-                    rel="noopener noreferrer"
-                    className="flex-1 h-12 rounded-xl bg-[#25D366] text-white font-semibold text-sm flex items-center justify-center gap-1.5 shadow-lg shadow-[#25D366]/30 active:scale-95 transition-all"
-                  >
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden>
-                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                    </svg>
-                    Pedir por WhatsApp
-                  </a>
-                );
-              })()}
-
-              {/* Agregar al carrito — secundario */}
-              <button
-                onClick={handleAddToCart}
-                disabled={!isAvailable || isLoading}
-                className="shrink-0 w-12 h-12 rounded-xl border-2 border-gray-200 text-gray-600 bg-white flex items-center justify-center active:scale-95 transition-all disabled:opacity-50"
-                aria-label="Agregar al carrito"
-              >
-                <ShoppingCart size={18} />
-              </button>
-            </div>
+            {/* Carrito — secundario */}
+            <button
+              onClick={handleAddToCart}
+              disabled={!isAvailable || isLoading}
+              className="shrink-0 w-11 h-11 rounded-xl border-2 border-gray-200 text-gray-600 bg-white flex items-center justify-center active:scale-95 transition-all disabled:opacity-50"
+              aria-label="Agregar al carrito"
+            >
+              <ShoppingCart size={18} />
+            </button>
           </div>
         </div>
       )}

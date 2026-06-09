@@ -9,16 +9,24 @@ export default function ProductWhatsApp({
   productTitle,
   variant,
   price,
+  qty = 1,
+  bundleOff = 0,
 }: {
   productTitle: string;
   variant?: string;
   price: string;
+  qty?: number;
+  bundleOff?: number;
 }) {
+  const bundleLabel = qty > 1
+    ? `${qty} unidades (ahorro ${bundleOff}%)`
+    : '1 unidad';
   const msg =
     `Hola! Quiero hacer este pedido:\n\n` +
     `*${productTitle}*` +
     (variant ? `\nOpcion: ${variant}` : '') +
-    `\nPrecio: ${price}\n\n` +
+    `\nCantidad: ${bundleLabel}` +
+    `\nTotal: ${price}\n\n` +
     `Me ayudas a completar mi compra?`;
   const href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 
