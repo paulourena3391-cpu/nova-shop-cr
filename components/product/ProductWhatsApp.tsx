@@ -15,18 +15,17 @@ export default function ProductWhatsApp({
   price: string;
 }) {
   const msg =
-    `¡Hola! 👋 Quiero hacer este pedido:\n\n` +
+    `Hola! Quiero hacer este pedido:\n\n` +
     `*${productTitle}*` +
-    (variant ? `\nOpción: ${variant}` : '') +
+    (variant ? `\nOpcion: ${variant}` : '') +
     `\nPrecio: ${price}\n\n` +
-    `¿Me ayudás a completar mi compra? 🙌`;
+    `Me ayudas a completar mi compra?`;
   const href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 
   return (
     <div className="pt-1">
       <a
         href={href}
-        target="_blank"
         rel="noopener noreferrer"
         className="group flex w-full items-center justify-center gap-2.5 rounded-xl bg-[#25D366] py-4 text-base font-semibold text-white shadow-lg shadow-[#25D366]/25 transition-all duration-300 hover:bg-[#1ebe5b] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
       >

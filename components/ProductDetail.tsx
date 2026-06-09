@@ -763,16 +763,15 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
                   .map((o) => o.value)
                   .join(' / ');
                 const _msg =
-                  `¡Hola! 👋 Quiero hacer este pedido:\n\n` +
+                  `Hola! Quiero hacer este pedido:\n\n` +
                   `*${product.title}*` +
-                  (_variant ? `\nOpción: ${_variant}` : '') +
+                  (_variant ? `\nOpcion: ${_variant}` : '') +
                   `\nPrecio: ${stickyPrice}\n\n` +
-                  `¿Me ayudás a completar mi compra? 🙌`;
+                  `Me ayudas a completar mi compra?`;
                 const _href = `https://wa.me/50661950239?text=${encodeURIComponent(_msg)}`;
                 return (
                   <a
                     href={_href}
-                    target="_blank"
                     rel="noopener noreferrer"
                     className="flex-1 h-12 rounded-xl bg-[#25D366] text-white font-semibold text-sm flex items-center justify-center gap-1.5 shadow-lg shadow-[#25D366]/30 active:scale-95 transition-all"
                   >
