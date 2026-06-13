@@ -104,8 +104,23 @@ export default async function CRHomePage() {
   const bestPool = await getVaried(4, 'BEST_SELLING');
   const newPoolRaw = await getVaried(3, 'CREATED_AT', true);
 
-  const ofertas = bestPool.slice(0, 8);
-  const masVendidos = bestPool.slice(8, 24);
+  // Destacados: productos de Salud/Suplementos (no entran en los pools por tipo).
+  // Se anteponen en "Ofertas del día" para darles visibilidad en el inicio.
+  const destacados = await getProducts({
+    first: 4,
+    query: 'tag:market-cr product_type:Suplementos',
+  })
+    .then((r) => r.products)
+    .catch((): ShopifyProduct[] => []);
+  const destSet = new Set(destacados.map((p) => p.id));
+
+  const ofertas = [
+    ...destacados,
+    ...bestPool.filter((p) => !destSet.has(p.id)),
+  ].slice(0, 8);
+  const masVendidos = bestPool
+    .filter((p) => !destSet.has(p.id))
+    .slice(8, 24);
   const usados = new Set([...ofertas, ...masVendidos].map((p) => p.id));
   const recien = newPoolRaw.filter((p) => !usados.has(p.id)).slice(0, 12);
 
