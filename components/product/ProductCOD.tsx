@@ -70,6 +70,7 @@ export default function ProductCOD({
   const [distrito, setDistrito] = useState('');
   const [direccion, setDireccion] = useState('');
   const [email, setEmail] = useState('');
+  const [pago, setPago] = useState<'Efectivo' | 'SINPE Móvil'>('Efectivo');
   const [touched, setTouched] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -109,7 +110,7 @@ export default function ProductCOD({
       `Cantón: ${canton}\n` +
       (distrito.trim() ? `Distrito: ${distrito.trim()}\n` : '') +
       `Dirección y señas: ${direccion.trim()}\n\n` +
-      `*Forma de pago: EFECTIVO contra entrega*`;
+      `*Forma de pago al recibir: ${pago === 'SINPE Móvil' ? 'SINPE MÓVIL' : 'EFECTIVO'}*`;
 
     const href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
     window.open(href, '_blank', 'noopener,noreferrer');
@@ -133,7 +134,7 @@ export default function ProductCOD({
           Pedí con pago contra entrega
         </span>
         <span className="text-[11px] font-medium text-emerald-50/90">
-          No pagás ahora · Pagás en efectivo cuando te llega 📦
+          No pagás ahora · Pagás al recibir (efectivo o SINPE) 📦
         </span>
       </button>
 
@@ -159,7 +160,7 @@ export default function ProductCOD({
               </button>
               <h3 className="text-lg font-bold">Pago contra entrega</h3>
               <p className="mt-0.5 text-[13px] text-emerald-50/90">
-                Llená tus datos y pagás en efectivo al recibir.
+                Llená tus datos y pagás al recibir (efectivo o SINPE Móvil).
               </p>
             </div>
 
@@ -180,6 +181,27 @@ export default function ProductCOD({
                   Cantidad: {qty}{qty > 1 && bundleOff ? ` · combo -${bundleOff}%` : ''}
                 </p>
                 <p className="mt-0.5 font-bold text-emerald-700">{price}</p>
+              </div>
+
+              {/* Forma de pago al recibir */}
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-gray-700">¿Cómo vas a pagar al recibir? *</label>
+                <div className="grid grid-cols-2 gap-2.5">
+                  {(['Efectivo', 'SINPE Móvil'] as const).map((opt) => (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => setPago(opt)}
+                      className={`flex items-center justify-center gap-1.5 rounded-xl border-2 py-3 text-sm font-semibold transition ${
+                        pago === opt
+                          ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                          : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                      }`}
+                    >
+                      {opt === 'Efectivo' ? '💵 Efectivo' : '📲 SINPE Móvil'}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-2.5">
@@ -294,7 +316,7 @@ export default function ProductCOD({
                 Confirmar pedido por WhatsApp
               </button>
               <p className="mt-2 text-center text-[11px] text-gray-400">
-                Te confirmamos por WhatsApp. Pagás en efectivo al recibir tu pedido.
+                Te confirmamos por WhatsApp. Pagás al recibir: efectivo o SINPE Móvil.
               </p>
             </div>
           </div>
