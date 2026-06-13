@@ -171,25 +171,36 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
   const price = fmt(String(unitAmount), currency);
 
   // Per-product EXACT colón pricing override (only applies on /cr, by handle).
-  // Lets a specific ad product use custom round prices + month hooks WITHOUT
-  // touching the site-wide -10%/-15% bundle scheme or the USA store.
-  const CR_PRICE_OVERRIDES: Record<
-    string,
-    { unitCRC: number; bundleCRC: Record<number, number> }
-  > = {
-    'omega-3-1200mg': { unitCRC: 13900, bundleCRC: { 1: 13900, 2: 21900, 3: 29900 } },
+  // Lets a specific ad product use custom round prices + its OWN bundle labels
+  // WITHOUT touching the site-wide -10%/-15% scheme or the USA store.
+  // To add a product: define unitCRC + a `bundles` array (qty/off/labels/crc).
+  type OverrideBundle = { qty: number; off: number; crc: number; labelEs: string; labelEn: string; tagEs: string; tagEn: string };
+  const CR_PRICE_OVERRIDES: Record<string, { unitCRC: number; bundles: OverrideBundle[] }> = {
+    'omega-3-1200mg': {
+      unitCRC: 13900,
+      bundles: [
+        { qty: 1, off: 0,  crc: 13900, labelEs: '1 unidad · 1 mes', labelEn: '1 unit · 1 mo',  tagEs: '',            tagEn: '' },
+        { qty: 2, off: 21, crc: 21900, labelEs: '2 uds · 2 meses',  labelEn: '2 units · 2 mo', tagEs: 'MÁS POPULAR', tagEn: 'MOST POPULAR' },
+        { qty: 3, off: 28, crc: 29900, labelEs: '3 uds · 3 meses',  labelEn: '3 units · 3 mo', tagEs: 'MEJOR VALOR', tagEn: 'BEST VALUE' },
+      ],
+    },
+    'cierra-puertas-automatico': {
+      unitCRC: 9900,
+      bundles: [
+        { qty: 1, off: 0,  crc: 9900,  labelEs: '1 unidad',  labelEn: '1 unit',  tagEs: '',            tagEn: '' },
+        { qty: 2, off: 15, crc: 16900, labelEs: '2 puertas', labelEn: '2 doors', tagEs: 'MÁS POPULAR', tagEn: 'MOST POPULAR' },
+        { qty: 3, off: 20, crc: 23900, labelEs: '3 puertas', labelEn: '3 doors', tagEs: 'MEJOR VALOR', tagEn: 'BEST VALUE' },
+      ],
+    },
   };
   const crOverride = isCR ? CR_PRICE_OVERRIDES[product.handle] : undefined;
   const crc = (n: number) => formatPriceCR(String(n), 'CRC'); // format a raw ₡ amount
+  const bundleCRCof = (qty: number) => crOverride?.bundles.find((b) => b.qty === qty)?.crc ?? 0;
 
   // Bundle tiers — buy more, save more (real discount set via Shopify automatic discount)
   const es = lang === 'es';
   const BUNDLES = crOverride
-    ? [
-        { qty: 1, off: 0,  labelEs: '1 unidad · 1 mes', labelEn: '1 unit · 1 mo',  tagEs: '',            tagEn: '' },
-        { qty: 2, off: 21, labelEs: '2 uds · 2 meses',  labelEn: '2 units · 2 mo', tagEs: 'MÁS POPULAR', tagEn: 'MOST POPULAR' },
-        { qty: 3, off: 28, labelEs: '3 uds · 3 meses',  labelEn: '3 units · 3 mo', tagEs: 'MEJOR VALOR', tagEn: 'BEST VALUE' },
-      ]
+    ? crOverride.bundles
     : [
         { qty: 1, off: 0,  labelEs: '1 unidad',  labelEn: '1 unit',   tagEs: '',              tagEn: '' },
         { qty: 2, off: 10, labelEs: '2 unidades', labelEn: '2 units', tagEs: 'MÁS POPULAR',   tagEn: 'MOST POPULAR' },
@@ -201,13 +212,15 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
   const bundleTotalAmount = unitAmount * bundleQty * (1 - selectedBundle.off / 100);
   // Per-tier display strings — honor the exact ₡ override when present.
   const tierAfterStr = (b: { qty: number; off: number }) =>
-    crOverride ? crc(crOverride.bundleCRC[b.qty]) : fmt(String(unitAmount * b.qty * (1 - b.off / 100)), currency);
+    crOverride ? crc(bundleCRCof(b.qty)) : fmt(String(unitAmount * b.qty * (1 - b.off / 100)), currency);
   const tierBeforeStr = (b: { qty: number; off: number }) =>
     crOverride ? crc(crOverride.unitCRC * b.qty) : fmt(String(unitAmount * b.qty), currency);
   const bundleTotalStr = crOverride
-    ? crc(crOverride.bundleCRC[bundleQty])
+    ? crc(bundleCRCof(bundleQty))
     : bundleQty > 1 ? fmt(String(bundleTotalAmount), currency) : price;
   const stickyPrice = bundleTotalStr;
+  // Main unit price — exact ₡ when overridden, else the Shopify-derived price.
+  const displayUnitPrice = crOverride ? crc(crOverride.unitCRC) : price;
 
   // The non-color option (size/spec) — surfaced in the CR sticky bar for one-tap selection.
   const sizeOptionName = optionNames.find((n) => !/color/i.test(n));
@@ -390,7 +403,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
           {/* ── Price ── */}
           <div className="rounded-2xl bg-orange-50/60 border border-orange-100 p-3 md:bg-transparent md:border-0 md:p-0">
             <div className="flex items-baseline gap-3 flex-wrap">
-              <span className="text-3xl font-extrabold text-navy">{price}</span>
+              <span className="text-3xl font-extrabold text-navy">{displayUnitPrice}</span>
               {isOnSale && discount > 0 && (
                 <span className="bg-red-500 text-white text-sm font-bold px-2 py-0.5 rounded-md">-{discount}%</span>
               )}
