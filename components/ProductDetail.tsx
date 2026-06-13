@@ -526,20 +526,6 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
             </div>
           </div>
 
-          {/* CR: order via WhatsApp — primera opción, captura compradores que no pagan online */}
-          {isCR && (
-            <ProductWhatsApp
-              productTitle={product.title}
-              variant={selectedVariant?.selectedOptions
-                ?.filter((o) => o.value !== 'Default Title')
-                .map((o) => o.value)
-                .join(' / ')}
-              price={bundleQty > 1 ? fmt(String(bundleTotalAmount), currency) : price}
-              qty={bundleQty}
-              bundleOff={selectedBundle.off}
-            />
-          )}
-
           {/* ── Add to cart + Buy Now — visible on ALL screens ──
                Mobile: stacked full-width (Amazon style)
                Desktop: side by side                          */}
@@ -570,7 +556,9 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
                 ?.filter((o) => o.value !== 'Default Title')
                 .map((o) => o.value)
                 .join(' / ')}
-              price={price}
+              price={bundleQty > 1 ? fmt(String(bundleTotalAmount), currency) : price}
+              qty={bundleQty}
+              bundleOff={selectedBundle.off}
             />
           )}
 

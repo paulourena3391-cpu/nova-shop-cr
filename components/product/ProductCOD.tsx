@@ -52,10 +52,14 @@ export default function ProductCOD({
   productTitle,
   variant,
   price,
+  qty = 1,
+  bundleOff = 0,
 }: {
   productTitle: string;
   variant?: string;
   price: string;
+  qty?: number;
+  bundleOff?: number;
 }) {
   const [open, setOpen] = useState(false);
   const [nombre, setNombre] = useState('');
@@ -94,7 +98,8 @@ export default function ProductCOD({
       `🛒 *NUEVO PEDIDO — Pago contra entrega*\n\n` +
       `*Producto:* ${productTitle}` +
       (variant ? `\nOpción: ${variant}` : '') +
-      `\nPrecio: ${price}\n\n` +
+      `\nCantidad: ${qty}${qty > 1 && bundleOff ? ` (combo -${bundleOff}%)` : ''}` +
+      `\nTotal a pagar: ${price}\n\n` +
       `👤 *Cliente*\n` +
       `Nombre: ${nombre.trim()} ${apellido.trim()}`.trimEnd() + `\n` +
       `Teléfono: ${telefono.replace(/\D/g, '')}\n` +
@@ -171,6 +176,9 @@ export default function ProductCOD({
               <div className="rounded-xl bg-gray-50 px-3.5 py-2.5 text-sm">
                 <p className="font-semibold text-gray-900">{productTitle}</p>
                 {variant && <p className="text-gray-500">{variant}</p>}
+                <p className="text-gray-500">
+                  Cantidad: {qty}{qty > 1 && bundleOff ? ` · combo -${bundleOff}%` : ''}
+                </p>
                 <p className="mt-0.5 font-bold text-emerald-700">{price}</p>
               </div>
 
