@@ -170,18 +170,44 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
   const currency = selectedVariant?.price.currencyCode ?? product.priceRange.minVariantPrice.currencyCode;
   const price = fmt(String(unitAmount), currency);
 
+  // Per-product EXACT colón pricing override (only applies on /cr, by handle).
+  // Lets a specific ad product use custom round prices + month hooks WITHOUT
+  // touching the site-wide -10%/-15% bundle scheme or the USA store.
+  const CR_PRICE_OVERRIDES: Record<
+    string,
+    { unitCRC: number; bundleCRC: Record<number, number> }
+  > = {
+    'omega-3-1200mg': { unitCRC: 13900, bundleCRC: { 1: 13900, 2: 21900, 3: 29900 } },
+  };
+  const crOverride = isCR ? CR_PRICE_OVERRIDES[product.handle] : undefined;
+  const crc = (n: number) => formatPriceCR(String(n), 'CRC'); // format a raw ₡ amount
+
   // Bundle tiers — buy more, save more (real discount set via Shopify automatic discount)
   const es = lang === 'es';
-  const BUNDLES = [
-    { qty: 1, off: 0,  labelEs: '1 unidad',  labelEn: '1 unit',   tagEs: '',              tagEn: '' },
-    { qty: 2, off: 10, labelEs: '2 unidades', labelEn: '2 units', tagEs: 'MÁS POPULAR',   tagEn: 'MOST POPULAR' },
-    { qty: 3, off: 15, labelEs: '3 unidades', labelEn: '3 units', tagEs: 'MEJOR VALOR',   tagEn: 'BEST VALUE' },
-  ];
+  const BUNDLES = crOverride
+    ? [
+        { qty: 1, off: 0,  labelEs: '1 unidad · 1 mes', labelEn: '1 unit · 1 mo',  tagEs: '',            tagEn: '' },
+        { qty: 2, off: 21, labelEs: '2 uds · 2 meses',  labelEn: '2 units · 2 mo', tagEs: 'MÁS POPULAR', tagEn: 'MOST POPULAR' },
+        { qty: 3, off: 28, labelEs: '3 uds · 3 meses',  labelEn: '3 units · 3 mo', tagEs: 'MEJOR VALOR', tagEn: 'BEST VALUE' },
+      ]
+    : [
+        { qty: 1, off: 0,  labelEs: '1 unidad',  labelEn: '1 unit',   tagEs: '',              tagEn: '' },
+        { qty: 2, off: 10, labelEs: '2 unidades', labelEn: '2 units', tagEs: 'MÁS POPULAR',   tagEn: 'MOST POPULAR' },
+        { qty: 3, off: 15, labelEs: '3 unidades', labelEn: '3 units', tagEs: 'MEJOR VALOR',   tagEn: 'BEST VALUE' },
+      ];
 
   // Sticky-bar pricing: reflect the chosen bundle so mobile shoppers see the real total.
   const selectedBundle = BUNDLES.find((b) => b.qty === bundleQty) ?? BUNDLES[0];
   const bundleTotalAmount = unitAmount * bundleQty * (1 - selectedBundle.off / 100);
-  const stickyPrice = bundleQty > 1 ? fmt(String(bundleTotalAmount), currency) : price;
+  // Per-tier display strings — honor the exact ₡ override when present.
+  const tierAfterStr = (b: { qty: number; off: number }) =>
+    crOverride ? crc(crOverride.bundleCRC[b.qty]) : fmt(String(unitAmount * b.qty * (1 - b.off / 100)), currency);
+  const tierBeforeStr = (b: { qty: number; off: number }) =>
+    crOverride ? crc(crOverride.unitCRC * b.qty) : fmt(String(unitAmount * b.qty), currency);
+  const bundleTotalStr = crOverride
+    ? crc(crOverride.bundleCRC[bundleQty])
+    : bundleQty > 1 ? fmt(String(bundleTotalAmount), currency) : price;
+  const stickyPrice = bundleTotalStr;
 
   // The non-color option (size/spec) — surfaced in the CR sticky bar for one-tap selection.
   const sizeOptionName = optionNames.find((n) => !/color/i.test(n));
@@ -490,8 +516,6 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
             </p>
             <div className="grid grid-cols-3 gap-2">
               {BUNDLES.map((b) => {
-                const totalBefore = unitAmount * b.qty;
-                const totalAfter = totalBefore * (1 - b.off / 100);
                 const active = bundleQty === b.qty;
                 return (
                   <button
@@ -514,11 +538,11 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
                     {b.off > 0 ? (
                       <>
                         <p className="text-xs font-semibold text-emerald-600 mt-0.5">-{b.off}%</p>
-                        <p className="text-[11px] text-gray-400 line-through">{fmt(String(totalBefore), currency)}</p>
-                        <p className="text-xs font-bold text-navy">{fmt(String(totalAfter), currency)}</p>
+                        <p className="text-[11px] text-gray-400 line-through">{tierBeforeStr(b)}</p>
+                        <p className="text-xs font-bold text-navy">{tierAfterStr(b)}</p>
                       </>
                     ) : (
-                      <p className="text-xs text-gray-500 mt-0.5">{fmt(String(totalBefore), currency)}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">{tierBeforeStr(b)}</p>
                     )}
                   </button>
                 );
@@ -556,7 +580,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
                 ?.filter((o) => o.value !== 'Default Title')
                 .map((o) => o.value)
                 .join(' / ')}
-              price={bundleQty > 1 ? fmt(String(bundleTotalAmount), currency) : price}
+              price={bundleTotalStr}
               qty={bundleQty}
               bundleOff={selectedBundle.off}
             />
@@ -723,7 +747,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
                     {b.qty} {b.qty === 1 ? 'ud' : 'uds'}
                   </span>
                   <span className={`text-[10px] leading-none mt-0.5 ${active ? 'text-brand-orange' : 'text-gray-400'}`}>
-                    {fmt(String(unitAmount * b.qty * (1 - b.off / 100)), currency)}
+                    {tierAfterStr(b)}
                   </span>
                 </button>
               );
@@ -763,7 +787,7 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
               <p className="text-lg font-extrabold text-navy leading-none">{stickyPrice}</p>
               {bundleQty > 1 && (
                 <p className="text-[10px] text-gray-400 line-through leading-none mt-0.5">
-                  {fmt(String(unitAmount * bundleQty), currency)}
+                  {tierBeforeStr(selectedBundle)}
                 </p>
               )}
             </div>
