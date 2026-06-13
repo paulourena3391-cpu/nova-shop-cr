@@ -95,21 +95,21 @@ export default function ProductCOD({
     if (!valid) return;
 
     const msg =
-      `🛒 *NUEVO PEDIDO — Pago contra entrega*\n\n` +
+      `*NUEVO PEDIDO - Pago contra entrega*\n\n` +
       `*Producto:* ${productTitle}` +
       (variant ? `\nOpción: ${variant}` : '') +
       `\nCantidad: ${qty}${qty > 1 && bundleOff ? ` (combo -${bundleOff}%)` : ''}` +
       `\nTotal a pagar: ${price}\n\n` +
-      `👤 *Cliente*\n` +
+      `*CLIENTE*\n` +
       `Nombre: ${nombre.trim()} ${apellido.trim()}`.trimEnd() + `\n` +
       `Teléfono: ${telefono.replace(/\D/g, '')}\n` +
       (email.trim() ? `Email: ${email.trim()}\n` : '') +
-      `\n📍 *Dirección de entrega*\n` +
+      `\n*DIRECCIÓN DE ENTREGA*\n` +
       `Provincia: ${provincia}\n` +
       `Cantón: ${canton}\n` +
       (distrito.trim() ? `Distrito: ${distrito.trim()}\n` : '') +
       `Dirección y señas: ${direccion.trim()}\n\n` +
-      `💵 *Forma de pago: EFECTIVO contra entrega*`;
+      `*Forma de pago: EFECTIVO contra entrega*`;
 
     const href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
     window.open(href, '_blank', 'noopener,noreferrer');
