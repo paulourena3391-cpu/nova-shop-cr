@@ -464,8 +464,19 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
           {/* Divider */}
           <div className="border-t border-gray-100" />
 
-          {/* ── Variant selectors ── */}
-          {optionNames.map((optName) => {
+          {/* ── Variant selectors ── (se omite el "Default Title" de Shopify) */}
+          {optionNames
+            .filter((optName) => {
+              const vals = [
+                ...new Set(
+                  variants.flatMap((v) =>
+                    v.selectedOptions.filter((o) => o.name === optName).map((o) => o.value)
+                  )
+                ),
+              ];
+              return !(vals.length === 1 && vals[0] === 'Default Title');
+            })
+            .map((optName) => {
             const optValues = [
               ...new Set(
                 variants.flatMap((v) =>
@@ -550,14 +561,29 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
             </div>
           </div>
 
+          {/* CR: pago contra entrega — OPCIÓN PRINCIPAL para el mercado tico
+               (va primero; comprar online queda como alternativa abajo) */}
+          {isCR && (
+            <ProductCOD
+              productTitle={product.title}
+              variant={selectedVariant?.selectedOptions
+                ?.filter((o) => o.value !== 'Default Title')
+                .map((o) => o.value)
+                .join(' / ')}
+              price={bundleTotalStr}
+              qty={bundleQty}
+              bundleOff={selectedBundle.off}
+            />
+          )}
+
           {/* ── Add to cart + Buy Now — visible on ALL screens ──
-               Mobile: stacked full-width (Amazon style)
-               Desktop: side by side                          */}
+               En /cr son alternativa secundaria (debajo de contra entrega).
+               Mobile: stacked full-width (Amazon style) · Desktop: side by side */}
           <div className="flex flex-col gap-2 pt-1 md:flex-row md:gap-3">
             <button
               onClick={handleAddToCart}
               disabled={!isAvailable || isLoading}
-              className={`btn-primary w-full py-4 text-base shadow-lg shadow-brand-orange/25 ${isCR && isAvailable ? 'cta-shine' : ''}`}
+              className="btn-primary w-full py-4 text-base shadow-lg shadow-brand-orange/25"
             >
               {isAvailable ? t.addToCart : t.outOfStock}
             </button>
@@ -571,20 +597,6 @@ export default function ProductDetail({ product, relatedProducts }: Props) {
               </button>
             )}
           </div>
-
-          {/* CR: cash-on-delivery via WhatsApp — captures buyers who don't trust paying online */}
-          {isCR && (
-            <ProductCOD
-              productTitle={product.title}
-              variant={selectedVariant?.selectedOptions
-                ?.filter((o) => o.value !== 'Default Title')
-                .map((o) => o.value)
-                .join(' / ')}
-              price={bundleTotalStr}
-              qty={bundleQty}
-              bundleOff={selectedBundle.off}
-            />
-          )}
 
           {/* ── Urgency + delivery estimate ── */}
           <ProductUrgency />
